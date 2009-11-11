@@ -1,0 +1,599 @@
+# contents: zsh(1) user RC file.
+# this file is sourced by all interactive shells
+
+# 1. Environment Vars {{{1
+# ====================
+# (sh|c)ould be set in .zshenv but /etc/zprofile blows $PATH away on Gentoo
+
+export LC_ALL="en_CA.UTF-8"
+export LANG="en_CA.UTF-8"
+
+# include my script directory in the path
+#path=($HOME/bin /opt/local/bin /usr/local/bin /usr/local/sbin $path /usr/local/mysql/bin)
+#export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
+cdpath=(~)
+
+hosts=(nofxwiki.net tuono mac-mini samhuri.net samhuri@samhuri.net balltrek.net balltrek@balltrek.net nofx@firmo.mirage.org)
+
+HOSTNAME=`hostname -s`
+KEYCHAIN_HOST=`hostname`
+
+export PAGER=`which less`
+# most has great colours for man pages
+if which most >/dev/null 2>&1; then
+    export MANPAGER=`which most`
+fi
+
+# default editors
+export EDITOR="mate -w"
+export VISUAL=$EDITOR
+
+# 1}}}
+
+# 2. Limits {{{1
+# =========
+#limit coredumpsize             30m             # limit core dumps to 30mb
+#limit stacksize            8m          # limit stack to 8mb
+
+# 1}}}
+
+# 3. Shell Settings {{{1
+# =================
+
+# 3.1. Shell Directories {{{2
+# ----------------------
+hash -d mail=~/.maildir/
+
+# 2}}}
+
+# 1}}}
+
+# 4. Shell Options {{{1
+# ================
+
+# 4.1. Parameters and Shell Functionality {{{2
+# ---------------------------------------
+#setopt ignoreeof           # ignore EOF ('^D') (i.e. don't log out on it)
+setopt braceccl             # {a-d} expands to a b c d
+setopt noclobber            # don't overwrite existing files w/ > output redir
+setopt hist_allow_clobber   # C-p or UP and command has >| now, ready to go
+
+# 2}}}
+
+# 4.2. Changing Directories {{{2
+# -------------------------
+setopt autocd               # automatically cd to a directory if not cmd
+setopt autopushd            # automatically pushd directories on dirstack
+setopt nopushdsilent        # print dirstack after each cd/pushd
+setopt pushdignoredups      # don't push dups on stack
+
+# need to find out the difference between these two, just the export?
+setopt autonamedirs             # % export h=/home/sjs; cd ~h; pwd
+                                # => /home/sjs
+setopt cdablevars               # blah=~/media/movies; cd blah; pwd => ~/media/movies
+
+# 2}}}
+
+# 4.3. Shell Completion {{{2
+# ---------------------
+setopt correct              # try to correct spelling...
+setopt no_correctall        # ...only for commands, not filenames
+setopt no_listbeep          # don't beep on ambiguous listings
+setopt listpacked           # variable col widths (takes up less space)
+
+# 2}}}
+
+# 4.4. Shell Expansion and Globbing {{{2
+# ---------------------------------
+setopt extendedglob         # use extended globbing (#, ~, ^)
+
+# 2}}}
+
+# 4.5. History and History Expansion {{{2
+# ----------------------------------
+export HISTFILE="$ZDOTDIR/zhistory"  # save history
+export HISTSIZE=2000                 # big internal buffer
+export SAVEHIST=5000                 # huge history file
+
+setopt extendedhistory      # save timestamps in history
+setopt no_histbeep          # don't beep for erroneous history expansions
+setopt histignoredups       # ignore consecutive dups in history
+setopt histfindnodups       # backwards search produces diff result each time
+setopt histreduceblanks     # compact consecutive white space chars (cool)
+setopt histnostore          # don't store history related functions
+setopt incappendhistory     # incrementally add items to HISTFILE
+# this is very annoying
+#setopt histverify           # confirm !: or ^ command results before execution
+
+# 2}}}
+
+# 4.6. Job Control {{{2
+# ----------------
+setopt longlistjobs         # list jobs in long format
+
+# 2}}}
+
+# 4.7. Shell Prompt {{{2
+# -----------------
+setopt promptsubst          # allow paramater, command, so on in prompt
+setopt transient_rprompt    # hide RPROMPT after cmdline is executed
+
+
+# 2}}}
+
+# 4.8. ZLE {{{2
+# --------
+setopt no_beep          # don't beep on errors (in ZLE)
+
+# when completing and then typing | > etc. don't delete
+# the preceding space
+self-insert-redir() {
+    integer l=$#LBUFFER
+    zle self-insert
+    (( $l >= $#LBUFFER )) && LBUFFER[-1]=" $LBUFFER[-1]"
+}
+zle -N self-insert-redir
+for op in \| \< \> \&
+  do bindkey "$op" self-insert-redir
+done
+
+# 2}}}
+
+# 4.9. Input and Output {{{2
+# ---------------------
+#setopt printeightbit     # allow eight bit output for completion lists
+
+# 2}}}
+
+# 1}}}
+
+# 5. Terminal Settings {{{1
+# ====================
+
+# 5.3. Screen Title Updating {{{2
+# --------------------------
+
+#function title {
+#  if [[ $TERM == "screen" ]]; then
+#    # Use these two for GNU Screen:
+#    print -nR $'\033k'$1$'\033'\\\
+#
+#    print -nR $'\033]0;'$2$'\a'
+#  elif [[ $TERM == "xterm-color" || $TERM == "xterm" || $TERM == "rxvt" ]]; then
+#    # Use this one instead for XTerms:
+#    print -nR $'\033]0;'$*$'\a'
+#  fi
+#}
+#
+function precmd {
+    rehash
+# title zsh "$PWD"
+# print -n '\017'
+}
+#
+#function preexec {
+# emulate -L zsh
+# local -a cmd; cmd=(${(z)1})
+# title $cmd[1]:t "$cmd[2,-1]"
+#}
+
+# 2}}}
+
+# 1}}}
+
+# 6. Modules {{{1
+# ==========
+
+# 1}}}
+
+# 7. Command-line Completion {{{1
+# ==========================
+
+# 7.1. Startup {{{2
+# ------------
+    autoload -U colors            # we need the colors for some formats below
+        colors
+
+# 2}}}
+
+# 7.2. Completion Styles {{{2
+# ----------------------
+
+# 7.2.1. Caching {{{3
+
+# 3}}}
+
+# 7.2.2. Completers {{{3
+
+# 3}}}
+
+# 7.2.3. Completer Options {{{3
+
+# 3}}}
+
+# 7.2.4. Selection Display {{{3
+
+# 3}}}
+
+# 7.2.5. Specific Commands {{{3
+
+# 3}}}
+
+# 2}}}
+
+# 7.3. Completion Formats and Messages {{{2
+# ------------------------------------
+
+# 2}}}
+
+# 7.4. Completion Groups {{{2
+# ----------------------
+
+# 2}}}
+
+# 7.5. Completion Function Usage {{{2
+# ------------------------------
+
+# 2}}}
+
+# 7.6. History Completion {{{2
+# -----------------------
+
+# 2}}}
+# 1}}}
+
+# 8. ZLE Keybindings {{{1
+# ==================
+
+# 8.1. Searching {{{2
+    bindkey '\ep' history-beginning-search-backward
+# 2}}}
+# 1}}}
+
+# 9. Function (Auto)loading {{{1
+# =========================
+
+# 9.1. Prompt Subsystem {{{2
+# ---------------------
+
+# define some colours to use in english instead of ANSI
+# notation:
+#  -background is black unless the var is named colourOnBlue
+#  -prefix of b, e.g. bGreen means bright green
+none='%{\e[0m%}'
+
+red='%{\e[40;31m%}'
+green='%{\e[40;32m%}'
+yellow='%{\e[40;33m%}'
+blue='%{\e[40;34m%}'
+purple='%{\e[40;35m%}'
+cyan='%{\e[40;36m%}'
+white='%{\e[40;37m%}'
+grey='%{\e[1;40;30m%}'
+
+bRed='%{\e[1;40;31m%}'
+bGreen='%{\e[1;40;32m%}'
+bYellow='%{\e[1;40;33m%}'
+bBlue='%{\e[1;40;34m%}'
+bPurple='%{\e[1;40;35m%}'
+bCyan='%{\e[1;40;36m%}'
+bWhite='%{\e[1;40;37m%}'
+
+whiteOnRed='%{\e[41;37m%}'
+whiteOnBlue='%{\e[44;37m%}'
+bWhiteOnRed='%{\e[1;41;37m%}'
+
+# PROMPT SUBTITUTION
+# ------------------
+# %l - tty        %M - full machine hostname
+# %m - hostname       %n - USERNAME
+# %y - tty w/ prefix  %# - # or %
+# %? - last exit code %d,%/ - PWD
+# %~ - ~ for home etc %h,%! - history event #
+# %j - # of jobs
+#
+# %B - bold       %E - clear to EOL
+# %U - underline  %S - standout
+#
+# %([n]x.true.false) '.' is arbitrary
+# 'x' can be:
+#   ! - running with privs
+#   # - effective uid is 'n'
+#   ? exit status was 'n'
+#   C
+#   / - PWD has >= 'n' elements
+#   c
+#   .
+#   ~ - PWD with prefix replacements has >= 'n' elements
+#   D - month = 'n' (jan = 0)
+#   d - day of month = 'n'
+#   g - gid is 'n'
+#   j - # jobs >= 'n'
+#   l - 'n' chars already printed on line
+#   T - hours = 'n'
+#   t - minutes = 'n'
+#   w - day of week = 'n' (sun = 0)
+
+# looks like:
+# user@host%                [~]
+#
+# non-zero exit code:
+# -1- user@host%            [~]
+#
+# jobs running:
+# [1] user@host%            [~]
+
+eval exitCode='%(0?..${bWhiteOnRed}-%?-${none} )'
+eval dirpath='${bGreen}%(4~!.../%3~!%~)${none}'
+eval job='%(1j.${bYellow}[%j] .)'
+#hist="${whiteOnBlue}%5h${none}|"
+eval user='%(0#.${bRed}.${bBlue})%n${none}'
+eval at='${grey}@${none}'
+
+case $HOSTNAME in
+tuono)
+    host="${cyan}"
+    ;;
+
+macbook)
+    host="${bWhite}"
+    ;;
+
+slick)
+    host="${bRed}"
+    ;;
+
+*)
+    host="${bGreen}"
+    ;;
+esac
+
+eval host='${host}%m${none}'
+
+# moved dir to rprompt
+#PROMPT=`echo -n "${hist}${exitCode}${job}${user}${at}${host}${grey}:${none}${dirpath}${bWhite}%#${none} "`
+
+if [[ "x$INSIDE_EMACS" != "x" ]] || [[ "$EMACS" = "t" ]]; then
+    export PROMPT="%d %% "
+    export PAGER=cat
+    export MANPAGER=cat
+else
+    PROMPT=`echo -n "${exitCode}${job}${user}${at}${host}${bWhite}%#${none} "`
+    RPROMPT=`echo -n "${blue}[${dirpath}${blue}]${none} %t"`
+    eval export PROMPT=$'${PROMPT}'
+fi
+
+# PROMPT=`echo -n "${exitCode}${job}${user}${at}${host}${bWhite}%#${none} "`
+# eval export PROMPT=$'${PROMPT}'
+# RPROMPT=`echo -n "${blue}[${dirpath}${blue}]${none} %t"`
+
+# 2}}}
+
+# 1}}}
+
+# 10. Aliases {{{1
+# ===========
+
+# 10.1. Convenience Aliases/Macros {{{2
+# --------------------------------
+#alias burn='cdrecord -dao -driveropts=burnfree -dev=ATA:1,1,0 -v'
+alias bgd='bg; disown %1'
+alias cp='nocorrect cp'            # don't correct spelling for 'cp'
+alias cron='crontab -e'
+#alias dispatch-conf='sudo dispatch-conf'
+alias ec='vim ~/.config/'
+alias ev='vim ~/.config/vim/vimrc'
+alias ez='vim ~/.config/zsh/zshrc'
+#alias emerge='sudo emerge'         # should've thought of this
+alias hide='sudo /Developer/Tools/SetFile -a VP'
+alias mkdir='nocorrect mkdir'      # don't correct spelling for 'mkdir'
+alias mv='nocorrect mv'            # don't correct spelling for 'mv'
+#alias ns='newscript'
+#alias perldoc='LC_ALL=en_US perldoc'
+#alias reboot='sudo shutdown -r now'
+#alias shutdown='sudo shutdown -h now'
+#alias ssh='ssh -X'
+alias u='cd ..'
+alias uu='cd ../..'
+alias uuu='cd ../../..'
+alias uuuu='cd ../../../..'
+alias u2='uu'
+alias u3='uuu'
+alias u4='uuuu'
+
+alias bt='screen -c /Users/sjs/.screen/balltrek'
+alias ins='screen -c /Users/sjs/.screen/inspirado'
+
+# ruby
+alias irb='irb --readline -r irb/completion'
+alias rii='ri -Tf ansi'
+
+# rails
+alias ss='./script/server'
+alias sc='./script/console'
+alias km='kill `cat tmp/pids/mongrel.pid`'
+
+# svn
+alias sup='svn update'
+alias sst='svn status -u'
+alias scom='svn commit'
+alias slog='svn log | less'
+
+function svnst() {
+    tmpfile=/tmp/svn-stat.$$
+    [[ -f $tmpfile ]] && rm -f $tmpfile
+    svn stat
+    svn diff > $tmpfile
+    typeset -i added deled delta
+    added=`grep '^+' $tmpfile | wc -l`
+    deled=`grep '^-' $tmpfile | wc -l`
+    delta=$((added - deled))
+    if [[ delta -gt 0 ]]; then
+        delta_w=added
+        delta_sym='+'
+    else
+        delta_w=deleted
+        delta_sym='-'
+        delta=$((0 - delta))
+    fi
+    echo "  + ${added} lines"
+    echo "  - ${deled} lines"
+    echo "= ${delta_sym} ${delta} lines"
+    rm -f $tmpfile
+}
+
+# textmate
+alias e='mate'
+alias et='mate .'
+
+# global aliases - work anywhere on line
+alias -g C='|wc'
+alias -g CL='|wc -l'
+alias -g L='|less'
+alias -g H='|head'
+alias -g T='|tail'
+alias -g G='|grep'
+alias -g SH='>/dev/null 2>&1'
+alias -g BGD='& disown %1'
+
+
+# suffix aliases, 'alias -s ps=gv' makes '*.ps' expand to 'gv *.ps'
+# (globbing done after alias expansion!)
+#alias -s c=gvim
+#alias -s h=gvim
+#alias -s py=gvim
+#alias -s html=gvim
+#alias -s css=gvim
+
+function cd () {
+  if [[ -f $1 ]]; then
+    builtin cd $1:h
+  else
+    builtin cd $1
+  fi
+}
+
+function cl () {
+  cd $1
+  ls
+}
+
+# 2}}}
+
+# 10.2. ls Aliases {{{2
+# ----------------
+alias ls='gls -BF --color=auto'
+alias la='gls -AF --color=auto'
+alias ll='ls -l'
+alias lsd='ls -d'
+alias lld='ls -dl'
+
+function like(){
+  print -l **/*${1}*{,/**}
+}
+
+# 2}}}
+
+# 10.5. Miscellaneous Aliases {{{2
+# ---------------------------
+
+# 2}}}
+
+# 1}}}
+
+# 11. Unsorted (new) stuff {{{1
+# ========================
+
+export HISTFILE="$ZDOTDIR/zhistory"  # save history
+export HISTSIZE=100000
+export SAVEHIST=100000             # huge history buffer
+
+# if commands takes more than 60 seconds tell me how long it took
+export REPORTTIME=60
+
+# use less instead of the default more when no cmd is specified
+export READNULLCMD=less
+
+# set shell options
+setopt no_badpattern            # supress err msgs
+setopt cbases                   # 0xFF instead of 16#FF
+setopt globsubst                # parameter expns eligible for filename expn & generation
+setopt interactivecomments      # comments allowed in interactive shells
+setopt no_hup                   # leave bg tasks running (a la nohup)
+#setopt magicequalsubst         # performs filename expansion on 'arg' part of
+                                #  foo=arg parameters.
+
+
+#bindkey -v                      # vi style key bindings
+bindkey -e                      # emacs style key bindings
+bindkey '^I' complete-word      # complete on tab, leave expansion to _expand
+
+# default in linux is backspace sends ^H, emacs no likey
+#stty erase '^?'
+TERMINFO=$HOME/.terminfo
+
+function keep {
+    setopt localoptions nomarkdirs nonomatch nocshnullglob nullglob
+    kept=()         # Erase old value in case of error on next line
+    kept=($~*)
+    if [[ ! -t 0 ]]; then
+        local line
+        while read line; do
+            kept+=( $line )         # += is a zsh 4.2+ feature
+        done
+    fi
+print -Rc - ${^kept%/}(T)
+}
+alias keep='noglob keep '
+
+# 1}}}
+
+# more verbose completion prompt
+zstyle ':completion:*' format '%SCompleting %U%d%u%s'
+zstyle :completion::complete:cd:: tag-order \
+        local-directories path-directories
+
+# The following lines were added by compinstall
+
+zstyle ':completion:*' auto-description 'specify %d:'
+zstyle ':completion:*' completer _expand _complete _files
+zstyle ':completion:*' expand prefix
+#zstyle ':completion:*' format 'Complete %d:'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
+zstyle ':completion:*' list-suffixes true
+zstyle ':completion:*' matcher-list 'r:|[._-]=* r:|=*' 'r:|[._-]=* r:|=*' 'r:|[._-]=* r:|=*' 'r:|[._-]=* r:|=*'
+#zstyle ':completion:*' max-errors 2
+zstyle ':completion:*' menu select=0
+zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
+zstyle ':completion:*' verbose true
+zstyle :compinstall filename '/home/sjs/.zsh/.zshrc'
+
+autoload -Uz compinit
+compinit
+# End of lines added by compinstall
+
+#autoload -u promptinit
+#promptinit
+#prompt gentoo
+
+if false && which ssh-agent >/dev/null 2>&1; then
+    ssh-agent
+    ssh-add
+fi
+
+if which keychain >/dev/null 2>&1; then
+    keychain ~/.ssh/id_rsa #~/.ssh/seekport.id_rsa
+    source ~/.keychain/${KEYCHAIN_HOST}-sh > /dev/null
+fi
+
+export LC_ALL="en_CA.UTF-8"
+export LANG="en_CA.UTF-8"
+
+if [ -r "$HOME/.ruby/lib/sjs.rb" ]; then
+  export RUBYLIB="$HOME/.ruby/lib"
+  export RUBYOPT="rsjs"
+fi
+
+# vim: set fdm=marker fdl=3 foldminlines=3 :
