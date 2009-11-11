@@ -328,11 +328,8 @@ function svnst() {
     rm -f $tmpfile
 }
 
-if mac; then
-  # textmate
-  alias e='mate'
-  alias et='mate .'
-fi
+alias e="$EDITOR"
+alias et="$EDITOR ."
 
 # global aliases - work anywhere on line
 alias -g C='|wc'
