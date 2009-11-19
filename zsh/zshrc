@@ -366,8 +366,8 @@ function cl () {
 
 # 7.2. ls Aliases 
 # ----------------
-alias ls='gls -BF --color=auto'
-alias la='gls -AF --color=auto'
+alias ls='ls -BF --color=auto'
+alias la='ls -AF --color=auto'
 alias ll='ls -l'
 alias lsd='ls -d'
 alias lld='ls -dl'
