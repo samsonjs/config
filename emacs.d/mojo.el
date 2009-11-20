@@ -86,7 +86,7 @@ the Emacs Wiki, but soon there will be a spot on github for it.")
   (case system-type
 	((windows-nt) "c:/progra~1/palm/sdk")
 	((darwin) "/opt/PalmSDK/Current")
-	(t ""))
+	(t "/opt/PalmSDK/Current"))
   "Path to where the mojo SDK is.
 
 Note, using the old-school dos name of progra~1 was the only way i could make
@@ -94,8 +94,13 @@ this work."
   :type 'directory
   :group 'mojo)
 
-(defcustom mojo-project-directory "/Users/sjs/Projects/brighthouse/webOS"
+(defcustom mojo-project-directory "~/Projects/brighthouse/webOS"
   "Directory where all your Mojo projects are located."
+  :type 'directory
+  :group 'mojo)
+
+(defcustom mojo-build-directory (expand-file-name "build" mojo-project-directory)
+  "Directory where builds are saved."
   :type 'directory
   :group 'mojo)
 
@@ -111,7 +116,37 @@ this work."
   "Run Mojo in debug mode.  Assumed true while in such an early version."
   :type 'boolean
   :group 'mojo)
-  
+ 
+
+(defun drop-last-path-component (path)
+  "Get the head of a path by dropping the last component."
+  (if (string= "/" path)
+      path
+    (substring path 0 (- (length path)
+			 (length (last-path-component path))
+			 1)))) ;; subtract one more for the trailing slash
+
+(defun last-path-component (path)
+  "Get the tail of a path, i.e. the last component."
+  (if (string= "/" path)
+      path
+    (let ((start -2))
+      (while (not (string= "/" (substring path start (+ start 1))))
+	(setq start (- start 1)))
+      (substring path (+ start 1)))))
+
+(defun find-project-subdirectory (path)
+  "Find a project's subdirectory under mojo-project-directory."
+  (let ((project-subdirectory (expand-file-name mojo-project-directory))
+	(last-component (last-path-component path))
+	(dir-prefix path))
+    ;; remove last path element until we find the project subdir under mojo-project-directory
+    (while (and (not (string= project-subdirectory dir-prefix))
+		(not (string= "/" dir-prefix)))
+      (setq last-component (last-path-component dir-prefix))
+      (setq dir-prefix (drop-last-path-component dir-prefix)))
+    (concat dir-prefix "/" last-component)))
+
 ;;* interactive generate
 (defun mojo-generate (title directory)
   "Generate a new Mojo application in the `mojo-project-directory'.
@@ -121,7 +156,7 @@ ID is the id of the application.
 DIRECTORY is the directory where the files are stored."
   ;;TODO handle existing directories (use --overwrite)
   (interactive "sTitle: \nsDirectory Name (inside of mojo-project-directory): \n")
-  (let ((mojo-dir (concat mojo-project-directory "/" directory)))
+  (let ((mojo-dir (expand-file-name (concat mojo-project-directory "/" directory))))
 	(when (file-exists-p mojo-dir)
 		  (error "Cannot mojo-generate onto an existing directory! (%s)" mojo-dir))
 	(make-directory mojo-dir)
@@ -135,17 +170,16 @@ DIRECTORY is the directory where the files are stored."
   (mojo-cmd "palm-emulator" nil))
 
 ;;* interactive 
-(defun mojo-package (dir)
-  "Package up an application inside of DIR."
-  (interactive "DPackage up Application Dir: ")
-  (let ((default-directory dir))
-	(mojo-cmd "palm-package" (list dir))))
+(defun mojo-package ()
+  "Package up an application inside of DEFAULT-DIRECTORY for the current buffer."
+  (interactive)
+  (mojo-cmd "palm-package" (list "-o" mojo-build-directory (find-project-subdirectory))))
 
 ;;* interactive 
 (defun mojo-install (package)
   "Install PACKAGE.  The emulator needs to be running."
   (interactive "fInstall Package File: ")
-  (mojo-cmd "palm-install" (list package)))
+  (mojo-cmd "palm-install" (list (expand-file-name package))))
 
 ;;* interactive 
 (defun mojo-list ()
