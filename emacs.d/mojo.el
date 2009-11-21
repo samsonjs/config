@@ -210,7 +210,8 @@ NAME is the name of the scene."
 (defun mojo-install ()
   "Install the package named by `MOJO-PACKAGE-FILENAME'. The emulator needs to be running."
   (interactive)
-  (mojo-cmd "palm-install" (list (expand-file-name (mojo-read-package-filename)))))
+  (mojo-cmd "palm-install" (list (expand-file-name (mojo-read-package-filename))))
+  (mojo-invalidate-cachapp-cache))
 
 ;;* interactive 
 (defun mojo-list ()
@@ -222,7 +223,8 @@ NAME is the name of the scene."
 (defun mojo-delete ()
   "Remove the current application using `MOJO-APP-ID'."
   (interactive)
-  (mojo-cmd "palm-install" (list "-r" (mojo-read-app-id))))
+  (mojo-cmd "palm-install" (list "-r" (mojo-read-app-id)))
+  (mojo-invalidate-cachapp-cache))
 
 ;;* interactive 
 (defun mojo-launch ()
@@ -459,6 +461,10 @@ If the cache file does not exist then it is considered stale."
              (age (- now last-mod)))
         (> age *mojo-app-cache-ttl*))))
 
+(defun mojo-invalidate-cachapp-cache ()
+  "Delete the app list cache."
+  (delete-file (mojo-app-cache-file)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -475,7 +481,9 @@ URL is the luna url, and DATA is the data."
 
 (defun mojo-path-to-cmd (cmd)
   "Return the absolute path to a Mojo SDK command line program."
-  )
+  (case system-type
+    ((windows-nt) (concat mojo-sdk-directory "/bin/" cmd ".bat"))
+    (t (concat mojo-sdk-directory "/bin/" cmd))))
 
 ;;* lowlevel cmd
 (defun mojo-cmd (cmd args)
@@ -485,26 +493,22 @@ CMD is the name of the command (without path or extension) to execute.
  Automagically shell quoted.
 ARGS is a list of all arguments to the command.
  These arguments are NOT shell quoted."
-  (let ((cmd (case system-type
-			   ((windows-nt) (concat mojo-sdk-directory "/bin/" cmd ".bat"))
-			   (t (concat mojo-sdk-directory "/bin/" cmd)))))
-	(if mojo-debug (message "running %s with args %s " cmd (string-join " " args)))
-	(shell-command (concat cmd " " (string-join " " args)))))
+  (let ((cmd (mojo-path-to-cmd cmd)))
+    (if mojo-debug (message "running %s with args %s " cmd (string-join " " args)))
+    (shell-command (concat cmd " " (string-join " " args)))))
 
 ;;* lowlevel cmd
 (defun mojo-cmd-to-string (cmd args)
-  "General interface for running mojo-skd commands and capturing the output
+  "General interface for running mojo-sdk commands and capturing the output
    to a string.
 
 CMD is the name of the command (without path or extension) to execute.
  Automatically shell quoted.
 ARGS is a list of all arguments to the command.
  These arguments are NOT shell quoted."
-  (let ((cmd (case system-type
-			   ((windows-nt) (concat mojo-sdk-directory "/bin/" cmd ".bat"))
-			   (t (concat mojo-sdk-directory "/bin/" cmd)))))
-	(if mojo-debug (message "running %s with args %s " cmd (string-join " " args)))
-	(shell-command-to-string (concat cmd " " (string-join " " args)))))
+  (let ((cmd (mojo-path-to-cmd cmd)))
+    (if mojo-debug (message "running %s with args %s " cmd (string-join " " args)))
+    (shell-command-to-string (concat cmd " " (string-join " " args)))))
 
 (provide 'mojo)
 
