@@ -140,6 +140,15 @@
 
 (require 'mojo)
 
+
+;;;;;;;;;;;;;;;;
+;; javascript ;;
+;;;;;;;;;;;;;;;;
+
+(autoload 'js2-mode "js2-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+
+
 ;;;;;;;;;;;;
 ;; markup ;;
 ;;;;;;;;;;;;
@@ -168,11 +177,11 @@
 (setq scheme-program-name "~/Projects/elschemo/elschemo")
 
 ;; setup slime
-;; (require 'slime)
-;; (add-hook 'lisp-mode-hook (lambda () (slime-mode t)))
-;; (add-hook 'scheme-mode-hook (lambda () (slime-mode t)))
-;; (add-hook 'inferior-lisp-mode-hook (lambda () (inferior-slime-mode t)))
-;; (add-hook 'inferior-scheme-mode-hook (lambda () (inferior-slime-mode t)))
+;(require 'slime)
+;(add-hook 'lisp-mode-hook (lambda () (slime-mode t)))
+;(add-hook 'scheme-mode-hook (lambda () (slime-mode t)))
+;(add-hook 'inferior-lisp-mode-hook (lambda () (inferior-slime-mode t)))
+;(add-hook 'inferior-scheme-mode-hook (lambda () (inferior-slime-mode t)))
 
 ;; use sbcl for lisp
 (setq inferior-lisp-program "/usr/bin/sbcl")
@@ -246,6 +255,12 @@
 ;; wrap a region with an HTML/XML tag
 (global-set-key "<"  'tagify-region-or-insert-self)
 (global-set-key "\C-zt" 'tagify-region-or-insert-tag)
+
+;; mojo keyboard shortcuts
+(global-set-key [f2] 'mojo-generate-scene)
+(global-set-key [f3] 'mojo-emulate)
+(global-set-key [f4] 'mojo-package)
+(global-set-key [f5] 'mojo-package-install-and-inspect)
 
 ;; XXX:todo need a version of this that inserts a line terminator as well
 ;; Use C-j!
@@ -374,6 +389,8 @@
  '(face-font-family-alternatives (quote (("bistream vera sans mono" "courier" "fixed") ("helv" "helvetica" "arial" "fixed"))))
  '(global-font-lock-mode t nil (font-lock))
  '(icicle-reminder-prompt-flag 5)
+ '(mojo-build-directory "~/Projects/brighthouse/webOS/build")
+ '(mojo-project-directory "~/Projects/brighthouse/webOS")
  '(remote-shell-program "/usr/bin/ssh")
  '(save-place t nil (saveplace))
  '(scroll-bar-mode nil)
@@ -392,3 +409,9 @@
 
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ )
