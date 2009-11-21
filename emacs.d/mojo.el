@@ -1,7 +1,7 @@
-(require 'json)
-
 ;;; mojo.el --- Interactive functions to aid the development of webOS apps
 (defconst mojo-version "0.9")
+
+(require 'json)
 
 ;; Copyright (c)2008 Jonathan Arkell. (by)(nc)(sa)  Some rights reserved.
 ;;              2009 Sami Samhuri
@@ -82,8 +82,10 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
 ;;    Run the dom inspector on the current application.
 ;;  `mojo-hard-reset'
 ;;    Perform a hard reset, clearing all data.
+;;  `mojo-package-install-and-launch'
+;;    Package, install, and launch the current app.
 ;;  `mojo-package-install-and-inspect'
-;;    Package, install, and launch the specified app for inspection.
+;;    Package, install, and launch the current app for inspection.
 ;;
 ;;; Customizable Options:
 ;;
@@ -106,7 +108,19 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
 
 ;;; CHANGELOG:
 ;;
-;; v 0.9 - Automatically find Mojo project root by searching upwards
+;; v 0.9.1
+;;
+;;       - Added mojo-package-install-and-launch.
+;;
+;;       - New variable for specifying whether commands target the
+;;         device or emulator, *mojo-target*.  Set it to 'usb' for a
+;;         real device and 'tcp' for the emulator.  Defaults to 'tcp'.
+;;         To set the default target you can use the convenience
+;;         functions mojo-target-device and mojo-target-emulator.
+
+;; v 0.9
+;;
+;;       - Automatically find Mojo project root by searching upwards
 ;;         for appinfo.json.
 ;; 
 ;;       - Added command for generating new scenes,
@@ -130,7 +144,7 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
 ;;
 ;;       - Parse output of `palm-install --list` for app id
 ;;         completion.  App id completion was ported from cheat.el.
-;;
+
 ;; v 0.2 - Fixed some minor bugs
 ;; v 0.1 - Initial release
 
@@ -263,6 +277,13 @@ NAME is the name of the scene."
   (mojo-cmd "palm-install" (list (expand-file-name (mojo-package-filename))))
   (mojo-cmd "palm-launch" (list "-i" (mojo-app-id))))
 
+;;* interactive 
+(defun mojo-package-install-and-launch ()
+  "Package, install, and launch the current application."
+  (interactive)
+  (mojo-package)
+  (mojo-cmd "palm-install" (list (expand-file-name (mojo-package-filename))))
+  (mojo-cmd "palm-launch" (list (mojo-app-id))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -479,6 +500,22 @@ This is a low level Emacs interface to luna-send.
 URL is the luna url, and DATA is the data."
   (mojo-cmd "luna-send" (list "-n" "1" url data)))
 
+(defvar *mojo-target* "tcp"
+  "Used to specify the target platform, \"usb\" for the device
+  and \"tcp\" for the emulator.  Deaults to \"tcp\".")
+
+(defun mojo-target-device ()
+  "Specify that Mojo commands should target a real device.
+
+Sets `*mojo-target*' to \"usb\"."
+  (setq *mojo-target* "usb"))
+
+(defun mojo-target-emulator ()
+  "Specify that Mojo commands should target a real device.
+
+Sets `*mojo-target*' to \"tcp\"."
+  (setq *mojo-target* "tcp"))
+
 (defun mojo-path-to-cmd (cmd)
   "Return the absolute path to a Mojo SDK command line program."
   (case system-type
@@ -486,19 +523,21 @@ URL is the luna url, and DATA is the data."
     (t (concat mojo-sdk-directory "/bin/" cmd))))
 
 ;;* lowlevel cmd
-(defun mojo-cmd (cmd args)
+(defun mojo-cmd (cmd args &optional target)
   "General interface for running mojo-sdk commands.
 
 CMD is the name of the command (without path or extension) to execute.
  Automagically shell quoted.
 ARGS is a list of all arguments to the command.
  These arguments are NOT shell quoted."
-  (let ((cmd (mojo-path-to-cmd cmd)))
-    (if mojo-debug (message "running %s with args %s " cmd (string-join " " args)))
-    (shell-command (concat cmd " " (string-join " " args)))))
+  (let ((cmd (mojo-path-to-cmd cmd))
+	(args (concat "-d " (or target *mojo-target*) " "
+		       (string-join " " args))))
+    (if mojo-debug (message "running %s with args %s " cmd args))
+    (shell-command (concat cmd " " args))))
 
 ;;* lowlevel cmd
-(defun mojo-cmd-to-string (cmd args)
+(defun mojo-cmd-to-string (cmd args &optional target)
   "General interface for running mojo-sdk commands and capturing the output
    to a string.
 
@@ -506,9 +545,11 @@ CMD is the name of the command (without path or extension) to execute.
  Automatically shell quoted.
 ARGS is a list of all arguments to the command.
  These arguments are NOT shell quoted."
-  (let ((cmd (mojo-path-to-cmd cmd)))
-    (if mojo-debug (message "running %s with args %s " cmd (string-join " " args)))
-    (shell-command-to-string (concat cmd " " (string-join " " args)))))
+  (let ((cmd (mojo-path-to-cmd cmd))
+	(args (concat "-d " (or target *mojo-target*) " "
+		       (string-join " " args))))
+    (if mojo-debug (message "running %s with args %s " cmd args))
+    (shell-command-to-string (concat cmd " " args))))
 
 (provide 'mojo)
 
