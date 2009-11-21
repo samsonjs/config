@@ -1,5 +1,5 @@
 ;;; mojo.el --- Interactive functions to aid the development of webOS apps
-(defconst mojo-version "0.9")
+(defconst mojo-version "0.9.1")
 
 (require 'json)
 
