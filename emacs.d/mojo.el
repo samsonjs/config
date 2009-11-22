@@ -1,5 +1,5 @@
 ;;; mojo.el --- Interactive functions to aid the development of webOS apps
-(defconst mojo-version "0.9.1")
+(defconst mojo-version "0.9.2")
 
 (require 'json)
 
@@ -107,6 +107,12 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
 ;; 
 
 ;;; CHANGELOG:
+;;
+;; v 0.9.2 (bug fixes)
+;;
+;;       - reading json files no longer messes up your buffer history.
+;;
+;;       - app list completion works now (caching bug)
 ;;
 ;; v 0.9.1
 ;;
@@ -225,7 +231,7 @@ NAME is the name of the scene."
   "Install the package named by `MOJO-PACKAGE-FILENAME'. The emulator needs to be running."
   (interactive)
   (mojo-cmd "palm-install" (list (expand-file-name (mojo-read-package-filename))))
-  (mojo-invalidate-cachapp-cache))
+  (mojo-invalidate-app-cache))
 
 ;;* interactive 
 (defun mojo-list ()
@@ -238,7 +244,7 @@ NAME is the name of the scene."
   "Remove the current application using `MOJO-APP-ID'."
   (interactive)
   (mojo-cmd "palm-install" (list "-r" (mojo-read-app-id)))
-  (mojo-invalidate-cachapp-cache))
+  (mojo-invalidate-app-cache))
 
 ;;* interactive 
 (defun mojo-launch ()
@@ -338,11 +344,10 @@ NAME is the name of the scene."
   "Parse the JSON in FILENAME and return the result."
   (save-excursion
     (let ((origbuffer (current-buffer))
-          (filebuffer (find-file filename))
-          (text))
-      (goto-char (point-min)) ;; in case buffer already open
+	  (filebuffer (find-file-noselect filename)))
+      (switch-to-buffer filebuffer t)
       (let ((text (buffer-string)))
-        (set-buffer origbuffer)
+	(switch-to-buffer origbuffer)
         (json-read-from-string text)))))
 
 (defun mojo-app-version ()
@@ -365,8 +370,20 @@ NAME is the name of the scene."
 ;;; app listing and completion ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun mojo-app-cache-file ()
-  (concat (mojo-root) "/.applist"))
+(defvar *mojo-app-cache-filename* nil)
+(defun mojo-app-cache-file (&optional force-reload)
+  "Cache the list of applications in a temporary file.  Return the filename."
+  (when (or force-reload
+	  (not *mojo-app-cache-filename*))
+    (setq *mojo-app-cache-filename* (make-temp-file "mojo-app-list-cache"))
+    (save-excursion
+      (let ((buffer (find-file-noselect *mojo-app-cache-filename*))
+	    (apps (mojo-fetch-app-list)))
+	(switch-to-buffer buffer t)
+	(insert (string-join "\n" apps))
+	(basic-save-buffer)
+	(kill-buffer buffer))))
+  *mojo-app-cache-filename*)
 
 (defvar *mojo-app-id* nil
   "Most recently used application id.")
@@ -442,33 +459,22 @@ The app id is stored in *mojo-app-id* unless it was blank."
              (kill-buffer buffer)
              apps)))
         (fetch-if-missing-or-stale
-         (mojo-cache-app-list)
+         (mojo-app-cache-file t) ;; force reload
          (mojo-app-list)) ;; guaranteed cache hit this time
         (t nil)))
 
 (defun mojo-fetch-app-list ()
   "Fetch a fresh list of all applications."
   (let* ((raw-list (nthcdr 7 (split-string (mojo-cmd-to-string "palm-install" (list "--list")))))
-	 (apps '())
-	 (n (length raw-list))
-	 (i 0))
-    (while (< i n)
-      (if (= 0 (mod i 3))
-	  (push (pop raw-list) apps)
-	(pop raw-list))
-      (incf i))
-    (reverse apps)))
-
-(defun mojo-cache-app-list ()
-  "Cache the list of applications in `MOJO-APP-CACHE-FILE'.  Return the
-  list."
-  (save-excursion
-    (let ((buffer (find-file (mojo-app-cache-file)))
-          (apps (mojo-fetch-app-list)))
-      (insert (string-join "\n" apps))
-      (basic-save-buffer)
-      (kill-buffer buffer)
-      apps)))
+	 (apps (list))
+	 (appname-regex "^[^0-9][^.]+\\(\\.[^.]+\\)+$")
+	 (item (pop raw-list)))
+    (while item
+	(if (string-match appname-regex item) ;; liberal regex for simplicity
+	  (push item apps)
+	(print (concat "discarding " item)))
+	(setq item (pop raw-list)))
+    (nreverse apps)))
 
 (defun mojo-app-cache-stale-p ()
   "Non-nil if the cache in `MOJO-APP-CACHE-FILE' is more than
@@ -482,7 +488,7 @@ If the cache file does not exist then it is considered stale."
              (age (- now last-mod)))
         (> age *mojo-app-cache-ttl*))))
 
-(defun mojo-invalidate-cachapp-cache ()
+(defun mojo-invalidate-app-cache ()
   "Delete the app list cache."
   (delete-file (mojo-app-cache-file)))
 
