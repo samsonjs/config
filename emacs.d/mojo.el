@@ -345,7 +345,7 @@ NAME is the name of the scene."
   (save-excursion
     (let ((origbuffer (current-buffer))
 	  (filebuffer (find-file-noselect filename)))
-      (switch-to-buffer filebuffer t)
+      (set-buffer filebuffer)
       (let ((text (buffer-string)))
 	(switch-to-buffer origbuffer)
         (json-read-from-string text)))))
@@ -379,7 +379,7 @@ NAME is the name of the scene."
     (save-excursion
       (let ((buffer (find-file-noselect *mojo-app-cache-filename*))
 	    (apps (mojo-fetch-app-list)))
-	(switch-to-buffer buffer t)
+	(set-buffer buffer)
 	(insert (string-join "\n" apps))
 	(basic-save-buffer)
 	(kill-buffer buffer))))
