@@ -336,13 +336,14 @@ NAME is the name of the scene."
 
 (defun read-json-file (filename)
   "Parse the JSON in FILENAME and return the result."
-  (let ((origbuffer (current-buffer))
-	(filebuffer (find-file filename))
-	(text))
-    (goto-char (point-min)) ;; in case buffer already open
-    (let ((text (buffer-string)))
-      (switch-to-buffer origbuffer)
-      (json-read-from-string text))))
+  (save-excursion
+    (let ((origbuffer (current-buffer))
+          (filebuffer (find-file filename))
+          (text))
+      (goto-char (point-min)) ;; in case buffer already open
+      (let ((text (buffer-string)))
+        (set-buffer origbuffer)
+        (json-read-from-string text)))))
 
 (defun mojo-app-version ()
   "Parse the project version from the appinfo.json file in `MOJO-ROOT'."
@@ -397,8 +398,7 @@ NAME is the name of the scene."
 (defun mojo-read-root ()
   "Get the path to a Mojo application, prompting with completion and
   history."
-  (read-file-name "Mojo project: " (expand-file-name (concat mojo-project-directory
-							     "/"))))
+  (read-file-name "Mojo project: " (expand-file-name (concat mojo-project-directory "/"))))
 
 (defun mojo-read-package-filename ()
   "Get the filename of a packaged application, prompting with completion and
