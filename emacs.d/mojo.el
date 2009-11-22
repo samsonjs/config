@@ -1,5 +1,6 @@
 ;;; mojo.el --- Interactive functions to aid the development of webOS apps
-(defconst mojo-version "0.9.2")
+;; 2009-11-21 22:24:51
+(defconst mojo-version "0.9.3")
 
 (require 'json)
 
@@ -37,22 +38,25 @@ This package is in early beta.  I am open to any contributions or
 ideas.  Send me a pull request on github if you hack on mojo.el.")
   
 ;;; Installation:
-;; Put json.el and mojo.el somewhere in your load-path.
-;; (Use M-x show-variable RET load-path to see what your load path is.)
-;; Add this to your Emacs init file.
-;(require 'mojo)
-;;
-;; Make sure you customize the variables:
-;; `mojo-project-directory', `mojo-sdk-directory' and `mojo-build-directory'
-;;
-;; I recommend that you define a few keyboard shortcuts in your .emacs file.
-;; Maybe something like this:
-;;
-;;     (global-set-key [f2] 'mojo-generate-scene)
-;;     (global-set-key [f3] 'mojo-emulate)
-;;     (global-set-key [f4] 'mojo-package)
-;;     (global-set-key [f5] 'mojo-package-install-and-inspect)
-;;   
+;; 
+;; 1. Put json.el and mojo.el somewhere in your load-path.
+;;    (Use M-x show-variable RET load-path to see what your load path is.)
+;; 
+;; 2. Add this to your Emacs init file: (require 'mojo)
+;; 
+;; 3. Make sure you customize the variables:
+;;    mojo-project-directory, mojo-sdk-directory and mojo-build-directory
+;;    (Use M-x customize-group RET mojo RET)
+;; 
+;; (optional)
+;; 
+;; 4. I recommend that you define a few keyboard shortcuts in your Emacs init
+;;    file. Maybe something like this:
+;; 
+;;     (global-set-key [f2] mojo-generate-scene)
+;;     (global-set-key [f3] mojo-emulate)
+;;     (global-set-key [f4] mojo-package)
+;;     (global-set-key [f5] mojo-package-install-and-inspect)
 ;; 
 
 ;;; Commands:
@@ -86,14 +90,21 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
 ;;    Package, install, and launch the current app.
 ;;  `mojo-package-install-and-inspect'
 ;;    Package, install, and launch the current app for inspection.
-;;
+;;  `mojo-target-device'
+;;    Set the target to a USB device.
+;;  `mojo-target-emulator'
+;;    Set the target to the emulator.
+
 ;;; Customizable Options:
 ;;
 ;; Below are customizable option list:
 ;;
 ;;  `mojo-sdk-directory'
 ;;    Path to where the mojo SDK is.
-;;    default = (case system-type ((windows-nt) "c:/progra~1/palm/sdk") (t ""))
+;;    default = (case system-type
+;;	                ((windows-nt) "c:/progra~1/palm/sdk")
+;;	                ((darwin) "/opt/PalmSDK/Current")
+;;	                (t ""))
 ;;  `mojo-project-directory'
 ;;    Directory where all your Mojo projects are located.
 ;;    default = ""
@@ -103,40 +114,46 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
 ;;    Run Mojo in debug mode.  Assumed true while in such an early version.
 ;;    default = t
 
-;;; TODO:
+;; CHANGELOG
+;; =========
 ;; 
-
-;;; CHANGELOG:
-;;
+;; sjs 2009-11-21
+;; v 0.9.3 (one more bug fix for today)
+;; 
+;;       - Don't pass -d switch to commands that don't accept it.
+;; 
+;; sjs 2009-11-21
 ;; v 0.9.2 (bug fixes)
-;;
+;; 
 ;;       - reading json files no longer messes up your buffer history.
-;;
+;; 
 ;;       - app list completion works now (caching bug)
-;;
+;; 
+;; sjs 2009-11-21
 ;; v 0.9.1
-;;
+;; 
 ;;       - Added mojo-package-install-and-launch.
-;;
+;; 
 ;;       - New variable for specifying whether commands target the
 ;;         device or emulator, *mojo-target*.  Set it to 'usb' for a
 ;;         real device and 'tcp' for the emulator.  Defaults to 'tcp'.
 ;;         To set the default target you can use the convenience
 ;;         functions mojo-target-device and mojo-target-emulator.
-
+;; 
+;; sjs 2009-11-20
 ;; v 0.9
-;;
+;; 
 ;;       - Automatically find Mojo project root by searching upwards
 ;;         for appinfo.json.
 ;; 
 ;;       - Added command for generating new scenes,
 ;;         mojo-generate-scene.
-;;
+;; 
 ;;       - mojo-package now operates only on the current project.
-;;
+;; 
 ;;       - Parse appinfo.json to get version, used for installing &
 ;;         launching with less interaction.
-;;
+;; 
 ;;       - mojo-install, mojo-launch, mojo-inspect, and mojo-delete
 ;;         still read in arguments but have the current project/app as
 ;;         the default values.
@@ -144,17 +161,19 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
 ;;       - New convenience method: mojo-package-install-and-inspect
 ;;         This function only operates on the active app and does not
 ;;         read in any input.
-;;
+;; 
 ;;       - Remembered filenames and app ids are cleared when the Mojo
 ;;         project root changes. (DWIM)
-;;
+;; 
 ;;       - Parse output of `palm-install --list` for app id
 ;;         completion.  App id completion was ported from cheat.el.
-
+;; 
 ;; v 0.2 - Fixed some minor bugs
 ;; v 0.1 - Initial release
 
+
 ;;; Code:
+
 
 (defcustom mojo-sdk-directory
   (case system-type
@@ -230,39 +249,39 @@ NAME is the name of the scene."
 (defun mojo-install ()
   "Install the package named by `MOJO-PACKAGE-FILENAME'. The emulator needs to be running."
   (interactive)
-  (mojo-cmd "palm-install" (list (expand-file-name (mojo-read-package-filename))))
+  (mojo-cmd-with-target "palm-install" (list (expand-file-name (mojo-read-package-filename))))
   (mojo-invalidate-app-cache))
 
 ;;* interactive 
 (defun mojo-list ()
   "List all installed packages."
   (interactive)
-  (mojo-cmd "palm-install" (list "--list")))
+  (mojo-cmd-with-target "palm-install" (list "--list")))
 
 ;;* interactive 
 (defun mojo-delete ()
   "Remove the current application using `MOJO-APP-ID'."
   (interactive)
-  (mojo-cmd "palm-install" (list "-r" (mojo-read-app-id)))
+  (mojo-cmd-with-target "palm-install" (list "-r" (mojo-read-app-id)))
   (mojo-invalidate-app-cache))
 
 ;;* interactive 
 (defun mojo-launch ()
   "Launch the current application in an emulator."
   (interactive)
-  (mojo-cmd "palm-launch" (list (mojo-read-app-id))))
+  (mojo-cmd-with-target "palm-launch" (list (mojo-read-app-id))))
 
 ;;* interactive 
 (defun mojo-close ()
   "Close launched application."
   (interactive)
-  (mojo-cmd "palm-launch" (list "-c" (mojo-read-app-id))))
+  (mojo-cmd-with-target "palm-launch" (list "-c" (mojo-read-app-id))))
 
 ;;* launch interactive
 (defun mojo-inspect ()
   "Run the DOM inspector on the current application."
   (interactive)
-  (mojo-cmd "palm-launch" (list "-i" (mojo-read-app-id))))
+  (mojo-cmd-with-target "palm-launch" (list "-i" (mojo-read-app-id))))
 
 ;;* emulator interactive
 (defun mojo-hard-reset ()
@@ -280,16 +299,16 @@ NAME is the name of the scene."
   "Package, install, and launch the current application for inspection."
   (interactive)
   (mojo-package)
-  (mojo-cmd "palm-install" (list (expand-file-name (mojo-package-filename))))
-  (mojo-cmd "palm-launch" (list "-i" (mojo-app-id))))
+  (mojo-cmd-with-target "palm-install" (list (expand-file-name (mojo-package-filename))))
+  (mojo-cmd-with-target "palm-launch" (list "-i" (mojo-app-id))))
 
 ;;* interactive 
 (defun mojo-package-install-and-launch ()
   "Package, install, and launch the current application."
   (interactive)
   (mojo-package)
-  (mojo-cmd "palm-install" (list (expand-file-name (mojo-package-filename))))
-  (mojo-cmd "palm-launch" (list (mojo-app-id))))
+  (mojo-cmd-with-target "palm-install" (list (expand-file-name (mojo-package-filename))))
+  (mojo-cmd-with-target "palm-launch" (list (mojo-app-id))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -529,7 +548,7 @@ Sets `*mojo-target*' to \"tcp\"."
     (t (concat mojo-sdk-directory "/bin/" cmd))))
 
 ;;* lowlevel cmd
-(defun mojo-cmd (cmd args &optional target)
+(defun mojo-cmd (cmd args)
   "General interface for running mojo-sdk commands.
 
 CMD is the name of the command (without path or extension) to execute.
@@ -537,10 +556,20 @@ CMD is the name of the command (without path or extension) to execute.
 ARGS is a list of all arguments to the command.
  These arguments are NOT shell quoted."
   (let ((cmd (mojo-path-to-cmd cmd))
-	(args (concat "-d " (or target *mojo-target*) " "
-		       (string-join " " args))))
+	(args (string-join " " args)))
     (if mojo-debug (message "running %s with args %s " cmd args))
     (shell-command (concat cmd " " args))))
+
+;;* lowlevel cmd
+(defun mojo-cmd-with-target (cmd args &optional target)
+  "General interface for running mojo-sdk commands that accept a target device.
+
+CMD is the name of the command (without path or extension) to
+ execute.  Automagically shell quoted.  ARGS is a list of all
+ arguments to the command.  These arguments are NOT shell quoted.
+ TARGET specifies the target device, \"tcp\" or \"usb\"."
+  (let ((args (cons "-d" (cons (or target *mojo-target*) args))))
+    (mojo-cmd cmd args)))
 
 ;;* lowlevel cmd
 (defun mojo-cmd-to-string (cmd args &optional target)
@@ -558,5 +587,6 @@ ARGS is a list of all arguments to the command.
     (shell-command-to-string (concat cmd " " args))))
 
 (provide 'mojo)
+
 
 ;;; mojo ends here
