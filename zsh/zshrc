@@ -23,7 +23,7 @@ fi
 
 # default editors
 if mac; then
-  export EDITOR="emacs"
+  export EDITOR="mate -w"
   export VISUAL="mate -w"
 elif linux; then
   export EDITOR="emacs -nw"
