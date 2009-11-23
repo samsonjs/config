@@ -1,6 +1,6 @@
 ;;; mojo.el --- Interactive functions to aid the development of webOS apps
-;; 2009-11-21 22:24:51
-(defconst mojo-version "0.9.3")
+;; 2009-11-22 22:23:26
+(defconst mojo-version "0.9.4")
 
 (require 'json)
 
@@ -116,6 +116,12 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
 
 ;; CHANGELOG
 ;; =========
+;; 
+;; sjs 2009-11-22
+;; v 0.9.4 launch emulator if needed
+;; 
+;;       - Commands that use the emulator launch it if necessary and wait till
+;;         it is fully booted before running commands.
 ;; 
 ;; sjs 2009-11-21
 ;; v 0.9.3 (one more bug fix for today)
@@ -236,7 +242,8 @@ NAME is the name of the scene."
 (defun mojo-emulate ()
   "Launch the palm emulator."
   (interactive)
-  (mojo-cmd "palm-emulator" nil))
+  (unless (mojo-emulator-running-p)
+    (mojo-cmd "palm-emulator" nil)))
 
 ;;* interactive 
 (defun mojo-package ()
@@ -249,6 +256,7 @@ NAME is the name of the scene."
 (defun mojo-install ()
   "Install the package named by `MOJO-PACKAGE-FILENAME'. The emulator needs to be running."
   (interactive)
+  (mojo-ensure-emulator-is-running)
   (mojo-cmd-with-target "palm-install" (list (expand-file-name (mojo-read-package-filename))))
   (mojo-invalidate-app-cache))
 
@@ -256,31 +264,50 @@ NAME is the name of the scene."
 (defun mojo-list ()
   "List all installed packages."
   (interactive)
+  (mojo-ensure-emulator-is-running)
   (mojo-cmd-with-target "palm-install" (list "--list")))
 
 ;;* interactive 
 (defun mojo-delete ()
   "Remove the current application using `MOJO-APP-ID'."
   (interactive)
+  (mojo-ensure-emulator-is-running)
   (mojo-cmd-with-target "palm-install" (list "-r" (mojo-read-app-id)))
   (mojo-invalidate-app-cache))
 
+;;* interactive
+(defun mojo-ensure-emulator-is-running ()
+  "Launch the current application, and the emulator if necessary."
+  (interactive)
+  (if (string= "tcp" *mojo-target*)
+      (progn
+	(when (not (mojo-emulator-running-p))
+	  (mojo-emulate)
+	  (print "Launching the emulator, this will take a minute..."))
+	(while (not (mojo-emulator-responsive-p))
+	  (sleep-for 3))
+	(print "Emulator has booted!"))
+    (print "Connect your device if necessary.")))
+
 ;;* interactive 
 (defun mojo-launch ()
-  "Launch the current application in an emulator."
+  "Launch the current application in the emulator."
   (interactive)
+  (mojo-ensure-emulator-is-running)
   (mojo-cmd-with-target "palm-launch" (list (mojo-read-app-id))))
 
 ;;* interactive 
 (defun mojo-close ()
   "Close launched application."
   (interactive)
+  (mojo-ensure-emulator-is-running)
   (mojo-cmd-with-target "palm-launch" (list "-c" (mojo-read-app-id))))
 
 ;;* launch interactive
 (defun mojo-inspect ()
   "Run the DOM inspector on the current application."
   (interactive)
+  (mojo-ensure-emulator-is-running)
   (mojo-cmd-with-target "palm-launch" (list "-i" (mojo-read-app-id))))
 
 ;;* emulator interactive
@@ -299,6 +326,7 @@ NAME is the name of the scene."
   "Package, install, and launch the current application for inspection."
   (interactive)
   (mojo-package)
+  (mojo-ensure-emulator-is-running)
   (mojo-cmd-with-target "palm-install" (list (expand-file-name (mojo-package-filename))))
   (mojo-cmd-with-target "palm-launch" (list "-i" (mojo-app-id))))
 
@@ -307,6 +335,7 @@ NAME is the name of the scene."
   "Package, install, and launch the current application."
   (interactive)
   (mojo-package)
+  (mojo-ensure-emulator-is-running)
   (mojo-cmd-with-target "palm-install" (list (expand-file-name (mojo-package-filename))))
   (mojo-cmd-with-target "palm-launch" (list (mojo-app-id))))
 
@@ -484,6 +513,7 @@ The app id is stored in *mojo-app-id* unless it was blank."
 
 (defun mojo-fetch-app-list ()
   "Fetch a fresh list of all applications."
+  (mojo-ensure-emulator-is-running)
   (let* ((raw-list (nthcdr 7 (split-string (mojo-cmd-to-string "palm-install" (list "--list")))))
 	 (apps (list))
 	 (appname-regex "^[^0-9][^.]+\\(\\.[^.]+\\)+$")
@@ -540,6 +570,17 @@ Sets `*mojo-target*' to \"usb\"."
 
 Sets `*mojo-target*' to \"tcp\"."
   (setq *mojo-target* "tcp"))
+
+(defun mojo-emulator-running-p ()
+  "Determine if the webOS emulator is running or not.
+
+This command only works on Unix-like systems."
+  (= 0 (shell-command "ps x | fgrep 'Palm SDK' | fgrep -v fgrep >/dev/null 2>&1")))
+
+(defun mojo-emulator-responsive-p ()
+  "Determine if the webOS emulator is able to respond to commands yet
+ (i.e. if it's done booting)."
+  (= 0 (shell-command "palm-install -d tcp --list >/dev/null 2>&1")))
 
 (defun mojo-path-to-cmd (cmd)
   "Return the absolute path to a Mojo SDK command line program."
