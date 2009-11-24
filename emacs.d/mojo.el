@@ -1,5 +1,5 @@
-;;; mojo.el --- Interactive functions to aid the development of webOS apps
-;; 2009-11-22 22:23:26
+;;; ../mojo.el --- Interactive functions to aid the development of webOS apps
+;; 2009-11-24 12:03:42
 (defconst mojo-version "0.9.4")
 
 (require 'json)
@@ -114,68 +114,6 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
 ;;    Run Mojo in debug mode.  Assumed true while in such an early version.
 ;;    default = t
 
-;; CHANGELOG
-;; =========
-;; 
-;; sjs 2009-11-22
-;; v 0.9.4 launch emulator if needed
-;; 
-;;       - Commands that use the emulator launch it if necessary and wait till
-;;         it is fully booted before running commands.
-;; 
-;; sjs 2009-11-21
-;; v 0.9.3 (one more bug fix for today)
-;; 
-;;       - Don't pass -d switch to commands that don't accept it.
-;; 
-;; sjs 2009-11-21
-;; v 0.9.2 (bug fixes)
-;; 
-;;       - reading json files no longer messes up your buffer history.
-;; 
-;;       - app list completion works now (caching bug)
-;; 
-;; sjs 2009-11-21
-;; v 0.9.1
-;; 
-;;       - Added mojo-package-install-and-launch.
-;; 
-;;       - New variable for specifying whether commands target the
-;;         device or emulator, *mojo-target*.  Set it to 'usb' for a
-;;         real device and 'tcp' for the emulator.  Defaults to 'tcp'.
-;;         To set the default target you can use the convenience
-;;         functions mojo-target-device and mojo-target-emulator.
-;; 
-;; sjs 2009-11-20
-;; v 0.9
-;; 
-;;       - Automatically find Mojo project root by searching upwards
-;;         for appinfo.json.
-;; 
-;;       - Added command for generating new scenes,
-;;         mojo-generate-scene.
-;; 
-;;       - mojo-package now operates only on the current project.
-;; 
-;;       - Parse appinfo.json to get version, used for installing &
-;;         launching with less interaction.
-;; 
-;;       - mojo-install, mojo-launch, mojo-inspect, and mojo-delete
-;;         still read in arguments but have the current project/app as
-;;         the default values.
-;; 
-;;       - New convenience method: mojo-package-install-and-inspect
-;;         This function only operates on the active app and does not
-;;         read in any input.
-;; 
-;;       - Remembered filenames and app ids are cleared when the Mojo
-;;         project root changes. (DWIM)
-;; 
-;;       - Parse output of `palm-install --list` for app id
-;;         completion.  App id completion was ported from cheat.el.
-;; 
-;; v 0.2 - Fixed some minor bugs
-;; v 0.1 - Initial release
 
 
 ;;; Code:
@@ -338,6 +276,23 @@ NAME is the name of the scene."
   (mojo-ensure-emulator-is-running)
   (mojo-cmd-with-target "palm-install" (list (expand-file-name (mojo-package-filename))))
   (mojo-cmd-with-target "palm-launch" (list (mojo-app-id))))
+
+
+;;* interactive
+(defun mojo-target-device ()
+  "Specify that Mojo commands should target a real device.
+
+Sets `*mojo-target*' to \"usb\"."
+  (interactive)
+  (setq *mojo-target* "usb"))
+
+;;* interactive
+(defun mojo-target-emulator ()
+  "Specify that Mojo commands should target a real device.
+
+Sets `*mojo-target*' to \"tcp\"."
+  (interactive)
+  (setq *mojo-target* "tcp"))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -558,18 +513,6 @@ URL is the luna url, and DATA is the data."
 (defvar *mojo-target* "tcp"
   "Used to specify the target platform, \"usb\" for the device
   and \"tcp\" for the emulator.  Deaults to \"tcp\".")
-
-(defun mojo-target-device ()
-  "Specify that Mojo commands should target a real device.
-
-Sets `*mojo-target*' to \"usb\"."
-  (setq *mojo-target* "usb"))
-
-(defun mojo-target-emulator ()
-  "Specify that Mojo commands should target a real device.
-
-Sets `*mojo-target*' to \"tcp\"."
-  (setq *mojo-target* "tcp"))
 
 (defun mojo-emulator-running-p ()
   "Determine if the webOS emulator is running or not.
