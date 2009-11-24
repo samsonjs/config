@@ -191,6 +191,9 @@
 ;; customizations ;;
 ;;;;;;;;;;;;;;;;;;;;
 
+;; always start emacs server
+(server-start)
+
 ;; setup tramp mode
 (setq tramp-default-method "ssh")
 
@@ -292,12 +295,12 @@
 ;; first saving histories with Persistent
 (defun reload-dot-emacs () (interactive)
   "If there is a buffer named .emacs save it. Reload ~/.emacs if it exists."
-  (if (get-buffer ".emacs")
+  (if (get-buffer "emacs")
     (save-excursion
-      (set-buffer ".emacs")
+      (set-buffer "emacs")
       (save-buffer)))
-  (if (file-exists-p "~/.emacs")
-    (load-file "~/.emacs")))
+  (if (file-exists-p "~/config/emacs")
+    (load-file "~/config/emacs")))
 
 ;; find recently visited files quickly
 (defun recentf-find-files-compl ()
