@@ -148,6 +148,10 @@
 (autoload 'js2-mode "js2-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 
+(autoload #'espresso-mode "espresso" "Start espresso-mode" t)
+;;(add-to-list 'auto-mode-alist '("\\.js$" . espresso-mode))
+(add-to-list 'auto-mode-alist '("\\.json$" . espresso-mode))
+
 
 ;;;;;;;;;;;;
 ;; markup ;;
@@ -173,18 +177,23 @@
 ;; lisp and scheme ;;
 ;;;;;;;;;;;;;;;;;;;;;
 
+;; recognize my non-standard emacs config location
+(add-to-list 'auto-mode-alist '("config/emacs$" . emacs-lisp-mode))
+
 ;; use ElSchemo as the default scheme
 (setq scheme-program-name "~/Projects/elschemo/elschemo")
 
-;; setup slime
-;(require 'slime)
-;(add-hook 'lisp-mode-hook (lambda () (slime-mode t)))
-;(add-hook 'scheme-mode-hook (lambda () (slime-mode t)))
-;(add-hook 'inferior-lisp-mode-hook (lambda () (inferior-slime-mode t)))
-;(add-hook 'inferior-scheme-mode-hook (lambda () (inferior-slime-mode t)))
-
 ;; use sbcl for lisp
-(setq inferior-lisp-program "/usr/bin/sbcl")
+(setq inferior-lisp-program "/usr/bin/env sbcl")
+
+;; setup slime
+(add-to-list 'load-path "~/.slime")
+(require 'slime)
+(slime-setup)
+(add-hook 'lisp-mode-hook (lambda () (slime-mode t)))
+(add-hook 'scheme-mode-hook (lambda () (slime-mode t)))
+(add-hook 'inferior-lisp-mode-hook (lambda () (inferior-slime-mode t)))
+(add-hook 'inferior-scheme-mode-hook (lambda () (inferior-slime-mode t)))
 
 
 ;;;;;;;;;;;;;;;;;;;;
