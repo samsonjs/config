@@ -328,8 +328,10 @@ function svnst() {
     rm -f $tmpfile
 }
 
-alias e="$EDITOR"
-alias et="$EDITOR ."
+function e() {
+    "$EDITOR" "$@" &!
+}
+alias et="$EDITOR . >/dev/null &!"
 
 # global aliases - work anywhere on line
 alias -g C='|wc'
