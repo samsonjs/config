@@ -329,7 +329,7 @@ function svnst() {
 }
 
 function e() {
-    "$EDITOR" "$@" &!
+    "$EDITOR" "$@" >/dev/null &!
 }
 alias et="$EDITOR . >/dev/null &!"
 
