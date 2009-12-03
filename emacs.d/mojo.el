@@ -1,6 +1,6 @@
-;;; ../mojo.el --- Interactive functions to aid the development of webOS apps
-;; 2009-11-24 12:03:42
-(defconst mojo-version "0.9.4")
+;;; mojo.el --- Interactive functions to aid the development of webOS apps
+;; 2009-12-01 08:29:25
+(defconst mojo-version "0.9.6")
 
 (require 'json)
 
@@ -11,7 +11,7 @@
 ;;          Sami Samhuri <sami.samhuri@gmail.com>
 ;;
 ;; Latest version is available on github:
-;;     http://github.com/samsonjs/config/blob/master/emacs.d/mojo.el
+;;     http://github.com/samsonjs/mojo.el
 ;;
 ;; With sufficient interest mojo.el will get its own repo.
 
@@ -118,6 +118,57 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
 
 ;;; Code:
 
+(define-minor-mode mojo-mode
+  "Toggle Mojo mode.
+     With no argument, this command toggles the mode.
+     Non-null prefix argument turns on the mode.
+     Null prefix argument turns off the mode.
+     
+     When Mojo mode is enabled various commands are enabled to
+     aid the development of Mojo applications.
+
+     Make sure you customize the variables
+     \\[mojo-project-directory], \\[mojo-sdk-directory] and
+     \\[mojo-build-directory].
+
+     Keybindings are:
+
+      * C-c a     -- \\[mojo-switch-to-assistant]
+      * C-c i     -- \\[mojo-switch-to-appinfo]
+      * C-c I     -- \\[mojo-switch-to-index]
+      * C-c n     -- \\[mojo-switch-to-next-view]
+      * C-c s     -- \\[mojo-switch-to-sources]
+      * C-c S     -- \\[mojo-switch-to-stylesheet]
+      * C-c v     -- \\[mojo-switch-to-view]
+      * C-c SPC   -- \\[mojo-switch-file-dwim]
+      * C-c C-e   -- \\[mojo-emulate]
+      * C-c C-p   -- \\[mojo-package]
+      * C-c C-r   -- \\[mojo-package-install-and-inspect]
+      * C-c C-s   -- \\[mojo-generate-scene]
+      * C-c C-t   -- \\[mojo-toggle-target]
+
+     See the source code mojo.el or the README file for a list of
+     all of the interactive commands."
+  ;; The initial value.
+  :init-value nil
+  ;; The indicator for the mode line.
+  :lighter "-Mojo"
+  ;; The minor mode bindings.
+  :keymap
+  '(("\C-ca" . mojo-switch-to-assistant)
+    ("\C-ci" . mojo-switch-to-appinfo)
+    ("\C-cI" . mojo-switch-to-index)
+    ("\C-cn" . mojo-switch-to-next-view)
+    ("\C-cs" . mojo-switch-to-sources)
+    ("\C-cS" . mojo-switch-to-stylesheet)
+    ("\C-cv" . mojo-switch-to-view)
+    ("\C-c " . mojo-switch-file-dwim)
+    ("\C-c\C-e" . mojo-emulate)
+    ("\C-c\C-p" . mojo-package)
+    ("\C-c\C-r" . mojo-package-install-and-inspect)
+    ("\C-c\C-s" . mojo-generate-scene)
+    ("\C-c\C-t" . mojo-toggle-target))
+  :group 'mojo)
 
 (defcustom mojo-sdk-directory
   (case system-type
@@ -295,19 +346,28 @@ Sets `*mojo-target*' to \"tcp\"."
   (setq *mojo-target* "tcp"))
 
 
+;;* interactive
+(defun mojo-toggle-target ()
+  "Automatically change the target device from 'usb' to 'tcp' and
+vice versa."
+  (interactive)
+  (if (string= "usb" *mojo-target*)
+      (mojo-target-emulator)
+    (mojo-target-device)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Some support functions that grok the basics of a Mojo project. ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun drop-last-path-component (path)
+(defun mojo-drop-last-path-component (path)
   "Get the head of a path by dropping the last component."
   (if (< (length path) 2)
       path
     (substring path 0 (- (length path)
-			 (length (last-path-component path))
+			 (length (mojo-last-path-component path))
 			 1)))) ;; subtract one more for the trailing slash
 
-(defun last-path-component (path)
+(defun mojo-last-path-component (path)
   "Get the tail of a path, i.e. the last component."
   (if (< (length path) 2)
       path
@@ -321,20 +381,20 @@ Sets `*mojo-target*' to \"tcp\"."
 
 (defun mojo-root ()
   "Find a Mojo project's root directory starting with `DEFAULT-DIRECTORY'."
-  (let ((last-component (last-path-component default-directory))
+  (let ((last-component (mojo-last-path-component default-directory))
 	(dir-prefix default-directory))
     ;; remove last path element until we find appinfo.json
     (while (and (not (file-exists-p (concat dir-prefix "/appinfo.json")))
 		(not (< (length dir-prefix) 2)))
-      (setq last-component (last-path-component dir-prefix))
-      (setq dir-prefix (drop-last-path-component dir-prefix)))
+      (setq last-component (mojo-last-path-component dir-prefix))
+      (setq dir-prefix (mojo-drop-last-path-component dir-prefix)))
 
     ;; If no Mojo root found, ask for a directory.
     (if (< (length dir-prefix) 2)
 	(setq dir-prefix (mojo-read-root)))
 
     ;; Invalidate cached values when changing projects.
-    (if (or (blank *mojo-last-root*)
+    (if (or (mojo-blank *mojo-last-root*)
 	    (not (string= dir-prefix *mojo-last-root*)))
 	(progn
 	  (setq *mojo-last-root* dir-prefix)
@@ -343,7 +403,14 @@ Sets `*mojo-target*' to \"tcp\"."
 
     dir-prefix))
 
-(defun read-json-file (filename)
+;; foolproof?
+(defun mojo-project-p ()
+  (and (file-exists-p (concat (mojo-root) "/appinfo.json"))
+       (file-exists-p (concat (mojo-root) "/sources.json"))
+       (file-exists-p (concat (mojo-root) "/app"))
+       (file-exists-p (concat (mojo-root) "/index.html"))))
+
+(defun mojo-read-json-file (filename)
   "Parse the JSON in FILENAME and return the result."
   (save-excursion
     (let ((origbuffer (current-buffer))
@@ -355,13 +422,27 @@ Sets `*mojo-target*' to \"tcp\"."
 
 (defun mojo-app-version ()
   "Parse the project version from the appinfo.json file in `MOJO-ROOT'."
-  (let ((appinfo (read-json-file (concat (mojo-root) "/appinfo.json"))))
-	(cdr (assoc 'version appinfo))))
+  (when (mojo-project-p)
+    (let ((appinfo (mojo-read-json-file (concat (mojo-root) "/appinfo.json"))))
+      (cdr (assoc 'version appinfo)))))
 
 (defun mojo-app-id ()
   "Parse the project id from the appinfo.json file in `MOJO-ROOT'."
-  (let ((appinfo (read-json-file (concat (mojo-root) "/appinfo.json"))))
-    (cdr (assoc 'id appinfo))))
+  (when (mojo-project-p)
+    (let ((appinfo (mojo-read-json-file (concat (mojo-root) "/appinfo.json"))))
+      (cdr (assoc 'id appinfo)))))
+
+(defun mojo-app-title ()
+  "Parse the project title from appinfo.json."
+  (when (mojo-project-p)
+    (let ((appinfo (mojo-read-json-file (concat (mojo-root) "/appinfo.json"))))
+      (cdr (assoc 'title appinfo)))))
+
+(defun mojo-informal-app-id ()
+  "Parse the project title from appinfo.json and remove all non alphanumeric
+   characters."
+  (let ((title (downcase (mojo-app-title))))
+    (replace-regexp-in-string "[^a-z0-9]" "" title)))
 
 (defun mojo-package-filename ()
   "Get the package filename for the specified application."
@@ -383,7 +464,7 @@ Sets `*mojo-target*' to \"tcp\"."
       (let ((buffer (find-file-noselect *mojo-app-cache-filename*))
 	    (apps (mojo-fetch-app-list)))
 	(set-buffer buffer)
-	(insert (string-join "\n" apps))
+	(insert (mojo-string-join "\n" apps))
 	(basic-save-buffer)
 	(kill-buffer buffer))))
   *mojo-app-cache-filename*)
@@ -405,11 +486,11 @@ Sets `*mojo-target*' to \"tcp\"."
   "List of the most recently used package filenames.")
 
 ;; this is from rails-lib.el in the emacs-rails package
-(defun string-join (separator strings)
+(defun mojo-string-join (separator strings)
   "Join all STRINGS using SEPARATOR."
   (mapconcat 'identity strings separator))
 
-(defun blank (thing)
+(defun mojo-blank (thing)
   "Return T if THING is nil or an empty string, otherwise nil."
   (or (null thing)
       (and (stringp thing)
@@ -429,7 +510,7 @@ The app id is stored in *mojo-package-filename* unless it was blank."
 		      (mojo-package-filename)))
          (package (read-file-name (format "Package file (default: %s): " default)
 				  (concat mojo-build-directory "/") default t)))
-    (setq *mojo-package-filename* (last-path-component package))
+    (setq *mojo-package-filename* (mojo-last-path-component package))
     (expand-file-name package)))
 
 (defun mojo-read-app-id (&optional prompt)
@@ -447,7 +528,7 @@ The app id is stored in *mojo-app-id* unless it was blank."
 				  nil
 				  '*mojo-app-history*
 				  default)))
-    (when (blank app-id)
+    (when (mojo-blank app-id)
       (setq app-id (mojo-app-id)))
     (setq *mojo-app-id* app-id)
     app-id))
@@ -499,6 +580,124 @@ If the cache file does not exist then it is considered stale."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; switch to files easily  ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defvar *mojo-switch-suffixes*
+  '(("-assistant.js" . mojo-switch-to-view)
+    ("-scene.html"   . mojo-switch-to-assistant)
+    (".html"         . mojo-switch-to-next-view)
+    (""              . mojo-switch-to-appinfo)))
+
+;;* interactive
+(defun mojo-switch-to-appinfo ()
+  (interactive)
+  (find-file (concat (mojo-root) "/appinfo.json")))
+
+;;* interactive
+(defun mojo-switch-to-index ()
+  (interactive)
+  (find-file (concat (mojo-root) "/index.html")))
+
+;;* interactive
+(defun mojo-switch-to-sources ()
+  (interactive)
+  (find-file (concat (mojo-root) "/sources.json")))
+
+;;* interactive
+(defun mojo-switch-to-stylesheet ()
+  (interactive)
+  (let* ((stylesheet-dir (concat (mojo-root) "/stylesheets"))
+	 (path (concat stylesheet-dir "/"
+		       (mojo-informal-app-id) ".css")))
+    (when (not (file-exists-p path))
+      (setq path (car (mojo-filter-paths (directory-files stylesheet-dir t)))))
+    (find-file path)))
+
+(defun mojo-scene-name-from-assistant ()
+  (let ((path (buffer-file-name)))
+    (substring (mojo-last-path-component path) 0 (- 0 (length "-assistant.js")))))
+
+(defun mojo-scene-name-from-view ()
+  (mojo-last-path-component (mojo-drop-last-path-component (buffer-file-name))))
+
+;;* interactive
+(defun mojo-switch-file-dwim ()
+  "Determine if the current buffer is visiting a file with known
+   relationships. Try to find the 'best' choice and switch to it.
+
+   This does what I (sjs) mean by default, so change
+   *mojo-switch-suffixes* if you want different behaviour."
+  (interactive)
+  (let* ((path (buffer-file-name))
+	 (suffixes (copy-list *mojo-switch-suffixes*))
+	 (switch-function
+	  (catch 'break
+	    (dolist (pair suffixes nil)
+	      (let ((suffix (car pair))
+		    (function (cdr pair)))
+		(when (string= suffix (substring path (- 0 (length suffix))))
+		  (throw 'break function)))))))
+    (when switch-function
+      (call-interactively switch-function))))
+
+;;* interactive
+(defun mojo-switch-to-view ()
+  (interactive)
+  (when (mojo-project-p)
+    (let ((scene-name (mojo-scene-name-from-assistant)))
+      (find-file (concat (mojo-root)
+			 "/app/views/" scene-name "/"
+			 scene-name "-scene.html")))))
+
+(defun mojo-ignored-path (path)
+  (let ((filename (mojo-last-path-component path)))
+    (or (string= (substring filename 0 1) ".")
+	(and (string= (substring filename 0 1) "#")
+	   (string= (substring filename -1) "#")))))
+
+(defun mojo-filter-paths (all-paths)
+  (let ((wanted-paths (list)))
+    (dolist (path all-paths wanted-paths)
+      (unless (mojo-ignored-path path)
+	(setq wanted-paths (cons path wanted-paths))))
+    (reverse wanted-paths)))
+
+(defun mojo-index (elem list)
+  (catch 'break
+    (let ((index 0))
+      (dolist (path list index)
+	(incf index)
+	(when (string= path elem)
+	  (throw 'break index))))))
+
+;;* interactive
+(defun mojo-switch-to-next-view ()
+  (interactive)
+  (when (mojo-project-p)
+    (let* ((scene-name (mojo-scene-name-from-view))
+	   (view-dir (concat (mojo-root) "/app/views/" scene-name))
+	   (view-files (mojo-filter-paths (directory-files view-dir t)))
+(mojo-filter-paths (directory-files (concat (mojo-root) "/app/views/" (mojo-scene-name-from-view)) t))
+	   (index (mojo-index (buffer-file-name) view-files))
+	   (filename (nth (mod index (length view-files)) view-files)))
+      (find-file filename))))
+
+;;* interactive
+(defun mojo-switch-to-assistant ()
+  (interactive)
+  (let ((scene-name (mojo-scene-name-from-view)))
+    (when (and (mojo-project-p)
+	       scene-name)
+      (find-file (concat (mojo-root)
+			 "/app/assistants/" scene-name "-assistant.js")))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 ;;* lowlevel luna
 (defun mojo-luna-send (url data)
   "Send something through luna.
@@ -540,7 +739,7 @@ CMD is the name of the command (without path or extension) to execute.
 ARGS is a list of all arguments to the command.
  These arguments are NOT shell quoted."
   (let ((cmd (mojo-path-to-cmd cmd))
-	(args (string-join " " args)))
+	(args (mojo-string-join " " args)))
     (if mojo-debug (message "running %s with args %s " cmd args))
     (shell-command (concat cmd " " args))))
 
@@ -566,7 +765,7 @@ ARGS is a list of all arguments to the command.
  These arguments are NOT shell quoted."
   (let ((cmd (mojo-path-to-cmd cmd))
 	(args (concat "-d " (or target *mojo-target*) " "
-		       (string-join " " args))))
+		       (mojo-string-join " " args))))
     (if mojo-debug (message "running %s with args %s " cmd args))
     (shell-command-to-string (concat cmd " " args))))
 
