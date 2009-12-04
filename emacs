@@ -268,12 +268,6 @@
 (global-set-key "<"  'tagify-region-or-insert-self)
 (global-set-key "\C-zt" 'tagify-region-or-insert-tag)
 
-;; mojo keyboard shortcuts
-(global-set-key [f2] 'mojo-generate-scene)
-(global-set-key [f3] 'mojo-emulate)
-(global-set-key [f4] 'mojo-package)
-(global-set-key [f5] 'mojo-package-install-and-inspect)
-
 ;; XXX:todo need a version of this that inserts a line terminator as well
 ;; Use C-j!
 ;;(global-set-key [M-return] 'move-end-of-line-insert-newline)
@@ -323,28 +317,6 @@
      (find-file (or (cdr (assoc fname tocpl))
                     fname))))
 
-
-;; quickly search the web
-(defun web-search (name url-template)
-  "Prompt for a query in the minibuffer, launch the web browser and query the url given."
-  (let ((search (read-from-minibuffer (concat "Search " name ": "))))
-    (browse-url (concat url-template search))))
-
-(defun web-search-google ()
-  (interactive)
-  (web-search "Google" "http://www.google.com/search?q="))
-
-(defun web-search-wikipedia ()
-  (interactive)
-  (web-search "Wikipedia" "http://en.wikipedia.org/wiki/Special:Search?search="))
-
-(defun web-search-iso-hunt ()
-  (interactive)
-  (web-search "ISO Hunt" "http://www.isohunt.com/torrents/?ihq="))
-
-(defun web-search-pirate-bay ()
-  (interactive)
-  (web-search "The Pirate Bay" "http://thepiratebay.org/search/"))
 
 (cond ((file-readable-p "~/.emacs.d/color-theme")
       (add-to-list 'load-path "~/.emacs.d/color-theme")
