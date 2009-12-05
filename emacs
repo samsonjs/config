@@ -140,6 +140,10 @@
 
 (require 'mojo)
 
+;; enable Mojo for CSS, HTML, JS, and JSON files within a Mojo project
+;; root.  Did I forget anything?
+(mojo-setup-mode-hooks 'css-mode-hook 'js2-mode-hook 'espresso-mode-hook 'html-mode-hook)
+
 
 ;;;;;;;;;;;;;;;;
 ;; javascript ;;
