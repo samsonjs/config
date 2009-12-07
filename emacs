@@ -380,7 +380,7 @@
  '(js2-bounce-indent-p t)
  '(js2-highlight-level 3)
  '(mojo-build-directory "~/Projects/brighthouse/webOS/build")
- '(mojo-debug nil)
+ '(mojo-debug t)
  '(mojo-project-directory "~/Projects/brighthouse/webOS")
  '(remote-shell-program "/usr/bin/ssh")
  '(save-place t nil (saveplace))
