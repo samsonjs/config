@@ -401,7 +401,7 @@
  '(js2-mode-escape-quotes nil)
  '(js2-strict-inconsistent-return-warning nil)
  '(mojo-build-directory "~/Projects/brighthouse/webOS/build")
- '(mojo-debug nil)
+ '(mojo-debug t)
  '(mojo-project-directory "~/Projects/brighthouse/webOS")
  '(remote-shell-program "/usr/bin/ssh")
  '(save-place t nil (saveplace))
