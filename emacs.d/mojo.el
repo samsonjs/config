@@ -1,6 +1,6 @@
 ;;; mojo.el --- Interactive functions for webOS development
-;; 2009-12-07 14:28:52
-(defconst mojo-version "0.9.10")
+;; 2009-12-08 22:12:37
+(defconst mojo-version "1.0.0b")
 
 (require 'json)
 
@@ -84,7 +84,7 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
 ;;   * C-c C-c n   -- mojo-switch-to-next-view
 ;;   * C-c C-c s   -- mojo-switch-to-sources
 ;;   * C-c C-c S   -- mojo-switch-to-stylesheet
-;;   * C-c C-c v   -- mojo-switch-to-view
+;;   * C-c C-c v   -- mojo-switch-to-last-view
 ;;   * C-c C-c SPC -- mojo-switch-file-dwim
 ;;   * C-c C-c C-d -- mojo-target-device
 ;;   * C-c C-c C-e -- mojo-emulate
@@ -163,12 +163,16 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
 ;;  mojo-switch-to-assistant
 ;;    Switch to the corresponding assistant from any view file.
 ;; 
-;;  mojo-switch-to-view
+;;  mojo-switch-to-main-view
 ;;    Switch to the main view from an assistant.
 ;; 
 ;;  mojo-switch-to-next-view
 ;;    Switch to the next view file, alphabetically.  Wraps around at the
 ;;    end.
+;; 
+;;  mojo-switch-to-last-view
+;;    Switch to the last visited view buffer (excluding the current
+;;    buffer).
 ;; 
 ;;  mojo-switch-to-appinfo
 ;;    Switch to the appinfo.json file.
@@ -181,6 +185,10 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
 ;; 
 ;;  mojo-switch-to-stylesheet
 ;;    Switch to the main stylesheet.
+;; 
+;;  mojo-switch-file-dwim
+;;    Switch to the next view from a view, and to the main view from an
+;;    assistant.  From any other file switch to appinfo.json.
 ;; 
 ;; 
 ;;   Manage framework_config.json
@@ -201,11 +209,14 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
 ;;  mojo-log-level
 ;;    See the log level.
 ;; 
-;;  mojo-html-escaped-in-templates-p
+;;  mojo-escape-html-in-templates-p
 ;;    See if HTML is escaped in templates.
 ;; 
 ;;  mojo-set-debugging-enabled
 ;;    Enable or disable debugging.
+;; 
+;; mojo-toggle-debugging
+;;    Toggle debugging in framework_config.json.
 ;; 
 ;;  mojo-set-log-events
 ;;    Enable or disable event logging.
@@ -374,7 +385,7 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
       * C-c C-c n     -- \\[mojo-switch-to-next-view]
       * C-c C-c s     -- \\[mojo-switch-to-sources]
       * C-c C-c S     -- \\[mojo-switch-to-stylesheet]
-      * C-c C-c v     -- \\[mojo-switch-to-view]
+      * C-c C-c v     -- \\[mojo-switch-to-last-view]
       * C-c C-c SPC   -- \\[mojo-switch-file-dwim]
       * C-c C-c C-d   -- \\[mojo-target-device]
       * C-c C-c C-e   -- \\[mojo-emulate]
@@ -397,7 +408,7 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
     ("\C-c\C-cn" . mojo-switch-to-next-view)
     ("\C-c\C-cs" . mojo-switch-to-sources)
     ("\C-c\C-cS" . mojo-switch-to-stylesheet)
-    ("\C-c\C-cv" . mojo-switch-to-view)
+    ("\C-c\C-cv" . mojo-switch-to-last-view)
     ("\C-c\C-c " . mojo-switch-file-dwim)
     ("\C-c\C-c\C-d" . mojo-target-device)
     ("\C-c\C-c\C-e" . mojo-emulate)
@@ -512,10 +523,8 @@ NAME is the name of the scene."
   (mojo-cmd-with-target "palm-install" (list "-r" (mojo-read-app-id)))
   (mojo-invalidate-app-cache))
 
-;;* interactive
 (defun mojo-ensure-emulator-is-running ()
-  "Launch the current application, and the emulator if necessary."
-  (interactive)
+  "Launch the emulator unless it is already running."
   (if (string= "tcp" *mojo-target*)
       (progn
 	(when (not (mojo-emulator-running-p))
@@ -540,14 +549,15 @@ NAME is the name of the scene."
   (mojo-ensure-emulator-is-running)
   (mojo-cmd-with-target "palm-launch" (list "-c" (mojo-read-app-id))))
 
-;;* launch interactive
+;;* interactive
 (defun mojo-inspect ()
   "Run the DOM inspector on the current application."
   (interactive)
   (mojo-ensure-emulator-is-running)
+  (mojo-set-log-level-for-debugging)
   (mojo-cmd-with-target "palm-launch" (list "-i" (mojo-read-app-id))))
 
-;;* emulator interactive
+;;* interactive
 (defun mojo-hard-reset ()
   "Perform a hard reset, clearing all data."
   (interactive)
@@ -966,11 +976,13 @@ If the cache file does not exist then it is considered stale."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar *mojo-switch-suffixes*
-  '(("-assistant.js" . mojo-switch-to-view)
-    ("-scene.html"   . mojo-switch-to-assistant)
+  '(("-assistant.js" . mojo-switch-to-last-view)
     (".html"         . mojo-switch-to-next-view)
     (""              . mojo-switch-to-appinfo))
-  "Suffixes of files that we can guess where to switch.")
+  "Suffixes of files that we can switch from and where to switch, with catch-all to appinfo.json by default.")
+
+(defvar *mojo-last-visited-view* nil
+  "Path of the last visited view file.")
 
 ;;* interactive
 (defun mojo-switch-to-appinfo ()
@@ -1009,17 +1021,37 @@ If the cache file does not exist then it is considered stale."
   "The parent directory's basename."
   (mojo-filename (mojo-parent-directory path)))
 
+(defun mojo-current-filename ()
+  "Return the filename part of the current buffer's path."
+  (mojo-filename (buffer-file-name)))
+
+(defun mojo-buffer-is-assistant-p ()
+  "Determine if the current buffer is a scene assistant."
+  (string= "assistants" (mojo-parent-directory-name (buffer-file-name))))
+
 (defun mojo-scene-name-from-assistant ()
   "The scene name of the assistant being edited."
-  (let ((path (buffer-file-name)))
-    (and (string= "assistants" (mojo-parent-directory-name path))
-	 (substring (mojo-filename path) 0 (- 0 (length "-assistant.js"))))))
+    (and (mojo-buffer-is-assistant-p)
+	 (substring (mojo-current-filename) 0 (- 0 (length "-assistant.js")))))
+
+(defun mojo-path-is-view-p (path)
+  "Determine if the given path is a Mojo view."
+  (string= "views" (mojo-parent-directory-name (mojo-parent-directory path))))
+
+(defun mojo-buffer-is-view-p ()
+  "Determine if the current buffer is a view."
+  (mojo-path-is-view-p (buffer-file-name)))
+
+(defun mojo-buffer-is-main-view-p ()
+  "Determine if the current buffer is the main view of a scene."
+  (and (mojo-buffer-is-view-p)
+       (string= (concat (mojo-scene-name-from-view) "-scene.html")
+		(mojo-current-filename))))
 
 (defun mojo-scene-name-from-view ()
   "The scene name of the view being edited."
-  (let ((path (buffer-file-name)))
-    (and (string= "views" (mojo-parent-directory-name (mojo-parent-directory path)))
-	 (mojo-parent-directory-name path))))
+    (and (mojo-buffer-is-view-p)
+	 (mojo-parent-directory-name (buffer-file-name))))
 
 ;;* interactive
 (defun mojo-switch-file-dwim ()
@@ -1040,28 +1072,56 @@ if you want different behaviour."
     (when switch-function
       (call-interactively switch-function))))
 
-;;* interactive
-(defun mojo-switch-to-view ()
-  "Switch to the corresponding main view from an assistant."
-  (interactive)
-  (when (mojo-project-p)
-    (let ((scene-name (mojo-scene-name-from-assistant)))
-      (find-file (concat (mojo-root)
-			 "/app/views/" scene-name "/"
-			 scene-name "-scene.html")))))
+(defun mojo-buffer-is-scene-file-p ()
+  "Determine if the current buffer belongs to a Mojo scene."
+  (or (mojo-buffer-is-view-p)
+      (mojo-buffer-is-assistant-p)))
 
-(defun mojo-ignored-path (path)
+;;* interactive
+(defun mojo-switch-to-main-view ()
+  "Switch to the corresponding main view from an assistant or any other view in the scene."
+  (interactive)
+  (when (and (mojo-project-p) (mojo-buffer-is-scene-file-p))
+    (let* ((scene-name (mojo-scene-name)))
+      (setq *mojo-last-visited-view* (concat (mojo-root)
+					     "/app/views/" scene-name "/"
+					     scene-name "-scene.html")))
+      (find-file *mojo-last-visited-view*)))
+
+(defun mojo-visited-view-paths ()
+  "Return a list of all visited view paths, most recently visited first."
+  (mojo-filter-paths (mapcar (function buffer-file-name) (buffer-list))
+		     (lambda (path) (or (null path) (not (mojo-path-is-view-p path))))))
+
+;;* interactive
+(defun mojo-switch-to-last-view ()
+  "Switch to the last visited view from another view or assistant.
+
+If there no view can be found then the action depends on the
+current buffer.  From an assistant you are taken to the main
+view, from the main view you go to the next view, and from any
+other view you go to the main view.  Any other file is a no op."
+  (interactive)
+  (let* ((view-paths (mojo-visited-view-paths))
+	 (last-view-path (if (string= (buffer-file-name) (car view-paths))
+			   (cadr view-paths)
+			 (car view-paths))))
+    (when last-view-path (find-file last-view-path))))
+
+(defun mojo-ignored-path-p (path)
   "Paths that we don't want to look at when walking directories."
   (let ((filename (mojo-filename path)))
-    (or (string= (substring filename 0 1) ".") ;; "." and ".." and hidden files
+    (or (null filename)
+	(string= (substring filename 0 1) ".") ;; "." and ".." and hidden files
 	(and (string= (substring filename 0 1) "#") ;; emacs recovery files
-	   (string= (substring filename -1) "#")))))
+	     (string= (substring filename -1) "#")))))
 
-(defun mojo-filter-paths (all-paths)
+(defun mojo-filter-paths (all-paths &optional filter)
   "Filter out unimportant paths from a list of paths."
-  (let ((wanted-paths (list)))
+  (let ((wanted-paths (list))
+ 	(filter (or filter 'mojo-ignored-path-p)))
     (dolist (path all-paths wanted-paths)
-      (unless (mojo-ignored-path path)
+      (unless (funcall filter path)
 	(setq wanted-paths (cons path wanted-paths))))
     (reverse wanted-paths)))
 
@@ -1074,15 +1134,20 @@ if you want different behaviour."
 	(when (string= path elem)
 	  (throw 'break index))))))
 
+(defun mojo-scene-name ()
+  "Get the name of the current Mojo scene, or nil if not a scene file."
+  (or (mojo-scene-name-from-view)
+      (mojo-scene-name-from-assistant)))
+
 ;;* interactive
 (defun mojo-switch-to-next-view ()
   "Switch to the next view in this scene, alphabetically.  Wrap around at the end."
   (interactive)
-  (when (mojo-project-p)
-    (let* ((scene-name (mojo-scene-name-from-view))
+  (when (and (mojo-project-p) (mojo-buffer-is-scene-file-p))
+    (let* ((scene-name (mojo-scene-name))
 	   (view-dir (concat (mojo-root) "/app/views/" scene-name))
 	   (view-files (mojo-filter-paths (directory-files view-dir t)))
-(mojo-filter-paths (directory-files (concat (mojo-root) "/app/views/" (mojo-scene-name-from-view)) t))
+	   (mojo-filter-paths (directory-files (concat (mojo-root) "/app/views/" scene-name) t))
 	   (index (mojo-index (buffer-file-name) view-files))
 	   (filename (nth (mod index (length view-files)) view-files)))
       (find-file filename))))
