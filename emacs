@@ -151,10 +151,28 @@
 
 (autoload 'js2-mode "js2-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+(add-hook 'js2-mode-hook '(lambda ()
+			    (local-set-key "\C-m" 'newline)))
 
 (autoload #'espresso-mode "espresso" "Start espresso-mode" t)
 ;;(add-to-list 'auto-mode-alist '("\\.js$" . espresso-mode))
 (add-to-list 'auto-mode-alist '("\\.json$" . espresso-mode))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;; inferior javascript ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require 'js-comint)
+;(setq inferior-js-program-command "/usr/local/bin/v8")
+(setq inferior-js-program-command "/opt/local/bin/js -v 1.8")
+(add-hook 'js2-mode-hook '(lambda ()
+			    (local-set-key "\C-x\C-e" 'js-send-last-sexp)
+			    (local-set-key "\C-\M-x" 'js-send-last-sexp-and-go)
+			    (local-set-key "\C-cb" 'js-send-buffer)
+			    (local-set-key "\C-c\C-b" 'js-send-buffer-and-go)
+			    (local-set-key "\C-cl" 'js-load-file-and-go)
+			    ))
 
 
 ;;;;;;;;;;;;
@@ -240,6 +258,7 @@
 (global-set-key "\C-zr" 'query-replace-regexp)
 (global-set-key "\C-z\C-r" 'reload-dot-emacs)
 (global-set-key "\C-zc" 'comment-line)
+(global-set-key "\C-zj" 'run-js)
 (global-set-key "\C-zs" 'run-scheme)
 (global-set-key "\C-z\C-t" 'totd)
 (global-set-key [f5] 'compile)
@@ -379,6 +398,8 @@
  '(icicle-reminder-prompt-flag 5)
  '(js2-bounce-indent-p t)
  '(js2-highlight-level 3)
+ '(js2-mode-escape-quotes nil)
+ '(js2-strict-inconsistent-return-warning nil)
  '(mojo-build-directory "~/Projects/brighthouse/webOS/build")
  '(mojo-debug nil)
  '(mojo-project-directory "~/Projects/brighthouse/webOS")
