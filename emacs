@@ -74,7 +74,8 @@
   (setq tab-width 8
         ;; this will make sure spaces are used instead of tabs
         indent-tabs-mode nil)
-  (c-toggle-auto-newline 1))
+  (c-toggle-auto-newline 1)
+  (c-subword-mode))
 ;;   (setq skeleton-pair t)
 ;;   (setq skeleton-autowrap t)
 ;;   (let ((chars '("'" "\"" "(" "[" "{")))
@@ -111,7 +112,8 @@
 (add-hook 'ruby-mode-hook
      '(lambda ()
          (inf-ruby-keys)
-	 (ruby-electric-mode)))
+	 (ruby-electric-mode)
+	  (c-subword-mode)))
 (autoload 'rubydb "rubydb3x" "Ruby debugger" t)
 
 
@@ -141,7 +143,8 @@
 (autoload 'js2-mode "js2-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 (add-hook 'js2-mode-hook '(lambda ()
-			    (local-set-key "\C-m" 'newline)))
+			    (local-set-key "\C-m" 'newline)
+			     (c-subword-mode)))
 
 (autoload #'espresso-mode "espresso" "Start espresso-mode" t)
 ;;(add-to-list 'auto-mode-alist '("\\.js$" . espresso-mode))
@@ -175,6 +178,18 @@
 			    (local-set-key "\C-c\C-b" 'js-send-buffer-and-go)
 			    (local-set-key "\C-cl" 'js-load-file-and-go)
 			    ))
+
+
+;;;;;;;;;;;;
+;; python ;;
+;;;;;;;;;;;;
+
+;; handy but ugly as fuck
+(autoload 'whitespace-mode "whitespace"
+  "Toggle whitespace visualization." t)
+
+(add-hook 'python-mode-hook '(lambda ()
+			        (c-subword-mode)))
 
 
 ;;;;;;;;;;;;
