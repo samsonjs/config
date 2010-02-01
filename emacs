@@ -258,6 +258,11 @@
 ;;   (set-face-background 'flymake-errline "red4")
 ;;   (set-face-background 'flymake-warnline "dark slate blue"))
 
+;; highlight the current line
+(global-hl-line-mode 1)
+ 
+;; To customize the background color
+(set-face-background 'hl-line "#223")
 
 ;;;;;;;;;;;;;;;;;;
 ;; key bindings ;;
