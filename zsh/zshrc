@@ -305,6 +305,11 @@ alias g='git grep'
 alias m='git merge'
 alias s='git status'
 
+# macports apachectl
+if mac; then
+    alias -g apache2ctl=/opt/local/apache2/bin/apachectl
+fi
+
 function svnst() {
     tmpfile=/tmp/svn-stat.$$
     [[ -f $tmpfile ]] && rm -f $tmpfile

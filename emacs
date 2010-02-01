@@ -91,7 +91,9 @@
 ;; chmod u+x files that have a shebang line
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
-(add-to-list 'auto-mode-alist '("zsh\(rc\|env\)$" . sh-mode))
+(add-to-list 'auto-mode-alist '("zshenv$" . sh-mode))
+(add-to-list 'auto-mode-alist '("zshrc$" . sh-mode))
+
 
 
 ;;;;;;;;;;
@@ -113,7 +115,7 @@
      '(lambda ()
          (inf-ruby-keys)
 	 (ruby-electric-mode)
-	  (c-subword-mode)))
+	 (c-subword-mode)))
 (autoload 'rubydb "rubydb3x" "Ruby debugger" t)
 
 
@@ -136,17 +138,6 @@
 (require 'tagify)
 
 
-;;;;;;;;;;;;;;;;;;
-;; mojo (webOS) ;;
-;;;;;;;;;;;;;;;;;;
-
-(require 'mojo)
-
-;; enable Mojo for CSS, HTML, JS, and JSON files within a Mojo project
-;; root.  Did I forget anything?
-(mojo-setup-mode-hooks 'css-mode-hook 'js2-mode-hook 'espresso-mode-hook 'html-mode-hook)
-
-
 ;;;;;;;;;;;;;;;;
 ;; javascript ;;
 ;;;;;;;;;;;;;;;;
@@ -160,6 +151,19 @@
 (autoload #'espresso-mode "espresso" "Start espresso-mode" t)
 ;;(add-to-list 'auto-mode-alist '("\\.js$" . espresso-mode))
 (add-to-list 'auto-mode-alist '("\\.json$" . espresso-mode))
+
+(add-hook 'js2-mode-hook 'c-subword-mode)
+
+
+;;;;;;;;;;;;;;;;;;
+;; mojo (webOS) ;;
+;;;;;;;;;;;;;;;;;;
+
+(require 'mojo)
+
+;; enable Mojo for CSS, HTML, JS, and JSON files within a Mojo project
+;; root.  Did I forget anything?
+(mojo-setup-mode-hooks 'css-mode-hook 'js2-mode-hook 'espresso-mode-hook 'html-mode-hook)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -421,7 +425,7 @@
  '(js2-mode-escape-quotes nil)
  '(js2-strict-inconsistent-return-warning nil)
  '(mojo-build-directory "~/Projects/brighthouse/webOS/build")
- '(mojo-debug t)
+ '(mojo-debug nil)
  '(mojo-project-directory "~/Projects/brighthouse/webOS")
  '(remote-shell-program "/usr/bin/ssh")
  '(save-place t nil (saveplace))
