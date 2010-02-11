@@ -43,7 +43,7 @@
 (defconst my-c-style
   '("linux"
     (c-tab-always-indent        . t)
-    (c-basic-offset             . 8)
+    (c-basic-offset             . 4)
 ;;     (c-comment-only-line-offset . 4)
 ;;     (c-hanging-braces-alist     . ((substatement-open after)
 ;;                                    (brace-list-open)))
