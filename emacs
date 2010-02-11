@@ -201,8 +201,8 @@
 ;; (require 'textile-mode)
 ;; (add-to-list 'auto-mode-alist '("\\.textile\\'" . textile-mode))
 
-;; (require 'yaml-mode)
-;; (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+(require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
 
 ;; keep a list of recently visited files
@@ -262,6 +262,11 @@
 ;;   (set-face-background 'flymake-errline "red4")
 ;;   (set-face-background 'flymake-warnline "dark slate blue"))
 
+;; highlight the current line
+(global-hl-line-mode 1)
+ 
+;; To customize the background color
+(set-face-background 'hl-line "#330")
 
 ;;;;;;;;;;;;;;;;;;
 ;; key bindings ;;
