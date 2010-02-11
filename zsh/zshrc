@@ -9,8 +9,8 @@ export LANG="en_CA.UTF-8"
 
 cdpath=(~)
 
-function linux() { [[ `uname -s` = "Linux"  ]] && true }
-function mac()   { [[ `uname -s` = "Darwin" ]] && true }
+function linux() { [[ `uname -s` = "Linux"  ]] }
+function mac()   { [[ `uname -s` = "Darwin" ]] }
 
 HOSTNAME=`hostname -s`
 KEYCHAIN_HOST=`hostname`
