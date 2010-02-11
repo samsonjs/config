@@ -266,7 +266,7 @@
 (global-hl-line-mode 1)
  
 ;; To customize the background color
-(set-face-background 'hl-line "#223")
+(set-face-background 'hl-line "#330")
 
 ;;;;;;;;;;;;;;;;;;
 ;; key bindings ;;
