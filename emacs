@@ -155,6 +155,13 @@
 (add-hook 'js2-mode-hook 'c-subword-mode)
 
 
+;;;;;;;;;;;;;;;;;
+;; objective j ;;
+;;;;;;;;;;;;;;;;;
+
+(require 'objj-mode)
+
+
 ;;;;;;;;;;;;;;;;;;
 ;; mojo (webOS) ;;
 ;;;;;;;;;;;;;;;;;;
