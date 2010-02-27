@@ -118,6 +118,7 @@
 	 (c-subword-mode)))
 (autoload 'rubydb "rubydb3x" "Ruby debugger" t)
 
+(add-to-list 'auto-mode-alist '(".irbrc$" . ruby-mode))
 
 ;;;;;;;;;;;;;
 ;; haskell ;;
