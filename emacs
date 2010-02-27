@@ -162,6 +162,17 @@
 
 (require 'objj-mode)
 
+;; customize objj-mode, which is based on objc-mode, which is based on cc-mode.
+
+(defconst sjs-objc-style 
+  '(("objc"
+     "My ObjC style")))
+(defun my-objc-mode-hook ()
+  ;;(c-add-style "objc" my-objc-style)
+  (setq tab-width 4
+	c-basic-offset tab-width))
+(add-hook 'objc-mode-hook 'my-objc-mode-hook)
+
 
 ;;;;;;;;;;;;;;;;;;
 ;; mojo (webOS) ;;
