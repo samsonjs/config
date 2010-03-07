@@ -29,11 +29,18 @@ fi
 if mac; then
   export EDITOR="emacsclient"
   export VISUAL="emacsclient"
+  export MANPATH="/opt/local/lib/erlang/man:$MANPATH"
 elif linux; then
   export EDITOR="emacs -nw"
   export VISUAL="emacs"
 fi
 
+ALIASES="$ZDOTDIR/aliases"
+
+function add_alias {
+    echo "alias $1='$2'" >> "$ALIASES";
+    #echo Adding alias: `tail -1 "$ALIASES"`;
+}
 
 # 2. Limits
 # =========
