@@ -4,6 +4,9 @@
 # 1. Environment Vars
 # ===================
 
+export riak=~/Projects/ssa/riak/riak/rel/riak
+export CAPP_BUILD=~/Projects/ssa/cappuccino/build
+
 export LC_ALL="en_CA.UTF-8"
 export LANG="en_CA.UTF-8"
 
