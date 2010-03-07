@@ -145,6 +145,7 @@
 
 (autoload 'js2-mode "js2-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+(add-to-list 'auto-mode-alist '("Jakefile$" . js2-mode))
 (add-hook 'js2-mode-hook '(lambda ()
 			    (local-set-key "\C-m" 'newline)
 			     (c-subword-mode)))
@@ -168,9 +169,10 @@
   '(("objc"
      "My ObjC style")))
 (defun my-objc-mode-hook ()
-  ;;(c-add-style "objc" my-objc-style)
+;;   (c-add-style "objc" sjs-objc-style)
   (setq tab-width 4
-	c-basic-offset tab-width))
+	c-basic-offset tab-width
+        c-hanging-semi&comma-criteria nil))
 (add-hook 'objc-mode-hook 'my-objc-mode-hook)
 
 
@@ -212,6 +214,14 @@
 (add-hook 'python-mode-hook '(lambda ()
 			        (c-subword-mode)))
 
+;;;;;;;;;;;;
+;; erlang ;;
+;;;;;;;;;;;;
+
+(setq load-path (cons "/opt/local/lib/erlang/lib/tools-2.6.5/emacs" load-path))
+(setq erlang-root-dir "/opt/local/lib/erlang/otp")
+(setq exec-path (cons "/opt/local/lib/erlang/bin" exec-path))
+(require 'erlang-start)
 
 ;;;;;;;;;;;;
 ;; markup ;;
@@ -432,6 +442,7 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(blink-cursor-mode nil)
+ '(c-hanging-semi&comma-criteria (quote set-from-style))
  '(case-fold-search t)
  '(column-number-mode t)
  '(current-language-environment "UTF-8")
