@@ -4,7 +4,7 @@
 # 1. Environment Vars
 # ===================
 
-export riak=~/Projects/ssa/riak/riak/rel/riak
+export RIAK=~/Projects/ssa/riak/riak/rel/riak
 export CAPP_BUILD=~/Projects/ssa/cappuccino/build
 export NARWHAL_ENGINE=jsc
 
