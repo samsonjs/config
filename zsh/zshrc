@@ -283,6 +283,8 @@ alias u2='uu'
 alias u3='uuu'
 alias u4='uuuu'
 
+alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --allow-file-access-from-files >/dev/null 2>&1 &!'
+
 # ls Aliases 
 # ----------------
 if mac; then
