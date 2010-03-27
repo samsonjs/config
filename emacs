@@ -266,6 +266,22 @@
 (add-hook 'inferior-scheme-mode-hook (lambda () (inferior-slime-mode t)))
 
 
+;;;;;;;;;;;;;;;;;;;
+;; textmate mode ;;
+;;;;;;;;;;;;;;;;;;;
+
+(require 'textmate)
+(textmate-mode)				; always on
+
+;;;;;;;;;;;;;;;;;;;;;
+;; drag stuff mode ;;
+;;;;;;;;;;;;;;;;;;;;;
+
+(add-to-list 'load-path "~/config/emacs.d/drag-stuff")
+(require 'drag-stuff)
+(drag-stuff-mode t)			; always on
+
+
 ;;;;;;;;;;;;;;;;;;;;
 ;; customizations ;;
 ;;;;;;;;;;;;;;;;;;;;
