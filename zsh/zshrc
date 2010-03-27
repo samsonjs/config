@@ -5,7 +5,7 @@
 # ===================
 
 export RIAK=~/Projects/ssa/riak/riak/rel/riak
-export CAPP_BUILD=~/Projects/ssa/cappuccino/build
+export CAPP_BUILD=~/Projects/ssa/cappuccino/cappuccino/Build
 export NARWHAL_ENGINE=jsc
 
 export LC_ALL="en_CA.UTF-8"
