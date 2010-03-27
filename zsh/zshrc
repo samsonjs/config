@@ -283,6 +283,25 @@ alias u2='uu'
 alias u3='uuu'
 alias u4='uuuu'
 
+# ls Aliases 
+# ----------------
+if mac; then
+    gls_path=`which gls`
+    if [[ -x "$gls_path" ]]; then
+	alias ls='$gls_path -BF --color=auto'
+	alias la='$gls_path -AF --color=auto'
+    else
+	alias ls='ls -BF'
+	alias la='ls -AF'
+    fi
+else
+    alias ls='ls -BF --color=auto'
+    alias la='ls -AF --color=auto'
+fi
+alias ll='ls -l'
+alias lsd='ls -d'
+alias lld='ls -dl'
+
 # ruby
 alias irb='irb --readline -r irb/completion'
 alias rii='ri -Tf ansi'
@@ -300,14 +319,23 @@ alias slog='svn log | less'
 
 # git
 alias a='git add'
-alias c='git commit'
-alias g='git'
+alias ap='git add -p'
 alias b='git branch'
+alias bt='git branch --track'
+_bto() { git branch --track "$1" origin/"$1" }
+alias bto='_bto'
+alias c='git commit'
 alias co='git checkout'
 alias d='git diff'
 alias dc='git diff --cached'
+alias ds='git diff --stat'
+alias gl='git log'
+alias glo='git log --oneline'
+alias gls='git log --stat'
 alias g='git grep'
 alias m='git merge'
+alias r='git remote'
+alias ra='git remote add'
 alias s='git status'
 
 # macports apachectl
@@ -375,19 +403,6 @@ function cl () {
   ls
 }
 
-
-# 7.2. ls Aliases 
-# ----------------
-if mac; then
-    alias ls='ls -BF'
-    alias la='ls -AF'
-else
-    alias ls='ls -BF --color=auto'
-    alias la='ls -AF --color=auto'
-fi
-alias ll='ls -l'
-alias lsd='ls -d'
-alias lld='ls -dl'
 
 function like(){
   print -l **/*${1}*{,/**}
