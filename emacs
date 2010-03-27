@@ -75,7 +75,7 @@
         ;; this will make sure spaces are used instead of tabs
         indent-tabs-mode nil)
   (c-toggle-auto-newline 1)
-  (c-subword-mode))
+  (c-subword-mode t))
 ;;   (setq skeleton-pair t)
 ;;   (setq skeleton-autowrap t)
 ;;   (let ((chars '("'" "\"" "(" "[" "{")))
@@ -115,7 +115,7 @@
      '(lambda ()
          (inf-ruby-keys)
 	 (ruby-electric-mode)
-	 (c-subword-mode)))
+	 (c-subword-mode t)))
 (autoload 'rubydb "rubydb3x" "Ruby debugger" t)
 
 (add-to-list 'auto-mode-alist '(".irbrc$" . ruby-mode))
@@ -148,13 +148,13 @@
 (add-to-list 'auto-mode-alist '("Jakefile$" . js2-mode))
 (add-hook 'js2-mode-hook '(lambda ()
 			    (local-set-key "\C-m" 'newline)
-			     (c-subword-mode)))
+			     (c-subword-mode t)))
 
 (autoload #'espresso-mode "espresso" "Start espresso-mode" t)
 ;;(add-to-list 'auto-mode-alist '("\\.js$" . espresso-mode))
 (add-to-list 'auto-mode-alist '("\\.json$" . espresso-mode))
 
-(add-hook 'js2-mode-hook 'c-subword-mode)
+(add-hook 'js2-mode-hook (lambda () (c-subword-mode t)))
 
 
 ;;;;;;;;;;;;;;;;;
@@ -212,7 +212,7 @@
   "Toggle whitespace visualization." t)
 
 (add-hook 'python-mode-hook '(lambda ()
-			        (c-subword-mode)))
+			        (c-subword-mode t)))
 
 ;;;;;;;;;;;;
 ;; erlang ;;
