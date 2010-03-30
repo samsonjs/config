@@ -3,3 +3,9 @@
 	email = sami.samhuri@gmail.com
 [alias]
 	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+	co = checkout
+	b = branch
+	d = diff
+	lo = log --oneline
+	a = add
+	c = commit
