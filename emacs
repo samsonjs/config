@@ -148,13 +148,15 @@
 (add-to-list 'auto-mode-alist '("Jakefile$" . js2-mode))
 (add-hook 'js2-mode-hook '(lambda ()
 			    (local-set-key "\C-m" 'newline)
-			     (c-subword-mode t)))
+			     (c-subword-mode t)
+			     (setq indent-tabs-mode nil)))
 
 (autoload #'espresso-mode "espresso" "Start espresso-mode" t)
 ;;(add-to-list 'auto-mode-alist '("\\.js$" . espresso-mode))
 (add-to-list 'auto-mode-alist '("\\.json$" . espresso-mode))
 
-(add-hook 'js2-mode-hook (lambda () (c-subword-mode t)))
+(add-hook 'js2-mode-hook '(lambda () (c-subword-mode t)))
+
 
 
 ;;;;;;;;;;;;;;;;;
@@ -277,9 +279,9 @@
 ;; drag stuff mode ;;
 ;;;;;;;;;;;;;;;;;;;;;
 
-(add-to-list 'load-path "~/config/emacs.d/drag-stuff")
-(require 'drag-stuff)
-(drag-stuff-mode t)			; always on
+;; (add-to-list 'load-path "~/config/emacs.d/drag-stuff")
+;; (require 'drag-stuff)
+;; (drag-stuff-mode t)			; always on
 
 
 ;;;;;;;;;;;;;;;;;;;;

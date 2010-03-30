@@ -456,6 +456,28 @@ alias keep='noglob keep '
 # fi
 
 
+# curl convenience functions
+# ==========================
+curl=`which curl`
+if [[ -x "$curl" ]]; then
+    function get {
+	$curl -H 'x-requested-with: XMLHttpRequest' -i "$1"
+    }
+
+    function put {
+	$curl -X PUT -H 'x-requested-with: XMLHttpRequest' "$1" --data "$2"
+    }
+
+    function post {
+	$curl -X POST -H 'x-requested-with: XMLHttpRequest' "$1" --data "$2"
+    }
+
+    function delete {
+	$curl -X DELETE -H 'x-requested-with: XMLHttpRequest' "$1"
+    }
+fi
+
+
 # 9. Completion
 # =============
 
