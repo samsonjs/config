@@ -216,15 +216,15 @@ eval user='%(0#.${bRed}.${bBlue})%n${none}'
 eval at='${grey}@${none}'
 
 case $HOSTNAME in
-macbook)
+Samis-MacBook)
     host="${cyan}"
     ;;
 
-samis-hackintosh)
+Samis-Workstation)
     host="${bWhite}"
     ;;
 
-slick)
+zaphod)
     host="${bRed}"
     ;;
 
