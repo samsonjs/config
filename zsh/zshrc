@@ -141,108 +141,17 @@ bindkey '\ep' history-beginning-search-backward
 # 6. Prompt Subsystem
 # ===================
 
-# define some colours to use in english instead of ANSI
-# notation:
-#  -background is black unless the var is named colourOnBlue
-#  -prefix of b, e.g. bGreen means bright green
-none='%{\e[0m%}'
-
-red='%{\e[40;31m%}'
-green='%{\e[40;32m%}'
-yellow='%{\e[40;33m%}'
-blue='%{\e[40;34m%}'
-purple='%{\e[40;35m%}'
-cyan='%{\e[40;36m%}'
-white='%{\e[40;37m%}'
-grey='%{\e[1;40;30m%}'
-
-bRed='%{\e[1;40;31m%}'
-bGreen='%{\e[1;40;32m%}'
-bYellow='%{\e[1;40;33m%}'
-bBlue='%{\e[1;40;34m%}'
-bPurple='%{\e[1;40;35m%}'
-bCyan='%{\e[1;40;36m%}'
-bWhite='%{\e[1;40;37m%}'
-
-whiteOnRed='%{\e[41;37m%}'
-whiteOnBlue='%{\e[44;37m%}'
-bWhiteOnRed='%{\e[1;41;37m%}'
-
-# PROMPT SUBTITUTION
-# ------------------
-# %l - tty        %M - full machine hostname
-# %m - hostname       %n - USERNAME
-# %y - tty w/ prefix  %# - # or %
-# %? - last exit code %d,%/ - PWD
-# %~ - ~ for home etc %h,%! - history event #
-# %j - # of jobs
-#
-# %B - bold       %E - clear to EOL
-# %U - underline  %S - standout
-#
-# %([n]x.true.false) '.' is arbitrary
-# 'x' can be:
-#   ! - running with privs
-#   # - effective uid is 'n'
-#   ? exit status was 'n'
-#   C
-#   / - PWD has >= 'n' elements
-#   c
-#   .
-#   ~ - PWD with prefix replacements has >= 'n' elements
-#   D - month = 'n' (jan = 0)
-#   d - day of month = 'n'
-#   g - gid is 'n'
-#   j - # jobs >= 'n'
-#   l - 'n' chars already printed on line
-#   T - hours = 'n'
-#   t - minutes = 'n'
-#   w - day of week = 'n' (sun = 0)
-
-# looks like:
-# user@host%                [~]
-#
-# non-zero exit code:
-# -1- user@host%            [~]
-#
-# jobs running:
-# [1] user@host%            [~]
-
-eval exitCode='%(0?..${bWhiteOnRed}-%?-${none} )'
-eval dirpath='${bGreen}%(4~!.../%3~!%~)${none}'
-eval job='%(1j.${bYellow}[%j] .)'
-#hist="${whiteOnBlue}%5h${none}|"
-eval user='%(0#.${bRed}.${yellow})%n${none}'
-eval at='${blue}@${none}'
-
-case $HOSTNAME in
-Samis-MacBook)
-    host="${cyan}"
-    ;;
-
-Samis-Workstation)
-    host="${bWhite}"
-    ;;
-
-zaphod)
-    host="${bRed}"
-    ;;
-
-*)
-    host="${bGreen}"
-    ;;
-esac
-
-eval host='${host}%m${none}'
-
+# Load the prompt theme system
+autoload -U promptinit
+promptinit
+ 
 if [[ "x$INSIDE_EMACS" != "x" ]] || [[ "$EMACS" = "t" ]]; then
     export PROMPT="%d %% "
     export PAGER=cat
     export MANPAGER=cat
 else
-    PROMPT=`echo -n "${exitCode}${job}${dirpath} ${git} ${bWhite}%#${none} "`
-    RPROMPT=`echo -n "${user}${at}${host}"`
-    eval export PROMPT=$'${PROMPT}'
+    # Use my prompt theme, based on wunjo (zsh-git)
+    prompt sjs
 fi
 
 
