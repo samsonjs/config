@@ -155,8 +155,6 @@
 ;;(add-to-list 'auto-mode-alist '("\\.js$" . espresso-mode))
 (add-to-list 'auto-mode-alist '("\\.json$" . espresso-mode))
 
-(add-hook 'js2-mode-hook '(lambda () (c-subword-mode t)))
-
 
 
 ;;;;;;;;;;;;;;;;;
