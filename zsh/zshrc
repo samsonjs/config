@@ -259,14 +259,14 @@ git-pull-all-branches() {
 	echo "$pwd is not part of a git repo"
 	return
     fi
-    origbranch=$(git branch | fgrep '*' | sed -e 's/\*//')
+    origbranch=$(git branch | fgrep '*' | sed -e 's/\* //')
     bs=($@)
-    [[ -z "$bs" ]] && bs=($(git branch | sed -e 's/\*//'))
+    [[ -z "$bs" ]] && bs=($(git branch | sed -e 's/\* //'))
     for b ($bs) {
-	git checkout "$b"
-	git pull origin "$b"
+	git checkout $b
+	git pull origin $b
     }
-    git checkout "$origbranch"
+    git checkout $origbranch
 }
 
 function e() {
