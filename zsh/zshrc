@@ -167,9 +167,13 @@ alias cron='crontab -e'
 #alias dispatch-conf='sudo dispatch-conf'
 alias ec="$EDITOR ~/config/"
 alias ev="$EDITOR ~/config/vim/vimrc"
-alias ez="$EDITOR ~/config/zsh/zshrc"
+alias ez="$EDITOR $ZDOTDIR/zshrc"
+alias rz="source $ZDOTDIR/zshrc"
 
-alias hide='sudo /Developer/Tools/SetFile -a VP'
+if mac; then
+    alias hide='sudo /Developer/Tools/SetFile -a VP'
+fi
+
 alias mkdir='nocorrect mkdir'      # don't correct spelling for 'mkdir'
 alias mv='nocorrect mv'            # don't correct spelling for 'mv'
 #alias ns='newscript'
@@ -185,7 +189,9 @@ alias u2='uu'
 alias u3='uuu'
 alias u4='uuuu'
 
-alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --allow-file-access-from-files >/dev/null 2>&1 &!'
+if mac; then
+    alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --allow-file-access-from-files >/dev/null 2>&1 &!'
+fi
 
 # ls Aliases 
 # ----------------
