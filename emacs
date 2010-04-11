@@ -270,8 +270,10 @@
 ;; textmate mode ;;
 ;;;;;;;;;;;;;;;;;;;
 
-(require 'textmate)
-(textmate-mode)				; always on
+;; disabled. ruins C-x C-f
+;
+;(require 'textmate)
+;(textmate-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;; drag stuff mode ;;
