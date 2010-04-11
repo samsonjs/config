@@ -238,6 +238,7 @@ alias glo='git log --oneline'
 alias gls='git log --stat'
 alias g='git grep'
 alias m='git merge'
+alias pab='git-pull-all-branches'
 alias r='git remote'
 alias ra='git remote add'
 alias s='git status'
@@ -247,27 +248,19 @@ if mac; then
     alias -g apache2ctl=/opt/local/apache2/bin/apachectl
 fi
 
-function svnst() {
-    tmpfile=/tmp/svn-stat.$$
-    [[ -f $tmpfile ]] && rm -f $tmpfile
-    svn stat
-    svn diff > $tmpfile
-    typeset -i added deled delta
-    added=`grep '^+' $tmpfile | wc -l`
-    deled=`grep '^-' $tmpfile | wc -l`
-    delta=$((added - deled))
-    if [[ delta -gt 0 ]]; then
-        delta_w=added
-        delta_sym='+'
-    else
-        delta_w=deleted
-        delta_sym='-'
-        delta=$((0 - delta))
+git-pull-all-branches() {
+    if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+	echo "$pwd is not part of a git repo"
+	return
     fi
-    echo "  + ${added} lines"
-    echo "  - ${deled} lines"
-    echo "= ${delta_sym} ${delta} lines"
-    rm -f $tmpfile
+    origbranch=$(git branch | fgrep '*' | sed -e 's/\*//')
+    bs=($@)
+    [[ -z "$bs" ]] && bs=($(git branch | sed -e 's/\*//'))
+    for b ($bs) {
+	git checkout "$b"
+	git pull origin "$b"
+    }
+    git checkout "$origbranch"
 }
 
 function e() {
