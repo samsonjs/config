@@ -244,7 +244,7 @@ alias glo='git log --oneline'
 alias gls='git log --stat'
 alias g='git grep'
 alias m='git merge'
-alias pab='git-pull-all-branches'
+alias pob='git-pull-origin-branches'
 alias r='git remote'
 alias ra='git remote add'
 alias s='git status'
@@ -254,17 +254,19 @@ if mac; then
     alias -g apache2ctl=/opt/local/apache2/bin/apachectl
 fi
 
-git-pull-all-branches() {
+git-pull-origin-branches() {
     if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
 	echo "$pwd is not part of a git repo"
 	return
     fi
     origbranch=$(git branch | fgrep '*' | sed -e 's/\* //')
-    bs=($@)
-    [[ -z "$bs" ]] && bs=($(git branch | sed -e 's/\* //'))
-    for b ($bs) {
-	git checkout $b
-	git pull origin $b
+    branches=($@)
+    [[ -z "$branches" ]] && branches=($(git branch | sed -e 's/\* //'))
+    remote_branches=($(git branch -r | fgrep 'origin/' | fgrep -v HEAD | sed -e 's/\* //' -e 's#origin/##'))
+    for branch ($branches) {
+	[[ -z "${remote_branches[(r)$branch]}" ]] && continue
+	git checkout $branch
+	git pull origin $branch
     }
     git checkout $origbranch
 }
