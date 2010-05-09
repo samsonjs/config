@@ -9,6 +9,13 @@
 ;; don't litter my filesystem with ~ files!
 (setq make-backup-files nil)
 
+;; map cmd to meta (Emacs.app 23.2)
+(when macosx-p
+  (setq mac-option-key-is-meta nil)
+  (setq mac-command-key-is-meta t)
+  (setq mac-command-modifier 'meta)
+  (setq mac-option-modifier nil))
+
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; setup load paths ;;
 ;;;;;;;;;;;;;;;;;;;;;;
@@ -346,8 +353,6 @@
 ;; web searches
 (global-set-key "\C-zwg" 'web-search-google)
 (global-set-key "\C-zww" 'web-search-wikipedia)
-(global-set-key "\C-zwih" 'web-search-iso-hunt)
-(global-set-key "\C-zwpb" 'web-search-pirate-bay)
 
 ;; extend Emacs' default key binding space
 (global-set-key "\C-x\C-b" 'bs-show)    ; use the buffer list buffer menu
