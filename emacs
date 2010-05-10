@@ -1,20 +1,12 @@
+;;;
+;;; sjs' emacs config
+;;;
+
+
 ;; feel out the system
 (defvar macosx-p (string-match "darwin" (symbol-name system-type)))
 (defvar linux-p (string-match "gnu/linux" (symbol-name system-type)))
 
-;; disable splash screen and startup message
-(setq inhibit-startup-message t)
-;(setq initial-scratch-message nil)
-
-;; don't litter my filesystem with ~ files!
-(setq make-backup-files nil)
-
-;; map cmd to meta (Emacs.app 23.2)
-(when macosx-p
-  (setq mac-option-key-is-meta nil)
-  (setq mac-command-key-is-meta t)
-  (setq mac-command-modifier 'meta)
-  (setq mac-option-modifier nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; setup load paths ;;
@@ -29,6 +21,65 @@
 (let ((load-paths '("~/.emacs.d" "~/.emacs.d/icicles")))
   (mapcar 'add-to-load-path load-paths))
 
+
+;;;;;;;;;;;;;;;;;;;
+;; global config ;;
+;;;;;;;;;;;;;;;;;;;
+
+(setq inhibit-startup-message t)
+(setq make-backup-files nil)
+(global-subword-mode 1)
+
+;; map cmd to meta (Emacs.app 23.2)
+(when macosx-p
+  (setq mac-option-key-is-meta nil)
+  (setq mac-command-key-is-meta t)
+  (setq mac-command-modifier 'meta)
+  (setq mac-option-modifier 'super))
+
+;; keep a list of recently visited files
+(require 'recentf)
+(recentf-mode 1)
+
+;; remember my position in files
+(require 'saveplace)
+(setq-default save-place t)
+
+;; always highlight syntax
+(global-font-lock-mode t)
+(setq font-lock-maximum-decoration t)   ; highlight liberally
+
+(autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+
+;; always start emacs server
+(server-start)
+
+;; setup tramp mode
+(setq tramp-default-method "ssh")
+
+;; complete like zsh's complete-in-word option (p-b expands to print-buffer)
+(load "complete")
+
+;; show the date & time in the mode line
+(setq display-time-day-and-date t)
+(display-time)
+
+(setq track-eol t)               ; When at EOL, C-n and C-p move to EOL on other lines
+(setq indent-tabs-mode nil)      ; never insert tabs
+
+;; highlight the current line
+(global-hl-line-mode 1)
+ 
+;; To customize the background color
+(set-face-background 'hl-line "#330")
+
+
+;;;;;;;;;;;;;
+;; minimap ;;
+;;;;;;;;;;;;;
+
+(require 'minimap)
 
 ;;;;;;;
 ;; c ;;
@@ -81,8 +132,7 @@
   (setq tab-width 8
         ;; this will make sure spaces are used instead of tabs
         indent-tabs-mode nil)
-  (c-toggle-auto-newline 1)
-  (c-subword-mode t))
+  (c-toggle-auto-newline 1))
 ;;   (setq skeleton-pair t)
 ;;   (setq skeleton-autowrap t)
 ;;   (let ((chars '("'" "\"" "(" "[" "{")))
@@ -121,11 +171,11 @@
 (add-hook 'ruby-mode-hook
      '(lambda ()
          (inf-ruby-keys)
-	 (ruby-electric-mode)
-	 (c-subword-mode t)))
+	 (ruby-electric-mode)))
 (autoload 'rubydb "rubydb3x" "Ruby debugger" t)
 
 (add-to-list 'auto-mode-alist '(".irbrc$" . ruby-mode))
+
 
 ;;;;;;;;;;;;;
 ;; haskell ;;
@@ -155,7 +205,6 @@
 (add-to-list 'auto-mode-alist '("Jakefile$" . js2-mode))
 (add-hook 'js2-mode-hook '(lambda ()
 			    (local-set-key "\C-m" 'newline)
-			     (c-subword-mode t)
 			     (setq indent-tabs-mode nil)))
 
 (autoload #'espresso-mode "espresso" "Start espresso-mode" t)
@@ -218,8 +267,6 @@
 (autoload 'whitespace-mode "whitespace"
   "Toggle whitespace visualization." t)
 
-(add-hook 'python-mode-hook '(lambda ()
-			        (c-subword-mode t)))
 
 ;;;;;;;;;;;;
 ;; erlang ;;
@@ -229,6 +276,7 @@
 (setq erlang-root-dir "/opt/local/lib/erlang/otp")
 (setq exec-path (cons "/opt/local/lib/erlang/bin" exec-path))
 (require 'erlang-start)
+
 
 ;;;;;;;;;;;;
 ;; markup ;;
@@ -240,14 +288,6 @@
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
-
-;; keep a list of recently visited files
-(require 'recentf)
-(recentf-mode 1)
-
-;; remember my position in files
-(require 'saveplace)
-(setq-default save-place t)
 
 
 ;;;;;;;;;;;;;;;;;;;;;
@@ -273,86 +313,28 @@
 (add-hook 'inferior-scheme-mode-hook (lambda () (inferior-slime-mode t)))
 
 
-;;;;;;;;;;;;;;;;;;;
-;; textmate mode ;;
-;;;;;;;;;;;;;;;;;;;
-
-;; disabled. ruins C-x C-f
-;
-;(require 'textmate)
-;(textmate-mode)
-
-;;;;;;;;;;;;;;;;;;;;;
-;; drag stuff mode ;;
-;;;;;;;;;;;;;;;;;;;;;
-
-;; (add-to-list 'load-path "~/config/emacs.d/drag-stuff")
-;; (require 'drag-stuff)
-;; (drag-stuff-mode t)			; always on
-
-
-;;;;;;;;;;;;;;;;;;;;
-;; customizations ;;
-;;;;;;;;;;;;;;;;;;;;
-
-;; always start emacs server
-(server-start)
-
-;; setup tramp mode
-(setq tramp-default-method "ssh")
-
-;; complete like zsh's complete-in-word option (p-b expands to print-buffer)
-(load "complete")
-
-;; show the date & time in the mode line
-(setq display-time-day-and-date t)
-(display-time)
-
-(setq track-eol t)               ; When at EOL, C-n and C-p move to EOL on other lines
-(setq indent-tabs-mode nil)      ; never insert tabs
-
-;; ah, now I can read the text I'm supposed to correct
-;; (progn
-;;   (set-face-background 'flymake-errline "red4")
-;;   (set-face-background 'flymake-warnline "dark slate blue"))
-
-;; highlight the current line
-(global-hl-line-mode 1)
- 
-;; To customize the background color
-(set-face-background 'hl-line "#330")
-
 ;;;;;;;;;;;;;;;;;;
 ;; key bindings ;;
 ;;;;;;;;;;;;;;;;;;
-;; TODO add these only to appropriate modes
+
+;; can't seem to un-hijack cmd-`, so make it do something useful
+(global-set-key "\M-`" 'other-window)
 
 ;; custom key bindings under a common prefix
 (global-set-key "\C-z" nil)             ; Suspend is useless. Give me C-z!
-(global-set-key "\C-zf" 'find-file-at-point)
-(global-set-key "\C-zz" 'shell)         ; z for zsh
-(global-set-key "\C-zl" 'duplicate-line)
-(global-set-key "\C-zg" 'goto-line)
-(global-set-key "\C-zr" 'query-replace-regexp)
-(global-set-key "\C-z\C-r" 'reload-dot-emacs)
 (global-set-key "\C-zc" 'comment-line)
+(global-set-key "\C-zf" 'find-file-at-point)
+(global-set-key "\C-zg" 'goto-line)
 (global-set-key "\C-zj" 'run-js)
+(global-set-key "\C-zl" 'duplicate-line)
+(global-set-key "\C-zm" 'minimap-create)
+(global-set-key "\C-zM" 'minimap-kill)
+(global-set-key "\C-zr" 'query-replace-regexp)
 (global-set-key "\C-zs" 'run-scheme)
+(global-set-key "\C-zt" 'tagify-region-or-insert-tag)
+(global-set-key "\C-zz" 'shell)         ; z for zsh
+(global-set-key "\C-z\C-r" 'reload-dot-emacs)
 (global-set-key "\C-z\C-t" 'totd)
-(global-set-key [f5] 'compile)
-
-;; *** only do this for specific modes?
-;; help out a TextMate junkie
-;; (setq skeleton-pair t)
-;; (setq skeleton-autowrap t)
-
-;; (let ((chars '("'" "\"" "`" "(" "[" "{")))
-;;   (mapcar (lambda (char)
-;;             (global-set-key char 'skeleton-pair-insert-maybe)) chars))
-
-;; web searches
-(global-set-key "\C-zwg" 'web-search-google)
-(global-set-key "\C-zww" 'web-search-wikipedia)
 
 ;; extend Emacs' default key binding space
 (global-set-key "\C-x\C-b" 'bs-show)    ; use the buffer list buffer menu
@@ -365,13 +347,10 @@
 
 ;; wrap a region with an HTML/XML tag
 (global-set-key "<"  'tagify-region-or-insert-self)
-(global-set-key "\C-zt" 'tagify-region-or-insert-tag)
 
-;; XXX:todo need a version of this that inserts a line terminator as well
-;; Use C-j!
-;;(global-set-key [M-return] 'move-end-of-line-insert-newline)
+(global-set-key [f5] 'compile)
 
-;; saved macros
+;; utilities
 
 (defun duplicate-line (&optional arg)
     "Duplicate the current line."
@@ -391,7 +370,6 @@
      (interactive "p")
      (kmacro-call-macro (quote ([1 67108896 14 134217787 16] 0 "%d")) arg)))
 
-;; function definitions
 
 ;; Reload the .emacs file with a minimum of effort,
 ;; first saving histories with Persistent
@@ -436,13 +414,6 @@
 ;; (color-theme-tty-dark)
 ))
 
-;; always highlight syntax
-(global-font-lock-mode t)
-(setq font-lock-maximum-decoration t)   ; highlight liberally
-
-(autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
-(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-
 (defun totd ()
   (interactive)
   (with-output-to-temp-buffer "*Tip of the day*"
@@ -477,6 +448,8 @@
  '(js2-highlight-level 3)
  '(js2-mode-escape-quotes nil)
  '(js2-strict-inconsistent-return-warning nil)
+ '(minimap-always-recenter nil)
+ '(minimap-display-semantic-overlays t)
  '(mojo-build-directory "~/Projects/brighthouse/webOS/build")
  '(mojo-debug nil)
  '(mojo-project-directory "~/Projects/brighthouse/webOS")
@@ -503,4 +476,4 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- )
+ '(minimap-font-face ((default (:height 30 :family "DejaVu Sans Mono")) (nil nil))))
