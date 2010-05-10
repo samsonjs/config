@@ -72,7 +72,7 @@
 (global-hl-line-mode 1)
  
 ;; To customize the background color
-(set-face-background 'hl-line "#330")
+(set-face-background 'hl-line "#191919")
 
 
 ;;;;;;;;;;;;;
@@ -321,6 +321,7 @@
 (global-set-key "\M-`" 'other-window)
 
 ;; custom key bindings under a common prefix
+(global-unset-key "\C-z")
 (global-set-key "\C-z" nil)             ; Suspend is useless. Give me C-z!
 (global-set-key "\C-zc" 'comment-line)
 (global-set-key "\C-zf" 'find-file-at-point)
