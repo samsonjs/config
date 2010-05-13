@@ -68,13 +68,6 @@
 (setq track-eol t)               ; When at EOL, C-n and C-p move to EOL on other lines
 (setq indent-tabs-mode nil)      ; never insert tabs
 
-;; highlight the current line
-(global-hl-line-mode 1)
- 
-;; To customize the background color
-(set-face-background 'hl-line "#131310")
-(set-face-foreground 'hl-line "#fbb")
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; minimap
