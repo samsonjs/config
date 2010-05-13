@@ -8,9 +8,9 @@
 (defvar linux-p (string-match "gnu/linux" (symbol-name system-type)))
 
 
-;;;;;;;;;;;;;;;;;;;;;;
-;; setup load paths ;;
-;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; setup load paths 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun add-to-load-path (file)
   "Add FILE to `load-path' if it is readable."
@@ -22,9 +22,9 @@
   (mapcar 'add-to-load-path load-paths))
 
 
-;;;;;;;;;;;;;;;;;;;
-;; global config ;;
-;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; global config
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq inhibit-startup-message t)
 (setq make-backup-files nil)
@@ -72,18 +72,30 @@
 (global-hl-line-mode 1)
  
 ;; To customize the background color
-(set-face-background 'hl-line "#191919")
+(set-face-background 'hl-line "#131310")
+(set-face-foreground 'hl-line "#fbb")
 
 
-;;;;;;;;;;;;;
-;; minimap ;;
-;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; minimap
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'minimap)
 
-;;;;;;;
-;; c ;;
-;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; c
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(setq c-mode-hook
+    (function (lambda ()
+                (setq indent-tabs-mode nil)
+                (setq c-indent-level 4))))
+
+(setq objc-mode-hook
+    (function (lambda ()
+                (setq indent-tabs-mode nil)
+                (setq c-indent-level 4))))
 
 ;; Make a non-standard key binding.  We can put this in
 ;; c-mode-base-map because c-mode-map, c++-mode-map, and so on,
@@ -92,35 +104,16 @@
   (define-key c-mode-base-map "\r" 'newline-and-indent)) ; auto indent after inserting newline
 (add-hook 'c-initialization-hook 'sjs-c-initialization-hook)
 
-;; offset customizations not in my-c-style
-;; This will take precedence over any setting of the syntactic symbol
-;; made by a style.
-;; (setq c-offsets-alist '((member-init-intro . ++)))
-
 ;; Create my personal style.
 (defconst my-c-style
   '("linux"
     (c-tab-always-indent        . t)
     (c-basic-offset             . 4)
-;;     (c-comment-only-line-offset . 4)
-;;     (c-hanging-braces-alist     . ((substatement-open after)
-;;                                    (brace-list-open)))
-;;     (c-hanging-colons-alist     . ((member-init-intro before)
-;;                                    (inher-intro)
-;;                                    (case-label after)
-;;                                    (label after)
-;;                                    (access-label after)))
-    (c-cleanup-list             . (list-close-comma
-                                   compact-empty-funcall
-                                   one-liner-defun
-                                   defun-close-semi))
-;;     (c-offsets-alist            . ((arglist-close . c-lineup-arglist)
-;;                                    (substatement-open . 0)
-;;                                    (case-label        . 4)
-;;                                    (block-open        . 0)
-;;                                    (knr-argdecl-intro . -)))
-;;     (c-echo-syntactic-information-p . t)
-    )
+    (c-cleanup-list             . (brace-else-brace
+				   brace-elseif-brace
+				   brace-catch-brace
+				   empty-defun-braces
+				   defun-close-semi)))
   "how sjs likes his C")
 (c-add-style "sjs" my-c-style)
 
@@ -129,9 +122,11 @@
   ;; set my personal style for the current buffer
   (c-set-style "sjs")
   ;; other customizations
-  (setq tab-width 8
+  (setq tab-width 4
         ;; this will make sure spaces are used instead of tabs
-        indent-tabs-mode nil)
+        indent-tabs-mode nil
+	c-syntactic-indentation t
+        c-tab-always-indent t)
   (c-toggle-auto-newline 1))
 ;;   (setq skeleton-pair t)
 ;;   (setq skeleton-autowrap t)
@@ -141,9 +136,9 @@
 (add-hook 'c-mode-common-hook 'sjs-c-mode-common-hook)
 
 
-;;;;;;;;;;;
-;; shell ;;
-;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; shell
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; chmod u+x files that have a shebang line
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
@@ -153,9 +148,9 @@
 
 
 
-;;;;;;;;;;
-;; ruby ;;
-;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ruby
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Based on http://infolab.stanford.edu/~manku/dotemacs.html
 (autoload 'ruby-mode "ruby-mode"
@@ -177,17 +172,17 @@
 (add-to-list 'auto-mode-alist '(".irbrc$" . ruby-mode))
 
 
-;;;;;;;;;;;;;
-;; haskell ;;
-;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; haskell
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; (if (file-readable-p "~/.emacs.d/haskell/haskell-site-file.el")
 ;;   (load "~/.emacs.d/haskell/haskell-site-file.el" nil t))
 
 
-;;;;;;;;;;;
-;; rails ;;
-;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; rails
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;(require 'rails)
 
@@ -196,9 +191,9 @@
 (require 'tagify)
 
 
-;;;;;;;;;;;;;;;;
-;; javascript ;;
-;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; javascript
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (autoload 'js2-mode "js2-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
@@ -213,9 +208,9 @@
 
 
 
-;;;;;;;;;;;;;;;;;
-;; objective j ;;
-;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; objective j
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'objj-mode)
 
@@ -228,13 +223,16 @@
 ;;   (c-add-style "objc" sjs-objc-style)
   (setq tab-width 4
 	c-basic-offset tab-width
-        c-hanging-semi&comma-criteria nil))
+	c-hanging-semi&comma-criteria nil
+	c-indent-level tab-width
+	indent-tabs-mode nil
+	c-offsets-alist '((statement-cont . *))))
 (add-hook 'objc-mode-hook 'my-objc-mode-hook)
 
 
-;;;;;;;;;;;;;;;;;;
-;; mojo (webOS) ;;
-;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; mojo (webos)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'mojo)
 
@@ -243,9 +241,9 @@
 (mojo-setup-mode-hooks 'css-mode-hook 'js2-mode-hook 'espresso-mode-hook 'html-mode-hook)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;
-;; inferior javascript ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; inferior javascript
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'js-comint)
 ;(setq inferior-js-program-command "/usr/local/bin/v8")
@@ -259,18 +257,18 @@
 			    ))
 
 
-;;;;;;;;;;;;
-;; python ;;
-;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; python
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; handy but ugly as fuck
 (autoload 'whitespace-mode "whitespace"
   "Toggle whitespace visualization." t)
 
 
-;;;;;;;;;;;;
-;; erlang ;;
-;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; erlang
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq load-path (cons "/opt/local/lib/erlang/lib/tools-2.6.5/emacs" load-path))
 (setq erlang-root-dir "/opt/local/lib/erlang/otp")
@@ -278,9 +276,9 @@
 (require 'erlang-start)
 
 
-;;;;;;;;;;;;
-;; markup ;;
-;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; markup
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; (require 'textile-mode)
 ;; (add-to-list 'auto-mode-alist '("\\.textile\\'" . textile-mode))
@@ -289,10 +287,9 @@
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
 
-
-;;;;;;;;;;;;;;;;;;;;;
-;; lisp and scheme ;;
-;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; lisp and scheme
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; recognize my non-standard emacs config location
 (add-to-list 'auto-mode-alist '("config/emacs$" . emacs-lisp-mode))
@@ -313,9 +310,9 @@
 (add-hook 'inferior-scheme-mode-hook (lambda () (inferior-slime-mode t)))
 
 
-;;;;;;;;;;;;;;;;;;
-;; key bindings ;;
-;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; key bindings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; can't seem to un-hijack cmd-`, so make it do something useful
 (global-set-key "\M-`" 'other-window)
@@ -351,7 +348,10 @@
 
 (global-set-key [f5] 'compile)
 
-;; utilities
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; utilities customizations
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun duplicate-line (&optional arg)
     "Duplicate the current line."
@@ -401,18 +401,9 @@
       (require 'color-theme)
 
 ;; dark themes
-;; (color-theme-arjen)             ;; easy on the eyes, but sucks for Ruby
-;; (color-theme-billw)          ;; bright yellow and white, decent for Ruby
-;; (color-theme-charcoal-black) ;; pastels, low contrast, decent for Ruby
-;; (color-theme-dark-laptop)    ;; red comments, so-so, decent for Ruby
-;; (color-theme-euphoria)               ;; pink and green, not too shabby
-;; (color-theme-ld-dark)                ;; easy on the eyes, low contrast, not bad
-(color-theme-midnight)               ;; pretty nice, but very basic, good for Ruby
-;; (color-theme-pok-wob)                ;; white and yellow, kind of lame
-;; (color-theme-simple-1)               ;; red comments, white text
-;; (color-theme-taming-mr-arneson) ;; blue text, red comments, status bar blends into document
-;; (color-theme-taylor)            ;; beige text, orange comments
-;; (color-theme-tty-dark)
+;; (color-theme-charcoal-black) ;; pastels, low contrast ***
+;; (color-theme-midnight)       ;; grey comments, so-so ***
+(color-theme-taylor)            ;; beige text, orange comments ****
 ))
 
 (defun totd ()
