@@ -372,14 +372,14 @@ switch to that frame first using `select-frame-set-input-focus'.
 
 If N is non-nil switch to the nth next window."
   (interactive "p")
-  (let ((window (next-window (selected-window) nil 'visible)))
-    (when (not (member window (window-list)))
-      (dolist (frame (delq (selected-frame) (frame-list)))
-	(when (member window (window-list frame))
-	  (select-frame-set-input-focus frame))))
-    (select-window window))
-    (unless (= 1 arg)
-      (other-window-in-any-frame (- arg 1))))
+  (while (> arg 0)
+    (let ((window (next-window (selected-window) nil 'visible)))
+      (when (not (member window (window-list)))
+        (dolist (frame (delq (selected-frame) (frame-list)))
+          (when (member window (window-list frame))
+            (select-frame-set-input-focus frame))))
+      (select-window window))
+    (decf arg)))
 
 ;; Reload the .emacs file with a minimum of effort,
 ;; first saving histories with Persistent
