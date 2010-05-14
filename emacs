@@ -308,7 +308,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; can't seem to un-hijack cmd-`, so make it do something useful
-(global-set-key "\M-`" 'other-window)
+(global-set-key "\M-`" 'other-window-in-any-frame)
 
 ;; custom key bindings under a common prefix
 (global-unset-key "\C-z")
@@ -343,8 +343,14 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; utilities customizations
+;; utilities & customizations
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(fset 'comment-line
+   (lambda (&optional arg)
+     "Comment or uncomment the current line using `comment-dwim'."
+     (interactive "p")
+     (kmacro-call-macro (quote ([1 67108896 14 134217787 16] 0 "%d")) arg)))
 
 (defun duplicate-line (&optional arg)
     "Duplicate the current line."
@@ -358,12 +364,22 @@
 	  (newline)
 	  (insert txt)))))
 
-(fset 'comment-line
-   (lambda (&optional arg)
-     "Comment or uncomment the current line using `comment-dwim'."
-     (interactive "p")
-     (kmacro-call-macro (quote ([1 67108896 14 134217787 16] 0 "%d")) arg)))
+;; switch to the next window, in any visible frame
+(defun other-window-in-any-frame (&optional arg)
+  "Switch to the next window using `next-window', with ALL-FRAMES
+set to 'visible.  If the next window is on a different frame
+switch to that frame first using `select-frame-set-input-focus'.
 
+If N is non-nil switch to the nth next window."
+  (interactive "p")
+  (let ((window (next-window (selected-window) nil 'visible)))
+    (when (not (member window (window-list)))
+      (dolist (frame (delq (selected-frame) (frame-list)))
+	(when (member window (window-list frame))
+	  (select-frame-set-input-focus frame))))
+    (select-window window))
+    (unless (= 1 arg)
+      (other-window-in-any-frame (- arg 1))))
 
 ;; Reload the .emacs file with a minimum of effort,
 ;; first saving histories with Persistent
