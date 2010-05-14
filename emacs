@@ -68,7 +68,6 @@
 (setq track-eol t)               ; When at EOL, C-n and C-p move to EOL on other lines
 (setq indent-tabs-mode nil)      ; never insert tabs
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; minimap
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -218,8 +217,8 @@
 	c-basic-offset tab-width
 	c-hanging-semi&comma-criteria nil
 	c-indent-level tab-width
-	indent-tabs-mode nil
-	c-offsets-alist '((statement-cont . *))))
+	indent-tabs-mode nil))
+;;	c-offsets-alist '((statement-cont . *))))
 (add-hook 'objc-mode-hook 'my-objc-mode-hook)
 
 
