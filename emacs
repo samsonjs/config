@@ -17,10 +17,6 @@
   (if (file-readable-p file)
       (add-to-list 'load-path file)))
 
-;; use icicles for enhanced minibuffer completion and lots of other goodies
-(let ((load-paths '("~/.emacs.d" "~/.emacs.d/icicles")))
-  (mapcar 'add-to-load-path load-paths))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; global config
@@ -56,7 +52,7 @@
 (server-start)
 
 ;; setup tramp mode
-(setq tramp-default-method "ssh")
+;; (setq tramp-default-method "ssh")
 
 ;; complete like zsh's complete-in-word option (p-b expands to print-buffer)
 (load "complete")
@@ -67,6 +63,15 @@
 
 (setq track-eol t)               ; When at EOL, C-n and C-p move to EOL on other lines
 (setq indent-tabs-mode nil)      ; never insert tabs
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; textmate mode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require 'textmate)
+(textmate-mode)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; minimap
@@ -137,7 +142,6 @@
 
 (add-to-list 'auto-mode-alist '("zshenv$" . sh-mode))
 (add-to-list 'auto-mode-alist '("zshrc$" . sh-mode))
-
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -435,12 +439,12 @@ If N is non-nil switch to the nth next window."
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(blink-cursor-mode nil)
  '(c-hanging-semi&comma-criteria (quote set-from-style))
  '(case-fold-search t)
  '(column-number-mode t)
  '(current-language-environment "UTF-8")
  '(default-input-method "rfc1345")
+ '(display-time-mode t)
  '(face-font-family-alternatives (quote (("bistream vera sans mono" "courier" "fixed") ("helv" "helvetica" "arial" "fixed"))))
  '(global-font-lock-mode t nil (font-lock))
  '(icicle-reminder-prompt-flag 5)
@@ -457,8 +461,7 @@ If N is non-nil switch to the nth next window."
  '(save-place t nil (saveplace))
  '(scroll-bar-mode nil)
  '(show-paren-mode t nil (paren))
- '(tool-bar-mode nil)
- '(transient-mark-mode t))
+ '(tool-bar-mode nil))
 
 (if linux-p
     (custom-set-faces
