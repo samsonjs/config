@@ -1,29 +1,35 @@
-# contents: zsh(1) user RC file.
-# this file is sourced by all interactive shells
+# sniff out the platform
+uname=`uname -s`
+function linux() { [[ "$uname" = "Linux"  ]] }
+function mac()   { [[ "$uname" = "Darwin" ]] }
+
 
 # 1. Environment Vars
 # ===================
 
 export RIAK=~/Projects/ssa/riak/riak/rel/riak
 export CAPP_BUILD=~/Projects/ssa/cappuccino/cappuccino/Build
-export NARWHAL_ENGINE=jsc
+if mac; then
+    export NARWHAL_ENGINE=jsc
+fi
 
 export LC_ALL="en_CA.UTF-8"
 export LANG="en_CA.UTF-8"
 
 cdpath=(~)
 
-uname=`uname -s`
-function linux() { [[ "$uname" = "Linux"  ]] }
-function mac()   { [[ "$uname" = "Darwin" ]] }
-
 HOSTNAME=`hostname -s`
 KEYCHAIN_HOST=`hostname`
 
-export PAGER=`which less`
-# most has great colours for man pages
-if which most >/dev/null 2>&1; then
-    export MANPAGER=`which most`
+if [[ "x$INSIDE_EMACS" != "x" ]] || [[ "$EMACS" = "t" ]]; then
+    export PAGER=cat
+    export MANPAGER=cat
+else
+    export PAGER=`which less`
+    # most has great colours for man pages
+    if which most >/dev/null 2>&1; then
+	export MANPAGER=`which most`
+    fi
 fi
 
 # default editors
@@ -36,10 +42,11 @@ elif linux; then
   export VISUAL="emacs"
 fi
 
+
 # 2. Limits
 # =========
-#limit coredumpsize        30m          # limit core dumps to 30mb
-limit stacksize            8m          # limit stack to 8mb
+# limit coredumpsize        30m          # limit core dumps to 30mb
+# limit stacksize            8m          # limit stack to 8mb
 
 # 3. Shell Options
 # ================
@@ -145,14 +152,9 @@ bindkey '\ep' history-beginning-search-backward
 autoload -U promptinit
 promptinit
  
-if [[ "x$INSIDE_EMACS" != "x" ]] || [[ "$EMACS" = "t" ]]; then
-    export PROMPT="%d %% "
-    export PAGER=cat
-    export MANPAGER=cat
-else
-    # Use my prompt theme, based on wunjo (zsh-git)
-    prompt sjs
-fi
+# Use my prompt theme, based on wunjo (zsh-git)
+prompt sjs
+
 
 
 # 7. Aliases
@@ -216,43 +218,30 @@ alias lld='ls -dl'
 alias irb='irb --readline -r irb/completion'
 alias rii='ri -Tf ansi'
 
-# rails
-alias ss='./script/server'
-alias sc='./script/console'
-alias km='kill `cat tmp/pids/mongrel.pid`'
-
-# svn
-alias sup='svn update'
-alias sst='svn status -u'
-alias scom='svn commit'
-alias slog='svn log | less'
-
 # git
 alias a='git add'
 alias ap='git add -p'
 alias b='git branch'
 alias bt='git branch --track'
-_bto() { git branch --track "$1" origin/"$1" }
-alias bto='_bto'
+alias bto='git-branch-track-origin'
 alias c='git commit'
 alias co='git checkout'
 alias d='git diff'
 alias dc='git diff --cached'
 alias ds='git diff --stat'
+alias g='git grep'
 alias gl='git log'
 alias glo='git log --oneline'
 alias gls='git log --stat'
-alias g='git grep'
+alias gpr='git pull --rebase'
 alias m='git merge'
 alias pob='git-pull-origin-branches'
 alias r='git remote'
+alias rbi='git rebase -i'
 alias ra='git remote add'
 alias s='git status'
 
-# macports apachectl
-if mac; then
-    alias -g apache2ctl=/opt/local/apache2/bin/apachectl
-fi
+git-branch-track-origin() { git branch --track "$1" origin/"$1" }
 
 git-pull-origin-branches() {
     if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
@@ -270,6 +259,11 @@ git-pull-origin-branches() {
     }
     git checkout $origbranch
 }
+
+# macports apachectl
+if mac; then
+    alias -g apache2ctl=/opt/local/apache2/bin/apachectl
+fi
 
 function e() {
     "$EDITOR" "$@" >/dev/null &!
