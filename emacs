@@ -314,9 +314,10 @@
 (global-set-key "\M-`" 'other-window-in-any-frame)
 
 ;; custom key bindings under a common prefix
+;; (Suspend is useless. Give me C-z!)
 (global-unset-key "\C-z")
-(global-set-key "\C-z" nil)             ; Suspend is useless. Give me C-z!
-(global-set-key "\C-zc" 'comment-line)
+(global-set-key "\C-z" nil)
+(global-set-key "\C-zc" 'compile)
 (global-set-key "\C-zf" 'find-file-at-point)
 (global-set-key "\C-zg" 'goto-line)
 (global-set-key "\C-zj" 'run-js)
@@ -324,6 +325,7 @@
 (global-set-key "\C-zm" 'minimap-create)
 (global-set-key "\C-zM" 'minimap-kill)
 (global-set-key "\C-zr" 'query-replace-regexp)
+(global-set-key "\C-zR" 'revert-buffer-without-confirmation)
 (global-set-key "\C-zs" 'run-scheme)
 (global-set-key "\C-zt" 'tagify-region-or-insert-tag)
 (global-set-key "\C-zz" 'shell)         ; z for zsh
@@ -342,18 +344,22 @@
 ;; wrap a region with an HTML/XML tag
 (global-set-key "<"  'tagify-region-or-insert-self)
 
-(global-set-key [f5] 'compile)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; utilities & customizations
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(fset 'comment-line
-   (lambda (&optional arg)
-     "Comment or uncomment the current line using `comment-dwim'."
-     (interactive "p")
-     (kmacro-call-macro (quote ([1 67108896 14 134217787 16] 0 "%d")) arg)))
+;; now, how can I call this automatically when a file is changed out
+;; from under a buffer?  (like textmate)
+(defun revert-buffer-without-confirmation (&optional prefix)
+  "If the current buffer has no unsaved changes, revert it
+ without confirmation, and ignoring auto-save files.  If there
+ are unsaved changes then revert with confirmation."
+  (interactive "P")
+  (let ((no-confirm (or prefix
+			(not (buffer-modified-p)))))
+    (revert-buffer t no-confirm)
+    (when no-confirm (message (concat "Reverted " (buffer-name))))))
 
 (defun duplicate-line (&optional arg)
     "Duplicate the current line."

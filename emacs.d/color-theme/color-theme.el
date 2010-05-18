@@ -4610,7 +4610,7 @@ Wheat on black.  Includes faces for font-lock, gnus, paren."
   (interactive)
   (color-theme-install
    '(color-theme-taylor
-     ((background-color . "black")
+     ((background-color . "#111")
       (background-mode . dark)
       (border-color . "black")
       (cursor-color . "red")
