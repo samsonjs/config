@@ -17,6 +17,7 @@
   (if (file-readable-p file)
       (add-to-list 'load-path file)))
 
+(add-to-load-path "~/config/emacs.d")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; global config
