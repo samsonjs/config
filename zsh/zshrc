@@ -34,12 +34,15 @@ fi
 
 # default editors
 if mac; then
-  export EDITOR="emacsclient"
-  export VISUAL="emacsclient"
-  export MANPATH="/opt/local/lib/erlang/man:$MANPATH"
+    # wtf, you must be kidding
+    alias emacsclient="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient \
+                       -s \$(find /var/folders -name server -type s -uid $(id -u) 2>| /dev/null | grep emacs) \$*"
+    export EDITOR="emacsclient"
+    export VISUAL="emacsclient"
+    export MANPATH="/opt/local/lib/erlang/man:$MANPATH"
 elif linux; then
-  export EDITOR="emacs -nw"
-  export VISUAL="emacs"
+    export EDITOR="emacs -nw"
+    export VISUAL="emacs"
 fi
 
 
