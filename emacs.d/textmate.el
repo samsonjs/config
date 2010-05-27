@@ -272,6 +272,11 @@ Symbols matching the text at point are put first in the completion list."
            (position (cdr (assoc selected-symbol name-and-pos))))
       (goto-char (if (overlayp position) (overlay-start position) position)))))
 
+;; this is from rails-lib.el in the emacs-rails package
+(defun string-join (separator strings)
+  "Join all STRINGS using SEPARATOR."
+  (mapconcat 'identity strings separator))
+
 (defun textmate-goto-file ()
   "Uses your completing read to quickly jump to a file in a project."
   (interactive)

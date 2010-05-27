@@ -26,6 +26,7 @@
 (setq inhibit-startup-message t)
 (setq make-backup-files nil)
 (global-subword-mode 1)
+(global-auto-revert-mode)
 
 ;; map cmd to meta (Emacs.app 23.2)
 (when macosx-p
