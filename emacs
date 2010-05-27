@@ -26,7 +26,10 @@
 (setq inhibit-startup-message t)
 (setq make-backup-files nil)
 (global-subword-mode 1)
+
+(setq auto-revert-interval 2)
 (global-auto-revert-mode)
+
 
 ;; map cmd to meta (Emacs.app 23.2)
 (when macosx-p
@@ -327,7 +330,6 @@
 (global-set-key "\C-zm" 'minimap-create)
 (global-set-key "\C-zM" 'minimap-kill)
 (global-set-key "\C-zr" 'query-replace-regexp)
-(global-set-key "\C-zR" 'revert-buffer-without-confirmation)
 (global-set-key "\C-zs" 'run-scheme)
 (global-set-key "\C-zt" 'tagify-region-or-insert-tag)
 (global-set-key "\C-zz" 'shell)         ; z for zsh
@@ -350,18 +352,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; utilities & customizations
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; now, how can I call this automatically when a file is changed out
-;; from under a buffer?  (like textmate)
-(defun revert-buffer-without-confirmation (&optional prefix)
-  "If the current buffer has no unsaved changes, revert it
- without confirmation, and ignoring auto-save files.  If there
- are unsaved changes then revert with confirmation."
-  (interactive "P")
-  (let ((no-confirm (or prefix
-			(not (buffer-modified-p)))))
-    (revert-buffer t no-confirm)
-    (when no-confirm (message (concat "Reverted " (buffer-name))))))
 
 (defun duplicate-line (&optional arg)
     "Duplicate the current line."
