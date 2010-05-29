@@ -315,9 +315,6 @@
 ;; key bindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; can't seem to un-hijack cmd-`, so make it do something useful
-(global-set-key "\M-`" 'other-window-in-any-frame)
-
 ;; custom key bindings under a common prefix
 ;; (Suspend is useless. Give me C-z!)
 (global-unset-key "\C-z")
@@ -348,6 +345,22 @@
 ;; wrap a region with an HTML/XML tag
 (global-set-key "<"  'tagify-region-or-insert-self)
 
+;; nice OS X keyboard behaviors that save my pinky too
+(global-unset-key "\C-_")
+(global-unset-key "\C-x\C-f")
+(global-unset-key "\C-xo")
+(global-unset-key "\C-x\C-s")
+
+;; can't seem to un-hijack cmd-`, so make it do something useful
+(global-set-key "\M-`" 'other-window-in-any-frame)
+
+(global-set-key "\M-s" 'save-buffer)
+(global-set-key "\M-z" 'undo)
+(global-set-key [(meta down)] 'end-of-buffer)
+(global-set-key [(meta up)] 'beginning-of-buffer)
+(global-set-key [(meta right)] 'end-of-line)
+(global-set-key [(meta left)] 'beginning-of-line)
+(global-set-key "\M-o" 'find-file)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; utilities & customizations
