@@ -351,16 +351,17 @@
 (global-unset-key "\C-xo")
 (global-unset-key "\C-x\C-s")
 
-;; can't seem to un-hijack cmd-`, so make it do something useful
-(global-set-key "\M-`" 'other-window-in-any-frame)
-
+(global-set-key "\M-o" 'find-file)
 (global-set-key "\M-s" 'save-buffer)
 (global-set-key "\M-z" 'undo)
 (global-set-key [(meta down)] 'end-of-buffer)
 (global-set-key [(meta up)] 'beginning-of-buffer)
 (global-set-key [(meta right)] 'end-of-line)
 (global-set-key [(meta left)] 'beginning-of-line)
-(global-set-key "\M-o" 'find-file)
+
+;; can't seem to un-hijack cmd-`, so make it do something useful
+(global-set-key "\M-`" 'other-window-in-any-frame)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; utilities & customizations
