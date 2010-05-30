@@ -420,6 +420,88 @@ If N is non-nil switch to the nth next window."
                     fname))))
 
 
+;; If it's not nailed down, steal it! This tries to mimic TextMate's
+;; select enclosing braces function. Very handy.
+
+;; It would be nice to take quotes into account but the current
+;; algorithm doesn't play nice with pairs that are equal.
+(defvar select-enclosing-pair-default-pairs
+  "Pairs of characters to look for when marking an enclosed region."
+  '((?( ?)) (?[ ?]) (?{ ?}) (?< ?>)))
+
+;; Well, it's ugly as sin but it does the job.
+(defun select-enclosing-pair (&optional n pairs)
+  "Select text between the innermost pair of characters given in
+PAIRS, defaults are: (), [], {}, <>."
+  (interactive "p")
+  ;; FIXME use the n parameter. recursion? iteration?
+  (let* ((pairs (or pairs select-enclosing-pair-default-pairs))
+         (opening-chars (mapcar 'car pairs))
+         (closing-chars (mapcar 'cadr pairs))
+         (original-position (point))
+         (opening-index original-position)
+         (closing-index original-position)
+         (i (1- original-position))
+         (len (buffer-size))
+         (opening-char (char-after i))
+         (closing-char (char-after original-position))
+         (opening-char-pos (position opening-char opening-chars))
+         (closing-char-pos (position closing-char closing-chars))
+         (ignore-count (if (position opening-char closing-chars) 1 0)))
+    ;; (message "----")
+    (while (and opening-char
+                (or (not opening-char-pos)
+                    (> ignore-count 0)))
+      ;; (message "char at %d is %c" i opening-char)
+      (when (and opening-char-pos (> ignore-count 0))
+        (decf ignore-count))
+      (decf i)
+      (setq opening-char (char-after i))
+      (setq opening-char-pos (position opening-char opening-chars))
+      (when (position opening-char closing-chars)
+        (incf ignore-count)))
+    ;; (message "opening-char: %c i: %d" opening-char i)
+    (when (and opening-char
+               (position opening-char opening-chars))
+      (setq opening-index i))
+    ;;   (message "start: %d char: %c" i opening-char))
+    ;; (message "char at %d is %s" i opening-char)
+
+    ;; (message "----")
+    ;; (message "closing-chars: %s" closing-chars)
+    (when (and opening-char opening-char-pos)
+      (setq i original-position)
+      (setq ignore-count (if (position closing-char opening-chars) 1 0))
+      (while (and closing-char
+                  (or (not closing-char-pos)
+                      (> ignore-count 0)
+                      (not (= opening-char-pos closing-char-pos))))
+        ;; (message "closing-char: %s (position closing-char closing-chars): %s" closing-char (position closing-char closing-chars))
+        ;; (message "char at %d is %c" i closing-char)
+        (when (and closing-char-pos (> ignore-count 0))
+          (decf ignore-count))
+        (incf i)
+        (setq closing-char (char-after i))
+        (setq closing-char-pos (position closing-char closing-chars))
+        (when (position closing-char opening-chars)
+          (incf ignore-count)))
+      ;; (message "closing-char: %s i: %d " closing-char i)
+      (when (and closing-char
+                 closing-char-pos
+                 (= opening-char-pos closing-char-pos))
+        (setq closing-index i))
+      ;;   (message "end: %d char: %c" i closing-char))
+      ;; (message "char at %d is %s" i closing-char)
+      ;; (message "----")
+      (when (and opening-char closing-char
+                 opening-char-pos closing-char-pos
+                 (not (= opening-index closing-index))
+                 (= opening-char-pos closing-char-pos))
+        ;; (message "doing it")
+        (push-mark opening-index 'nomsg t)
+        (goto-char (1+ closing-index))))))
+
+
 (cond ((file-readable-p "~/.emacs.d/color-theme")
       (add-to-list 'load-path "~/.emacs.d/color-theme")
       (require 'color-theme)
