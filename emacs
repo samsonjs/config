@@ -315,6 +315,10 @@
 ;; key bindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; Unhijack Cmd-H
+(global-set-key [(super h)] 'mark-paragraph)
+(global-set-key "\M-h" 'ns-do-hide-emacs)
+
 ;; custom key bindings under a common prefix
 ;; (Suspend is useless. Give me C-z!)
 (global-unset-key "\C-z")
