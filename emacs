@@ -345,6 +345,9 @@
 ;; wrap a region with an HTML/XML tag
 (global-set-key "<"  'tagify-region-or-insert-self)
 
+;; Select the enclosed parens/brackets/braces
+(global-set-key "\M-B" 'select-enclosing-pair)
+
 ;; nice OS X keyboard behaviors that save my pinky too
 (global-unset-key "\C-_")
 (global-unset-key "\C-x\C-f")
@@ -429,7 +432,11 @@ If N is non-nil switch to the nth next window."
   "Pairs of characters to look for when marking an enclosed region."
   '((?( ?)) (?[ ?]) (?{ ?}) (?< ?>)))
 
-;; Well, it's ugly as sin but it does the job.
+;; Well, it's ugly as sin but it works in simple cases. Needs a
+;; smarter algorithm to work in more situations. One example that
+;; doesn't work with this algo: (something "<" 'other-stuff)
+;;
+;; FIXME there's at least one off-by-one error with the ignore-count
 (defun select-enclosing-pair (&optional n pairs)
   "Select text between the innermost pair of characters given in
 PAIRS, defaults are: (), [], {}, <>."
