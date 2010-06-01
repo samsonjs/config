@@ -338,8 +338,8 @@
 (global-set-key "\C-z\C-t" 'totd)
 
 ;; extend Emacs' default key binding space
-(global-set-key "\C-x\C-b" 'bs-show)    ; use the buffer list buffer menu
-(global-set-key "\C-x\C-r" 'recentf-find-files-compl)
+(global-set-key [(super b)] 'bs-show)    ; use the buffer list buffer menu
+(global-set-key "\C-x\C-r" 'recentf-find-files-compl) ; unused, remove?
 
 ;; use the X clipboard for cut/copy/paste
 (global-set-key "\C-w" 'clipboard-kill-region)
@@ -353,10 +353,16 @@
 (global-set-key "\M-B" 'select-enclosing-pair)
 
 ;; nice OS X keyboard behaviors that save my pinky too
-(global-unset-key "\C-_")
-(global-unset-key "\C-x\C-f")
-(global-unset-key "\C-xo")
-(global-unset-key "\C-x\C-s")
+(defun save-the-pinky-buffer () (interactive) (message "Save your pinky! Use s-b (Opt-b) instead."))
+(defun save-the-pinky-open   () (interactive) (message "Save your pinky! Use M-z (Cmd-o) instead."))
+(defun save-the-pinky-save   () (interactive) (message "Save your pinky! Use M-z (Cmd-s) instead."))
+(defun save-the-pinky-undo   () (interactive) (message "Save your pinky! Use M-z (Cmd-z) instead."))
+(defun save-the-pinky-window () (interactive) (message "Save your pinky! Use M-` (Cmd-`) instead."))
+(global-set-key "\C-_" 'save-the-pinky-undo)
+(global-set-key "\C-x\C-f" 'save-the-pinky-open)
+(global-set-key "\C-xo" 'save-the-pinky-other-window)
+(global-set-key "\C-x\C-s" 'save-the-pinky-save)
+(global-set-key "\C-x\C-b" 'save-the-pinky-buffer)
 
 (global-set-key "\M-o" 'find-file)
 (global-set-key "\M-s" 'save-buffer)
