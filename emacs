@@ -354,8 +354,8 @@
 
 ;; nice OS X keyboard behaviors that save my pinky too
 (defun save-the-pinky-buffer () (interactive) (message "Save your pinky! Use s-b (Opt-b) instead."))
-(defun save-the-pinky-open   () (interactive) (message "Save your pinky! Use M-z (Cmd-o) instead."))
-(defun save-the-pinky-save   () (interactive) (message "Save your pinky! Use M-z (Cmd-s) instead."))
+(defun save-the-pinky-open   () (interactive) (message "Save your pinky! Use M-o (Cmd-o) instead."))
+(defun save-the-pinky-save   () (interactive) (message "Save your pinky! Use M-s (Cmd-s) instead."))
 (defun save-the-pinky-undo   () (interactive) (message "Save your pinky! Use M-z (Cmd-z) instead."))
 (defun save-the-pinky-window () (interactive) (message "Save your pinky! Use M-` (Cmd-`) instead."))
 (global-set-key "\C-_" 'save-the-pinky-undo)
