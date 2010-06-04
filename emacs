@@ -28,7 +28,7 @@
 (global-subword-mode 1)
 
 (setq auto-revert-interval 2)
-(global-auto-revert-mode)
+(global-auto-revert-mode t)
 
 
 ;; map cmd to meta (Emacs.app 23.2)
