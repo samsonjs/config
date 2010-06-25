@@ -114,7 +114,6 @@
     (c-cleanup-list             . (brace-else-brace
 				   brace-elseif-brace
 				   brace-catch-brace
-				   empty-defun-braces
 				   defun-close-semi)))
   "how sjs likes his C")
 (c-add-style "sjs" my-c-style)
@@ -271,10 +270,11 @@
 ;; erlang
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(setq load-path (cons "/opt/local/lib/erlang/lib/tools-2.6.5/emacs" load-path))
-(setq erlang-root-dir "/opt/local/lib/erlang/otp")
-(setq exec-path (cons "/opt/local/lib/erlang/bin" exec-path))
-(require 'erlang-start)
+(when (file-exists-p "/opt/local/lib/erlang")
+  (setq load-path (cons "/opt/local/lib/erlang/lib/tools-2.6.5/emacs" load-path))
+  (setq erlang-root-dir "/opt/local/lib/erlang/otp")
+  (setq exec-path (cons "/opt/local/lib/erlang/bin" exec-path))
+  (require 'erlang-start))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -302,13 +302,14 @@
 (setq inferior-lisp-program "/usr/bin/env sbcl")
 
 ;; setup slime
-(add-to-list 'load-path "~/.slime")
-(require 'slime)
-(slime-setup)
-(add-hook 'lisp-mode-hook (lambda () (slime-mode t)))
-(add-hook 'scheme-mode-hook (lambda () (slime-mode t)))
-(add-hook 'inferior-lisp-mode-hook (lambda () (inferior-slime-mode t)))
-(add-hook 'inferior-scheme-mode-hook (lambda () (inferior-slime-mode t)))
+(when (file-exists-p "~/.slime")
+  (add-to-list 'load-path "~/.slime")
+  (require 'slime)
+  (slime-setup)
+  (add-hook 'lisp-mode-hook (lambda () (slime-mode t)))
+  (add-hook 'scheme-mode-hook (lambda () (slime-mode t)))
+  (add-hook 'inferior-lisp-mode-hook (lambda () (inferior-slime-mode t)))
+  (add-hook 'inferior-scheme-mode-hook (lambda () (inferior-slime-mode t))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -563,6 +564,7 @@ PAIRS, defaults are: (), [], {}, <>."
  '(js2-highlight-level 3)
  '(js2-mode-escape-quotes nil)
  '(js2-strict-inconsistent-return-warning nil)
+ '(js2-strict-missing-semi-warning nil)
  '(minimap-always-recenter nil)
  '(minimap-display-semantic-overlays t)
  '(mojo-build-directory "~/Projects/brighthouse/webOS/build")
@@ -571,6 +573,7 @@ PAIRS, defaults are: (), [], {}, <>."
  '(remote-shell-program "/usr/bin/ssh")
  '(save-place t nil (saveplace))
  '(scroll-bar-mode nil)
+ '(shell-file-name "/bin/zsh")
  '(show-paren-mode t nil (paren))
  '(tool-bar-mode nil))
 
