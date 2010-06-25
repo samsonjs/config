@@ -8,8 +8,8 @@ function mac()   { [[ "$uname" = "Darwin" ]] }
 # ===================
 
 export RIAK=~/Projects/ssa/riak/riak/rel/riak
-export CAPP_BUILD=~/Projects/ssa/cappuccino/cappuccino/Build
-if mac; then
+export CAPP_BUILD=~/Projects/cappuccino/Build
+if which narwhal-jsc >/dev/null 2>&1; then
     export NARWHAL_ENGINE=jsc
 fi
 
@@ -34,13 +34,12 @@ fi
 
 # default editors
 if mac; then
-    # wtf, you must be kidding
+    # wtf, you must be kidding, doesn't even work in many cases. really fucking lame!
     function emacsclient() {
-	/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -s $(find /var/folders -name server -type s -uid $(id -u) 2>| /dev/null | grep emacs) $*
+        /Users/sjs/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -s $(find /var/folders -name server -type s -uid $(id -u) 2>| /dev/null | grep emacs) $*
     }
-    export EDITOR="emacsclient"
-    export VISUAL="emacsclient"
-    export MANPATH="/opt/local/lib/erlang/man:$MANPATH"
+    export EDITOR="vim"
+    export VISUAL="vim"
 elif linux; then
     export EDITOR="emacs -nw"
     export VISUAL="emacs"
@@ -196,7 +195,7 @@ alias u3='uuu'
 alias u4='uuuu'
 
 if mac; then
-    alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --allow-file-access-from-files >/dev/null 2>&1 &!'
+    alias chrome='/Users/sjs/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --allow-file-access-from-files >/dev/null 2>&1 &!'
 fi
 
 # ls Aliases 
@@ -411,14 +410,13 @@ compinit
 
 # 10. SSH Keychain
 # ================
-if which keychain >/dev/null 2>&1; then
-    keychain ~/.ssh/id_rsa
-    source ~/.keychain/${KEYCHAIN_HOST}-sh > /dev/null
-else
-  echo ">>> You need to install keychain."
-  if mac; then
-    echo "try: sudo port install keychain"
-  elif linux; then
-    echo "try: sudo aptitude install keychain"
-  fi
+# OS X includes keychain now, cool.
+if linux; then
+    if which keychain >/dev/null 2>&1; then
+        keychain ~/.ssh/id_rsa
+        source ~/.keychain/${KEYCHAIN_HOST}-sh > /dev/null
+    else
+        echo ">>> You need to install keychain."
+        echo "try: sudo aptitude install keychain"
+    fi
 fi
