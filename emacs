@@ -112,9 +112,9 @@
     (c-tab-always-indent        . t)
     (c-basic-offset             . 4)
     (c-cleanup-list             . (brace-else-brace
-				   brace-elseif-brace
-				   brace-catch-brace
-				   defun-close-semi)))
+    				   brace-elseif-brace
+    				   brace-catch-brace
+    				   defun-close-semi)))
   "how sjs likes his C")
 (c-add-style "sjs" my-c-style)
 
@@ -361,7 +361,7 @@
 (defun save-the-pinky-window () (interactive) (message "Save your pinky! Use M-` (Cmd-`) instead."))
 (global-set-key "\C-_" 'save-the-pinky-undo)
 (global-set-key "\C-x\C-f" 'save-the-pinky-open)
-(global-set-key "\C-xo" 'save-the-pinky-other-window)
+(global-set-key "\C-xo" 'save-the-pinky-window)
 (global-set-key "\C-x\C-s" 'save-the-pinky-save)
 (global-set-key "\C-x\C-b" 'save-the-pinky-buffer)
 
