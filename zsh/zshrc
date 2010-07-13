@@ -13,6 +13,11 @@ if which narwhal-jsc >/dev/null 2>&1; then
     export NARWHAL_ENGINE=jsc
 fi
 
+# for riak and possibly building javascriptcore
+if mac; then
+    export COMMAND_MODE=unix2003
+fi
+
 export LC_ALL="en_CA.UTF-8"
 export LANG="en_CA.UTF-8"
 
