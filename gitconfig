@@ -9,3 +9,7 @@
 	lo = log --oneline
 	a = add
 	c = commit
+[push]
+	default = tracking
+[branch]
+	autosetuprebase = always
