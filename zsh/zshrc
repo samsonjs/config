@@ -239,7 +239,7 @@ alias dc='git diff --cached'
 alias ds='git diff --stat'
 alias g='git grep'
 alias gl='git log'
-alias glo='git log --oneline'
+alias glo='git log --oneline --decorate'
 alias gls='git log --stat'
 alias gpr='git pull --rebase'
 alias m='git merge'
@@ -247,7 +247,7 @@ alias pob='git-pull-origin-branches'
 alias r='git remote'
 alias rbi='git rebase -i'
 alias ra='git remote add'
-alias s='git status'
+alias s='git status -sb'
 
 git-branch-track-origin() { git branch --track "$1" origin/"$1" }
 
