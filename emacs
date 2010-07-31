@@ -376,6 +376,9 @@
 ;; can't seem to un-hijack cmd-`, so make it do something useful
 (global-set-key "\M-`" 'other-window-in-any-frame)
 
+;; find files like textmate
+(global-set-key "\M-F" 'textmate-find-in-project)
+
 ;; run the ssa server
 (global-set-key [(super s)] 'ssa-run-server)
 

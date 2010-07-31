@@ -301,6 +301,21 @@ Symbols matching the text at point are put first in the completion list."
   (setq *textmate-project-files* nil)
   (message "textmate-mode cache cleared."))
 
+(defun textmate-find-regex-in-project (regex)
+  "Search the project for a regular expression and quickly jump
+to matches in a project.
+
+This function just finds the project root and calls `LGREP'."
+  (interactive "sRegex: ")
+  (let ((root (textmate-project-root)))
+    (when (null root)
+      (error
+       (concat
+        "Can't find a suitable project root ("
+        (string-join " " *textmate-project-roots* )
+        ")")))
+    (lgrep regex "*" root)))
+
 ;;; Utilities
 
 (defun textmate-project-files (root)
