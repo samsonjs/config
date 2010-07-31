@@ -376,6 +376,30 @@
 ;; can't seem to un-hijack cmd-`, so make it do something useful
 (global-set-key "\M-`" 'other-window-in-any-frame)
 
+;; run the ssa server
+(global-set-key [(super s)] 'ssa-run-server)
+
+(defun ssa-start-server (buffer)
+  (process-send-string buffer "cd ~/Projects/ssa/SelfServeApps/Backend")
+  (comint-send-input)
+  (process-send-string buffer "node listener.js")
+  (comint-send-input))
+
+(defun ssa-run-server (&optional args)
+  "Run the ssa backend in an inferior shell."
+  (interactive "P")
+  (let* ((arg (car args))
+	 (running (get-buffer "*server*"))
+	 (restart (and (numberp arg) (= arg 4))))
+    (when (not running)
+      (shell "*server*")
+      (sleep-for 0.5)
+      (ssa-start-server "*server*"))
+    (when running
+      (switch-to-buffer "*server*")
+      (when restart
+	(comint-interrupt-subjob)
+	(ssa-start-server "*server*")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; utilities & customizations
