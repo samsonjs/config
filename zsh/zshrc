@@ -247,7 +247,15 @@ alias pob='git-pull-origin-branches'
 alias r='git remote'
 alias rbi='git rebase -i'
 alias ra='git remote add'
-alias s='git status -sb'
+GIT_VERSION="$(git --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')"
+GIT_VERSION_MAJOR="${GIT_VERSION%%.*}"
+GIT_VERSION_MINOR="${${GIT_VERSION%.*}#*.}"
+GIT_VERSION_REVISION="${GIT_VERSION##*.}"
+if [ $GIT_VERSION_MINOR -ge 7 ] && [ $GIT_VERSION_REVISION -ge 1 ]; then
+    alias s='git status -sb'
+else
+    alias s='git status'
+fi
 
 git-branch-track-origin() { git branch --track "$1" origin/"$1" }
 
