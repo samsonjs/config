@@ -45,9 +45,12 @@ if mac; then
     }
     export EDITOR="vim"
     export VISUAL="vim"
-elif linux; then
+elif linux && which emacs >/dev/null 2>&1; then
     export EDITOR="emacs -nw"
     export VISUAL="emacs"
+else
+    export EDITOR=vi
+    export VISUAL=vi
 fi
 
 

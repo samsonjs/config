@@ -1,3 +1,4 @@
 zsh/zhistory
+zsh/.zcompdump
 emacs.d/auto-save-list/.saves*
 .DS_Store
