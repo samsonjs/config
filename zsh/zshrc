@@ -7,8 +7,8 @@ function mac()   { [[ "$uname" = "Darwin" ]] }
 # 1. Environment Vars
 # ===================
 
-export RIAK=~/Projects/ssa/riak/riak/rel/riak
-export CAPP_BUILD=~/Projects/cappuccino/Build
+[ -d ~/Projects/ssa/riak/riak/rel/riak ] && export RIAK=~/Projects/ssa/riak/riak/rel/riak
+[ -d ~/Projects/cappuccino/Build ] && export CAPP_BUILD=~/Projects/cappuccino/Build
 if which narwhal-jsc >/dev/null 2>&1; then
     export NARWHAL_ENGINE=jsc
 fi
@@ -20,9 +20,6 @@ if mac; then
     # Don't pollute tar archives with ._ files (Apple double files)
     export COPYFILE_DISABLE=true
 fi
-
-export LC_ALL="en_CA.UTF-8"
-export LANG="en_CA.UTF-8"
 
 cdpath=(~)
 
@@ -179,7 +176,6 @@ prompt sjs
 #alias burn='cdrecord -dao -driveropts=burnfree -dev=ATA:1,1,0 -v'
 alias bgd='bg; disown %1'
 alias cp='nocorrect cp'            # don't correct spelling for 'cp'
-alias cron='crontab -e'
 #alias dispatch-conf='sudo dispatch-conf'
 alias ec="$EDITOR ~/config/"
 alias ev="$EDITOR ~/config/vim/vimrc"
@@ -201,9 +197,6 @@ alias u='cd ..'
 alias uu='cd ../..'
 alias uuu='cd ../../..'
 alias uuuu='cd ../../../..'
-alias u2='uu'
-alias u3='uuu'
-alias u4='uuuu'
 
 if mac; then
     alias chrome='/Users/sjs/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --allow-file-access-from-files >/dev/null 2>&1 &!'
@@ -412,7 +405,7 @@ zstyle ':completion:*' completer _expand _complete _files
 zstyle ':completion:*' expand prefix
 #zstyle ':completion:*' format 'Complete %d:'
 zstyle ':completion:*' group-name ''
-zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+#zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
 zstyle ':completion:*' list-suffixes true
 zstyle ':completion:*' matcher-list 'r:|[._-]=* r:|=*' 'r:|[._-]=* r:|=*' 'r:|[._-]=* r:|=*' 'r:|[._-]=* r:|=*'
@@ -430,12 +423,7 @@ compinit
 # 10. SSH Keychain
 # ================
 # OS X includes keychain now, cool.
-if linux; then
-    if which keychain >/dev/null 2>&1; then
-        keychain ~/.ssh/id_rsa
-        source ~/.keychain/${KEYCHAIN_HOST}-sh > /dev/null
-    else
-        echo ">>> You need to install keychain."
-        echo "try: sudo aptitude install keychain"
-    fi
+if which keychain >/dev/null 2>&1; then
+    keychain ~/.ssh/id_rsa
+    source ~/.keychain/${KEYCHAIN_HOST}-sh > /dev/null
 fi
