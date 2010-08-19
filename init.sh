@@ -1,7 +1,5 @@
 #!/bin/sh
 
-cd
-
 BASENAME="${0##*/}"
 
 if [ x"$1" != x ]; then
