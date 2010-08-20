@@ -8,8 +8,8 @@ else
     CONFIG_PATH="${HOME}/config"
 fi
 
-ln -s "${CONFIG_PATH}/emacs"    ".emacs"
-ln -s "${CONFIG_PATH}/emacs.d"  ".emacs.d"
-ln -s "${CONFIG_PATH}/screenrc" ".screenrc"
-ln -s "${CONFIG_PATH}/vimrc"    ".vimrc"
-ln -s "${CONFIG_PATH}/zshenv"   ".zshenv"
+[ -e ".emacs"    ] || ln -s "${CONFIG_PATH}/emacs"    ".emacs"
+[ -e ".emacs.d"  ] || ln -s "${CONFIG_PATH}/emacs.d"  ".emacs.d"
+[ -e ".screenrc" ] || ln -s "${CONFIG_PATH}/screenrc" ".screenrc"
+[ -e ".vimrc"    ] || ln -s "${CONFIG_PATH}/vimrc"    ".vimrc"
+[ -e ".zshenv"   ] || ln -s "${CONFIG_PATH}/zshenv"   ".zshenv"
