@@ -301,20 +301,24 @@ Symbols matching the text at point are put first in the completion list."
   (setq *textmate-project-files* nil)
   (message "textmate-mode cache cleared."))
 
+
+;; FIXME:
+;;   - use *textmate-gf-exclude* instead of hard-coding ignored paths
+;;   - format results nicely (like TextMate)
 (defun textmate-find-regex-in-project (regex)
   "Search the project for a regular expression and quickly jump
 to matches in a project.
 
-This function just finds the project root and calls `LGREP'."
+This function just finds the project root and calls `RGREP'."
   (interactive "sRegex: ")
   (let ((root (textmate-project-root)))
     (when (null root)
       (error
        (concat
         "Can't find a suitable project root ("
-        (string-join " " *textmate-project-roots* )
+        (string-join " " *textmate-project-roots*)
         ")")))
-    (lgrep regex "*" root)))
+    (grep (concat "grep -Hn -E '" regex "' " root "/**/{*.j,*.js,*akefile,*.sh}(N) | grep -vE '/([Bb]uild|Frameworks|.git)/?' | sed -e 's#" root "/##'"))))
 
 ;;; Utilities
 
