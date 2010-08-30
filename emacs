@@ -320,6 +320,10 @@
 (global-set-key [(super h)] 'mark-paragraph)
 (global-set-key "\M-h" 'ns-do-hide-emacs)
 
+;; always use regexp searching
+(global-set-key "\C-s" 'isearch-forward-regexp)
+(global-set-key "\C-r" 'isearch-backward-regexp)
+
 ;; custom key bindings under a common prefix
 ;; (Suspend is useless. Give me C-z!)
 (global-unset-key "\C-z")
@@ -365,6 +369,7 @@
 (global-set-key "\C-x\C-s" 'save-the-pinky-save)
 (global-set-key "\C-x\C-b" 'save-the-pinky-buffer)
 
+(global-set-key "\M-n" 'new-frame)
 (global-set-key "\M-o" 'find-file)
 (global-set-key "\M-s" 'save-buffer)
 (global-set-key "\M-z" 'undo)
@@ -377,7 +382,7 @@
 (global-set-key "\M-`" 'other-window-in-any-frame)
 
 ;; find files like textmate
-(global-set-key "\M-F" 'textmate-find-in-project)
+(global-set-key "\M-F" 'textmate-find-regex-in-project)
 
 ;; run the ssa server
 (global-set-key [(super s)] 'ssa-run-server)
