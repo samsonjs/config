@@ -387,6 +387,9 @@
 ;; run the ssa server
 (global-set-key [(super s)] 'ssa-run-server)
 
+;; quickly jump to a project
+(global-set-key [(super o)] 'open-project)
+
 (defun ssa-start-server (buffer)
   (process-send-string buffer "cd ~/Projects/ssa/SelfServeApps/Backend")
   (comint-send-input)
@@ -408,6 +411,27 @@
       (when restart
 	(comint-interrupt-subjob)
 	(ssa-start-server "*server*")))))
+
+(defvar *open-project-registry* (list))
+
+(defun register-project (name root-file)
+  (interactive "sProject name: \nfRoot filename: ")
+  (when (null (assoc name *open-project-registry*))
+    (set '*open-project-registry* (cons (list name root-file) *open-project-registry*))))
+
+;; FIXME use completing read
+(defun open-project (name)
+  (interactive "sProject name: ")
+  (let* ((project (assoc name *open-project-registry*))
+	 (root-file (cadr project)))
+    (when (null root-file)
+      (error "No such project"))
+    (find-file root-file)))
+
+;; register projects
+(register-project "ssa" "/Users/sjs/Projects/ssa/SelfServeApps/Frontend/AppController.j")
+(register-project "cappuccino" "/Users/sjs/Projects/cappuccino/Foundation/CPObject.j")
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; utilities & customizations
