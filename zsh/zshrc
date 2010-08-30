@@ -30,10 +30,12 @@ if [[ "x$INSIDE_EMACS" != "x" ]] || [[ "$EMACS" = "t" ]]; then
     export PAGER=cat
     export MANPAGER=cat
 else
-    export PAGER=`which less`
-    # most has great colours for man pages
+    # most rocks
     if which most >/dev/null 2>&1; then
-	export MANPAGER=`which most`
+        export PAGER='most'
+	    export MANPAGER='most'
+    else
+        export PAGER='less'
     fi
 fi
 
@@ -289,7 +291,7 @@ alias et="$EDITOR . >/dev/null &!"
 # global aliases - work anywhere on line
 alias -g C='|wc'
 alias -g CL='|wc -l'
-alias -g L='|less'
+alias -g L='|$PAGER'
 alias -g H='|head'
 alias -g T='|tail'
 alias -g G='|grep'
