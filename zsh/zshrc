@@ -7,8 +7,10 @@ function mac()   { [[ "$uname" = "Darwin" ]] }
 # 1. Environment Vars
 # ===================
 
-[ -d ~/Projects/ssa/riak/riak/rel/riak ] && export RIAK=~/Projects/ssa/riak/riak/rel/riak
+[ -d /usr/local/riak ] && export RIAK=/usr/local/riak
 [ -d ~/Projects/cappuccino/Build ] && export CAPP_BUILD=~/Projects/cappuccino/Build
+[ -d ~/Projects/ssa/SSA-ios/Applications/SSA ] && export SSA=~/Projects/ssa/SSA-ios/Applications/SSA
+[ -d ~/Projects/Xcode-build ] && export XCODE_BUILD=~/Projects/Xcode-build
 if which narwhal-jsc >/dev/null 2>&1; then
     export NARWHAL_ENGINE=jsc
 fi
@@ -30,12 +32,10 @@ if [[ "x$INSIDE_EMACS" != "x" ]] || [[ "$EMACS" = "t" ]]; then
     export PAGER=cat
     export MANPAGER=cat
 else
+    export PAGER='less'
     # most rocks
     if which most >/dev/null 2>&1; then
-        export PAGER='most'
-	    export MANPAGER='most'
-    else
-        export PAGER='less'
+            export MANPAGER='most'
     fi
 fi
 
@@ -181,7 +181,7 @@ alias cp='nocorrect cp'            # don't correct spelling for 'cp'
 #alias dispatch-conf='sudo dispatch-conf'
 alias ec="$EDITOR ~/config/"
 alias ev="$EDITOR ~/config/vim/vimrc"
-alias ez="$EDITOR $ZDOTDIR/zshrc"
+alias ez="$EDITOR $ZDOTDIR/zshrc && source $ZDOTDIR/zshrc"
 alias rz="source $ZDOTDIR/zshrc"
 
 if mac; then
@@ -209,11 +209,11 @@ fi
 if mac; then
     gls_path=`which gls`
     if [[ -x "$gls_path" ]]; then
-	alias ls='$gls_path -BF --color=auto'
-	alias la='$gls_path -AF --color=auto'
+        alias ls='$gls_path -BF --color=auto'
+        alias la='$gls_path -AF --color=auto'
     else
-	alias ls='ls -BF'
-	alias la='ls -AF'
+        alias ls='ls -BF'
+        alias la='ls -AF'
     fi
 else
     alias ls='ls -BF --color=auto'
@@ -235,6 +235,8 @@ alias bt='git branch --track'
 alias bto='git-branch-track-origin'
 alias c='git commit'
 alias co='git checkout'
+alias cob='git checkout -b'
+alias chp='git cherry-pick'
 alias d='git diff'
 alias dc='git diff --cached'
 alias ds='git diff --stat'
@@ -287,6 +289,7 @@ function e() {
     "$EDITOR" "$@" >/dev/null &!
 }
 alias et="$EDITOR . >/dev/null &!"
+alias em='emacsclient'
 
 # global aliases - work anywhere on line
 alias -g C='|wc'
@@ -376,22 +379,21 @@ alias keep='noglob keep '
 curl=`which curl`
 if [[ -x "$curl" ]]; then
     function get {
-	$curl -H 'x-requested-with: XMLHttpRequest' -i "$1"
+        $curl -i -H 'x-requested-with: XMLHttpRequest' "$1"
     }
 
     function put {
-	$curl -X PUT -H 'x-requested-with: XMLHttpRequest' "$1" --data "$2"
+        $curl -i -X PUT -H 'x-requested-with: XMLHttpRequest' -H 'content-type: application/json' -d "$2" "$1"
     }
 
     function post {
-	$curl -X POST -H 'x-requested-with: XMLHttpRequest' "$1" --data "$2"
+        $curl -i -X POST -H 'x-requested-with: XMLHttpRequest' -H 'content-type: application/json' -d "$2" "$1"
     }
 
     function delete {
-	$curl -X DELETE -H 'x-requested-with: XMLHttpRequest' "$1"
+        $curl -i -X DELETE -H 'x-requested-with: XMLHttpRequest' "$1"
     }
 fi
-
 
 # 9. Completion
 # =============
