@@ -126,7 +126,7 @@ the project root.")
 	   (define-key map [(super \])]  'textmate-shift-right)
 	   (define-key map [(super \[)] 'textmate-shift-left)
 	   (define-key map [(super /)] 'comment-or-uncomment-region-or-line)
-	   (define-key map [(super t)] 'textmate-goto-file)
+;;	   (define-key map [(super t)] 'textmate-goto-file)
 	   (define-key map [(super shift l)] 'textmate-select-line)
 	   (define-key map [(super shift t)] 'textmate-goto-symbol))
 	  (t ;; Any other version

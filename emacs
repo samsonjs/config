@@ -77,7 +77,6 @@
 (require 'textmate)
 (textmate-mode)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; minimap
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -207,6 +206,8 @@
 (add-to-list 'auto-mode-alist '("\\.json$" . espresso-mode))
 
 
+;; coffee script
+(require 'coffee-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; objective j
@@ -580,15 +581,17 @@ PAIRS, defaults are: (), [], {}, <>."
         (push-mark opening-index 'nomsg t)
         (goto-char (1+ closing-index))))))
 
-
 (cond ((file-readable-p "~/.emacs.d/color-theme")
-      (add-to-list 'load-path "~/.emacs.d/color-theme")
-      (require 'color-theme)
+       (add-to-list 'load-path "~/.emacs.d/color-theme")
+       (require 'color-theme)
 
 ;; dark themes
 ;; (color-theme-charcoal-black) ;; pastels, low contrast ***
 ;; (color-theme-midnight)       ;; grey comments, so-so ***
-(color-theme-taylor)            ;; beige text, orange comments ****
+;; (color-theme-taylor)            ;; beige text, orange comments ****
+(when (file-readable-p "~/.emacs.d/color-theme-tangotango.el")
+  (require 'color-theme-tangotango)
+  (color-theme-tangotango))            ;; beige text, orange comments ****
 ))
 
 (defun totd ()
