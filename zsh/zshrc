@@ -46,7 +46,11 @@ if mac; then
         /Users/sjs/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -s $(find /var/folders -name server -type s -uid $(id -u) 2>| /dev/null | grep emacs) $*
     }
     export EDITOR="vim"
-    export VISUAL="vim"
+    if which mate >/dev/null 2>&1; then
+        export VISUAL="mate -w"
+    else
+        export VISUAL="vim"
+    fi
 elif linux && which emacs >/dev/null 2>&1; then
     export EDITOR="emacs -nw"
     export VISUAL="emacs"
