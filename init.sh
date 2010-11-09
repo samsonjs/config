@@ -8,6 +8,7 @@ else
     CONFIG_PATH="${HOME}/config"
 fi
 
+[ -e ".ackrc"    ] || ln -s "${CONFIG_PATH}/ackrc"    ".ackrc"
 [ -e ".emacs"    ] || ln -s "${CONFIG_PATH}/emacs"    ".emacs"
 [ -e ".emacs.d"  ] || ln -s "${CONFIG_PATH}/emacs.d"  ".emacs.d"
 [ -e ".screenrc" ] || ln -s "${CONFIG_PATH}/screenrc" ".screenrc"
