@@ -433,6 +433,6 @@ compinit
 # ================
 # OS X includes keychain now, cool.
 if which keychain >/dev/null 2>&1; then
-    keychain ~/.ssh/id_rsa
+    keychain ~/.ssh/id_rsa ~/.ssh/id_rsa-dreamhost
     source ~/.keychain/${KEYCHAIN_HOST}-sh > /dev/null
 fi
