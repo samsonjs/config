@@ -251,6 +251,7 @@ alias gl='git log'
 alias glo='git log --oneline --decorate'
 alias gls='git log --stat'
 alias gpr='git pull --rebase'
+alias gu='git-branch-set-upstream'
 alias m='hub merge'
 alias pob='git-pull-origin-branches'
 alias r='hub remote'
@@ -267,6 +268,7 @@ else
 fi
 
 git-branch-track-origin() { git branch --track "$1" origin/"$1" }
+git-branch-set-upstream() { git branch --set-upstream "$1" origin/"$1" }
 
 git-pull-origin-branches() {
     if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
