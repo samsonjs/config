@@ -81,6 +81,8 @@ setopt autocd               # automatically cd to a directory if not cmd
 setopt autopushd            # automatically pushd directories on dirstack
 setopt nopushdsilent        # print dirstack after each cd/pushd
 setopt pushdignoredups      # don't push dups on stack
+setopt pushdminus           # pushd -N goes to Nth dir in stack
+export DIRSTACKSIZE=8
 
 # need to find out the difference between these two, just the export?
 setopt autonamedirs             # % export h=/home/sjs; cd ~h; pwd
@@ -183,6 +185,7 @@ prompt sjs
 alias bgd='bg; disown %1'
 alias cp='nocorrect cp'            # don't correct spelling for 'cp'
 #alias dispatch-conf='sudo dispatch-conf'
+alias di='dirs -v'
 alias ec="$EDITOR ~/config/"
 alias ev="$EDITOR ~/config/vim/vimrc"
 alias ez="$EDITOR $ZDOTDIR/zshrc && source $ZDOTDIR/zshrc"
