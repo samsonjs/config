@@ -13,3 +13,5 @@
 	default = tracking
 [branch]
 	autosetuprebase = always
+[core]
+	quotepath = false
