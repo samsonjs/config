@@ -13,5 +13,21 @@
 	default = tracking
 [branch]
 	autosetuprebase = always
+	autosetupmerge = true
+[github]
+	user = samsonjs
+	token = 04f822d719928ee8dd9b1f0dec23ac0c
 [core]
 	quotepath = false
+	whitespace = trailing-space,space-before-tab
+	excludesfile = ~/config/gitignore
+[diff]
+	mnemonicprefix = true
+	renames = copies
+[advice]
+	statusHints = false
+	pushNonFastForward = false
+[color]
+	ui = auto
+[merge]
+	stat = true
