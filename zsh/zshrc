@@ -8,12 +8,8 @@ function mac()   { [[ "$uname" = "Darwin" ]] }
 # ===================
 
 [ -d /usr/local/riak ] && export RIAK=/usr/local/riak
-[ -d ~/Projects/cappuccino/Build ] && export CAPP_BUILD=~/Projects/cappuccino/Build
 [ -d ~/Projects/ssa/SSA-ios/Applications/SSA ] && export SSA=~/Projects/ssa/SSA-ios/Applications/SSA
 [ -d ~/Projects/Xcode-build ] && export XCODE_BUILD=~/Projects/Xcode-build
-if which narwhal-jsc >/dev/null 2>&1; then
-    export NARWHAL_ENGINE=jsc
-fi
 
 if mac; then
     # for riak and possibly building javascriptcore
