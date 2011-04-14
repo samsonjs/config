@@ -205,16 +205,17 @@
 
 ;; js-mode (espresso)
 ;; Espresso mode has sane indenting so we use that.
-(setq js-indent-level 4)
+(setq js-indent-level 2)
 
 ;; Customize JS2
-(setq js2-basic-offset 4)
+(setq js2-basic-offset 2)
 (setq js2-cleanup-whitespace t)
 
 (autoload 'js2-mode "js2-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 (add-to-list 'auto-mode-alist '("Jakefile$" . js2-mode))
-
+(add-hook 'js2-mode-hook (lambda () (slime-js-minor-mode 1)))
+(global-set-key [f5] 'slime-js-reload)
 
 ;; Custom indentation function since JS2 indenting is terrible.
 ;; Uses js-mode's (espresso-mode) indentation semantics.
@@ -277,6 +278,9 @@
 ;; coffee script
 (require 'coffee-mode)
 
+;; mustache
+(require 'mustache-mode)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; objective j
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -299,15 +303,18 @@
 (add-hook 'objc-mode-hook 'my-objc-mode-hook)
 
 
+;; css
+(setq css-mode-hook (lambda () (setq indent-tabs-mode nil)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; mojo (webos)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(require 'mojo)
+;(require 'mojo)
 
 ;; enable Mojo for CSS, HTML, JS, and JSON files within a Mojo project
 ;; root.  Did I forget anything?
-(mojo-setup-mode-hooks 'css-mode-hook 'js2-mode-hook 'espresso-mode-hook 'html-mode-hook)
+;(mojo-setup-mode-hooks 'css-mode-hook 'js2-mode-hook 'espresso-mode-hook 'html-mode-hook)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -374,7 +381,7 @@
 (when (file-exists-p "~/.slime")
   (add-to-list 'load-path "~/.slime")
   (require 'slime)
-  (slime-setup)
+  (slime-setup '(slime-repl slime-js))
   (add-hook 'lisp-mode-hook (lambda () (slime-mode t)))
   (add-hook 'scheme-mode-hook (lambda () (slime-mode t)))
   (add-hook 'inferior-lisp-mode-hook (lambda () (inferior-slime-mode t)))
@@ -426,60 +433,37 @@
 ;; Select the enclosed parens/brackets/braces
 (global-set-key "\M-B" 'select-enclosing-pair)
 
-;; nice OS X keyboard behaviors that save my pinky too
-(defun save-the-pinky-buffer () (interactive) (message "Save your pinky! Use s-b (Opt-b) instead."))
-(defun save-the-pinky-open   () (interactive) (message "Save your pinky! Use M-o (Cmd-o) instead."))
-(defun save-the-pinky-save   () (interactive) (message "Save your pinky! Use M-s (Cmd-s) instead."))
-(defun save-the-pinky-undo   () (interactive) (message "Save your pinky! Use M-z (Cmd-z) instead."))
-(defun save-the-pinky-window () (interactive) (message "Save your pinky! Use M-` (Cmd-`) instead."))
-(global-set-key "\C-_" 'save-the-pinky-undo)
-(global-set-key "\C-x\C-f" 'save-the-pinky-open)
-(global-set-key "\C-xo" 'save-the-pinky-window)
-(global-set-key "\C-x\C-s" 'save-the-pinky-save)
-(global-set-key "\C-x\C-b" 'save-the-pinky-buffer)
+(when macosx-p
+  ;; nice OS X keyboard behaviors that save my pinky too
+  (defun save-the-pinky-buffer () (interactive) (message "Save your pinky! Use s-b (Opt-b) instead."))
+  (defun save-the-pinky-open   () (interactive) (message "Save your pinky! Use M-o (Cmd-o) instead."))
+  (defun save-the-pinky-save   () (interactive) (message "Save your pinky! Use M-s (Cmd-s) instead."))
+  (defun save-the-pinky-undo   () (interactive) (message "Save your pinky! Use M-z (Cmd-z) instead."))
+  (defun save-the-pinky-window () (interactive) (message "Save your pinky! Use M-` (Cmd-`) instead."))
+  (global-set-key "\C-_" 'save-the-pinky-undo)
+  (global-set-key "\C-x\C-f" 'save-the-pinky-open)
+  (global-set-key "\C-xo" 'save-the-pinky-window)
+  (global-set-key "\C-x\C-s" 'save-the-pinky-save)
+  (global-set-key "\C-x\C-b" 'save-the-pinky-buffer)
+  
+  (global-set-key "\M-n" 'new-frame)
+  (global-set-key "\M-o" 'find-file)
+  (global-set-key "\M-s" 'save-buffer)
+  (global-set-key "\M-z" 'undo)
+  (global-set-key [(meta down)] 'end-of-buffer)
+  (global-set-key [(meta up)] 'beginning-of-buffer)
+  (global-set-key [(meta right)] 'end-of-line)
+  (global-set-key [(meta left)] 'beginning-of-line)
 
-(global-set-key "\M-n" 'new-frame)
-(global-set-key "\M-o" 'find-file)
-(global-set-key "\M-s" 'save-buffer)
-(global-set-key "\M-z" 'undo)
-(global-set-key [(meta down)] 'end-of-buffer)
-(global-set-key [(meta up)] 'beginning-of-buffer)
-(global-set-key [(meta right)] 'end-of-line)
-(global-set-key [(meta left)] 'beginning-of-line)
+  ;; can't seem to un-hijack cmd-`, so make it do something useful
+  (global-set-key "\M-`" 'other-window-in-any-frame)
 
-;; can't seem to un-hijack cmd-`, so make it do something useful
-(global-set-key "\M-`" 'other-window-in-any-frame)
-
-;; find files like textmate
-(global-set-key "\M-F" 'textmate-find-regex-in-project)
-
-;; run the ssa server
-(global-set-key [(super s)] 'ssa-run-server)
+  ;; find files like textmate
+  (global-set-key "\M-F" 'textmate-find-regex-in-project)
+)
 
 ;; quickly jump to a project
 (global-set-key [(super o)] 'open-project)
-
-(defun ssa-start-server (buffer)
-  (process-send-string buffer "cd ~/Projects/ssa/SelfServeApps/Backend")
-  (comint-send-input)
-  (process-send-string buffer "node listener.js")
-  (comint-send-input))
-
-(defun ssa-run-server (&optional args)
-  "Run the ssa backend in an inferior shell."
-  (interactive "P")
-  (let* ((arg (car args))
-	 (running (get-buffer "*server*"))
-	 (restart (and (numberp arg) (= arg 4))))
-    (when (not running)
-      (shell "*server*")
-      (sleep-for 0.5)
-      (ssa-start-server "*server*"))
-    (when running
-      (switch-to-buffer "*server*")
-      (when restart
-	(comint-interrupt-subjob)
-	(ssa-start-server "*server*")))))
 
 (defvar *open-project-registry* (list))
 
