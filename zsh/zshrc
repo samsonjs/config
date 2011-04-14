@@ -8,7 +8,7 @@ function mac()   { [[ "$uname" = "Darwin" ]] }
 # ===================
 
 [ -d /usr/local/riak ] && export RIAK=/usr/local/riak
-[ -d ~/Projects/ssa/SSA-ios/Applications/SSA ] && export SSA=~/Projects/ssa/SSA-ios/Applications/SSA
+[ -d ~/Projects/hln/SSA-ios/Applications/SSA ] && export SSA=~/Projects/hln/SSA-ios/Applications/SSA
 [ -d ~/Projects/Xcode-build ] && export XCODE_BUILD=~/Projects/Xcode-build
 
 if mac; then
