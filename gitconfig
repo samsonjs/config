@@ -31,3 +31,9 @@
 	ui = auto
 [merge]
 	stat = true
+
+[difftool]
+    prompt = false
+
+[difftool "FileMerge"]
+    cmd = opendiff \"$LOCAL\" \"$REMOTE\"
