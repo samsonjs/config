@@ -13,7 +13,7 @@ link_config() {
     [ -e ".$file" ] || ln -s "${CONFIG_PATH}/$file" ".$file"
 }
 
-CONFIG_FILES="ackrc emacs emacs.d gitconfig screenrc vimrc zshenv"
+CONFIG_FILES="ackrc emacs emacs.d gitconfig screenrc vimrc zshenv gdbinit"
 
 for file in $CONFIG_FILES; do
     link_config "$file"
