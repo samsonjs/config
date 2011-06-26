@@ -39,6 +39,14 @@ if [[ -r "$HOME/.pythonrc" ]]; then
     export PYTHONSTARTUP="$HOME/.pythonrc"
 fi
 
+if [[ -d /usr/local/lib/python ]]; then
+    export PYTHONPATH="/usr/local/lib/python"
+fi
+
+if [[ -r /usr/local/lib/node_modules ]]; then
+    export NODE_PATH="/usr/local/lib/node_modules"
+fi
+
 # default editors
 if mac; then
     # wtf, you must be kidding, doesn't even work in many cases. really fucking lame!
