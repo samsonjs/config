@@ -184,8 +184,8 @@
 ;; haskell
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (if (file-readable-p "~/.emacs.d/haskell/haskell-site-file.el")
-;;   (load "~/.emacs.d/haskell/haskell-site-file.el" nil t))
+(if (file-readable-p "~/.emacs.d/haskell/haskell-site-file.el")
+  (load "~/.emacs.d/haskell/haskell-site-file.el" nil t))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
