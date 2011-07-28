@@ -219,9 +219,7 @@ alias uuu='cd ../../..'
 alias uuuu='cd ../../../..'
 alias whatismyip='curl http://www.whatismyip.com/automation/n09230945.asp'
 
-if mac; then
-    alias chrome='/Users/sjs/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --allow-file-access-from-files >/dev/null 2>&1 &!'
-fi
+alias rhino='java org.mozilla.javascript.tools.shell.Main'
 
 # ls Aliases 
 # ----------------
