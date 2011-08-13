@@ -69,8 +69,13 @@ else
 fi
 
 # Load RVM into a shell session *as a function*
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
-
+if [[ -s "~/.rvm/scripts/rvm" ]]; then
+  rvm () {
+    unset rvm
+    . ~/.rvm/scripts/rvm
+    rvm "$@"
+  }
+fi
 
 # 2. Limits
 # =========
