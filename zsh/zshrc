@@ -160,7 +160,7 @@ done
 
 
 
-# 4. Terminal Settings 
+# 4. Terminal Settings
 # ====================
 
 function precmd {
@@ -182,7 +182,7 @@ bindkey '\ep' history-beginning-search-backward
 # Load the prompt theme system
 autoload -U promptinit
 promptinit
- 
+
 # Use my prompt theme, based on wunjo (zsh-git)
 prompt sjs
 
@@ -222,7 +222,7 @@ alias whatismyip='curl http://www.whatismyip.com/automation/n09230945.asp'
 
 alias rhino='java org.mozilla.javascript.tools.shell.Main'
 
-# ls Aliases 
+# ls Aliases
 # ----------------
 if mac; then
     gls_path=`which gls`
@@ -321,7 +321,7 @@ alias -g L='|$PAGER'
 alias -g H='|head'
 alias -g T='|tail'
 alias -g G='|grep'
-alias -g SH='>/dev/null 2>&1'
+alias -g SH='>/dev/null 2>/dev/null'
 alias -g BGD='& disown %1'
 
 
