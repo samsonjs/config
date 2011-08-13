@@ -223,7 +223,7 @@ alias u='cd ..'
 alias uu='cd ../..'
 alias uuu='cd ../../..'
 alias uuuu='cd ../../../..'
-alias whatismyip='curl http://www.whatismyip.com/automation/n09230945.asp'
+alias myip='curl icanhazip.com'
 
 alias rhino='java org.mozilla.javascript.tools.shell.Main'
 
