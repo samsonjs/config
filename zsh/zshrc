@@ -55,6 +55,7 @@ if mac; then
     }
     export EDITOR="vim"
     if which mate >/dev/null 2>&1; then
+        export EDITOR="mate -w"
         export VISUAL="mate -w"
     else
         export VISUAL="vim"
@@ -309,9 +310,8 @@ if mac; then
 fi
 
 function e() {
-    "$EDITOR" "$@" >/dev/null &!
+    $EDITOR "$@" >/dev/null
 }
-alias et="$EDITOR . >/dev/null &!"
 alias em='emacsclient'
 
 # global aliases - work anywhere on line
