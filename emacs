@@ -278,7 +278,6 @@
 (add-hook 'js2-mode-hook 'my-js2-mode-hook)
 
 (autoload #'espresso-mode "espresso" "Start espresso-mode" t)
-;;(add-to-list 'auto-mode-alist '("\\.js$" . espresso-mode))
 (add-to-list 'auto-mode-alist '("\\.json$" . espresso-mode))
 
 
@@ -287,27 +286,6 @@
 
 ;; mustache
 (require 'mustache-mode)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; objective j
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(require 'objj-mode)
-
-;; customize objj-mode, which is based on objc-mode, which is based on cc-mode.
-
-(defconst sjs-objc-style 
-  '(("objc"
-     "My ObjC style")))
-(defun my-objc-mode-hook ()
-;;   (c-add-style "objc" sjs-objc-style)
-  (setq tab-width 4
-	c-basic-offset tab-width
-	c-hanging-semi&comma-criteria nil
-	c-indent-level tab-width
-	indent-tabs-mode nil))
-;;	c-offsets-alist '((statement-cont . *))))
-(add-hook 'objc-mode-hook 'my-objc-mode-hook)
 
 
 ;; css
@@ -468,29 +446,6 @@
   ;; find files like textmate
   (global-set-key "\M-F" 'textmate-find-regex-in-project)
 )
-
-;; quickly jump to a project
-(global-set-key [(super o)] 'open-project)
-
-(defvar *open-project-registry* (list))
-
-(defun register-project (name root-file)
-  (interactive "sProject name: \nfRoot filename: ")
-  (when (null (assoc name *open-project-registry*))
-    (set '*open-project-registry* (cons (list name root-file) *open-project-registry*))))
-
-;; FIXME use completing read
-(defun open-project (name)
-  (interactive "sProject name: ")
-  (let* ((project (assoc name *open-project-registry*))
-	 (root-file (cadr project)))
-    (when (null root-file)
-      (error "No such project"))
-    (find-file root-file)))
-
-;; register projects
-(register-project "ssa" "/Users/sjs/Projects/ssa/SelfServeApps/Frontend/AppController.j")
-(register-project "cappuccino" "/Users/sjs/Projects/cappuccino/Foundation/CPObject.j")
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
