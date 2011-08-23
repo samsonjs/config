@@ -69,14 +69,21 @@
 (setq track-eol t)               ; When at EOL, C-n and C-p move to EOL on other lines
 (setq indent-tabs-mode nil)      ; never insert tabs
 
+;; nav - awesome filesystem navigation, sort of like TextMate's project drawer
+(add-to-load-path "~/config/emacs.d/emacs-nav")
+(require 'nav)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; textmate mode
+;; peepopen and textmate mode
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(add-to-list 'load-path "~/.emacs.d/vendor/")
 (require 'textmate)
+(require 'peepopen)
 (textmate-mode)
 
+;; open files in current frame
+(setq ns-pop-up-frames nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; minimap
