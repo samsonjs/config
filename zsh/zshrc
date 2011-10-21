@@ -244,67 +244,36 @@ alias irb='irb --readline -r irb/completion'
 alias rii='ri -Tf ansi'
 
 # git
-alias a='git add'
-alias ap='git add -p'
-alias b='git branch'
-alias bt='git branch --track'
-alias bto='git-branch-track-origin'
-alias c='git commit'
-alias cam='git commit -a -m'
-alias cm='git commit -m'
-alias co='git checkout'
-alias cob='git checkout -b'
-alias chp='git cherry-pick'
-alias d='git diff'
-alias dc='git diff --cached'
-alias ds='git diff --stat'
-alias f='hub fetch'
-alias g='git grep'
-alias gl='git log'
-alias glo='git log --oneline --decorate'
-alias gls='git log --stat'
-alias gpr='git pull --rebase'
-alias gu='git-branch-set-upstream'
-alias m='hub merge'
-alias pob='git-pull-origin-branches'
-alias r='hub remote'
-alias ra='hub remote add'
-alias rbi='git rebase -i --autosquash'
-alias rbiom='git rebase -i --autosquash origin/master'
-alias t='git tag'
-GIT_VERSION="$(git --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')"
-GIT_VERSION_MAJOR="${GIT_VERSION%%.*}"
-GIT_VERSION_MINOR="${${GIT_VERSION%.*}#*.}"
-GIT_VERSION_REVISION="${GIT_VERSION##*.}"
-if [ $GIT_VERSION_MINOR -ge 7 ] && [ $GIT_VERSION_REVISION -ge 1 ]; then
-    alias s='git status -sb'
-else
-    alias s='git status'
+if which hub >/dev/null 2>/dev/null; then
+	alias f='hub fetch'
+	alias m='hub merge'
 fi
 
-git-branch-track-origin() { git branch --track "$1" origin/"$1" }
-git-branch-set-upstream() { git branch --set-upstream "$1" origin/"$1" }
+if which git >/dev/null 2>/dev/null; then
+	alias a='git add'
+	alias b='git branch'
+	alias c='git commit'
+	alias cam='git commit -a -m'
+	alias co='git checkout'
+	alias chp='git cherry-pick'
+	alias d='git diff'
+	alias dc='git diff --cached'
+	alias ds='git diff --stat'
+	alias gl='git log'
+	alias glo='git log --oneline --decorate'
+	alias gls='git log --stat'
+	alias rbi='git rebase -i --autosquash'
+	alias rbiom='git rebase -i --autosquash origin/master'
 
-git-pull-origin-branches() {
-    if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-	echo "$pwd is not part of a git repo"
-	return
-    fi
-    origbranch=$(git branch | fgrep '*' | sed -e 's/\* //')
-    branches=($@)
-    [[ -z "$branches" ]] && branches=($(git branch | sed -e 's/\* //'))
-    remote_branches=($(git branch -r | fgrep 'origin/' | fgrep -v HEAD | sed -e 's/\* //' -e 's#origin/##'))
-    for branch ($branches) {
-	[[ -z "${remote_branches[(r)$branch]}" ]] && continue
-	git checkout $branch
-	git pull origin $branch
-    }
-    git checkout $origbranch
-}
-
-# macports apachectl
-if mac; then
-    alias -g apache2ctl=/opt/local/apache2/bin/apachectl
+	GIT_VERSION="$(git --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')"
+	GIT_VERSION_MAJOR="${GIT_VERSION%%.*}"
+	GIT_VERSION_MINOR="${${GIT_VERSION%.*}#*.}"
+	GIT_VERSION_REVISION="${GIT_VERSION##*.}"
+	if [ "$GIT_VERSION_MINOR" -ge 7 ] && [ "$GIT_VERSION_REVISION" -ge 1 ]; then
+	    alias s='git status -sb'
+	else
+	    alias s='git status'
+	fi
 fi
 
 function e() {
@@ -312,25 +281,7 @@ function e() {
 }
 alias em='emacsclient'
 
-# global aliases - work anywhere on line
-alias -g C='|wc'
-alias -g CL='|wc -l'
-alias -g L='|$PAGER'
-alias -g H='|head'
-alias -g T='|tail'
-alias -g G='|grep'
-alias -g SH='>/dev/null 2>/dev/null'
-alias -g BGD='& disown %1'
-
-
-# suffix aliases, 'alias -s ps=gv' makes '*.ps' expand to 'gv *.ps'
-# (globbing done after alias expansion!)
-#alias -s c=gvim
-#alias -s h=gvim
-#alias -s py=gvim
-#alias -s html=gvim
-#alias -s css=gvim
-
+# `cd /path/to/a/file` does `cd /path/to/a`
 function cd () {
   if [[ -f $1 ]]; then
     builtin cd $1:h
@@ -338,12 +289,6 @@ function cd () {
     builtin cd $1
   fi
 }
-
-function cl () {
-  cd $1
-  ls
-}
-
 
 function like(){
   print -l **/*${1}*{,/**}
