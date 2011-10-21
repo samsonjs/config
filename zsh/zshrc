@@ -68,14 +68,7 @@ else
     export VISUAL=vi
 fi
 
-# Load RVM into a shell session *as a function*
-if [[ -s "~/.rvm/scripts/rvm" ]]; then
-  rvm () {
-    unset rvm
-    . ~/.rvm/scripts/rvm
-    rvm "$@"
-  }
-fi
+eval "$(rbenv init -)"
 
 # 2. Limits
 # =========
