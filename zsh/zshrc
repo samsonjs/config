@@ -17,6 +17,16 @@ if mac; then
 
     # Don't pollute tar archives with ._ files (Apple double files)
     export COPYFILE_DISABLE=true
+
+    # Develop on Mac
+    export RACK_ENV="development"
+    export NODE_ENV="development"
+fi
+
+if linux; then
+    # Deploy on Linux
+    export RACK_ENV="production"
+    export NODE_ENV="production"
 fi
 
 cdpath=(~)
