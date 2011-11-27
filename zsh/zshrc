@@ -74,7 +74,9 @@ else
     export VISUAL=vi
 fi
 
-eval "$(rbenv init -)"
+if command_exists rbenv; then
+	eval "$(rbenv init -)"
+fi
 
 # 2. Limits
 # =========
