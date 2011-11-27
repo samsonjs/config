@@ -3,13 +3,14 @@ uname=`uname -s`
 function linux() { [[ "$uname" = "Linux"  ]] }
 function mac()   { [[ "$uname" = "Darwin" ]] }
 
+# check if a command is available
+function command_exists() { which "$1" >/dev/null 2>/dev/null }
+
 
 # 1. Environment Vars
 # ===================
 
 [ -d /usr/local/riak ] && export RIAK=/usr/local/riak
-[ -d ~/Projects/hln/SSA-ios/Applications/SSA ] && export SSA=~/Projects/hln/SSA-ios/Applications/SSA
-[ -d ~/Projects/Xcode-build ] && export XCODE_BUILD=~/Projects/Xcode-build
 
 if mac; then
     # for riak and possibly building javascriptcore
@@ -32,7 +33,6 @@ fi
 cdpath=(~)
 
 HOSTNAME=`hostname -s`
-KEYCHAIN_HOST=`hostname`
 
 if [[ "x$INSIDE_EMACS" != "x" ]] || [[ "$EMACS" = "t" ]]; then
     export PAGER=cat
@@ -40,8 +40,8 @@ if [[ "x$INSIDE_EMACS" != "x" ]] || [[ "$EMACS" = "t" ]]; then
 else
     export PAGER='less'
     # most rocks
-    if which most >/dev/null 2>&1; then
-            export MANPAGER='most'
+    if command_exists most; then
+        export MANPAGER='most'
     fi
 fi
 
@@ -53,10 +53,6 @@ if [[ -d /usr/local/lib/python ]]; then
     export PYTHONPATH="/usr/local/lib/python"
 fi
 
-if [[ -r /usr/local/lib/node_modules ]]; then
-    export NODE_PATH="/usr/local/lib/node_modules"
-fi
-
 # default editors
 if mac; then
     # wtf, you must be kidding, doesn't even work in many cases. really fucking lame!
@@ -64,13 +60,13 @@ if mac; then
         /Users/sjs/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -s $(find /var/folders -name server -type s -uid $(id -u) 2>| /dev/null | grep emacs) $*
     }
     export EDITOR="vim"
-    if which mate >/dev/null 2>&1; then
+    if command_exists mate; then
         export EDITOR="mate -w"
         export VISUAL="mate -w"
     else
         export VISUAL="vim"
     fi
-elif linux && which emacs >/dev/null 2>&1; then
+elif linux && command_exists emacs; then
     export EDITOR="emacs -nw"
     export VISUAL="emacs"
 else
@@ -201,12 +197,9 @@ prompt sjs
 
 # 7.1. Convenience Aliases/Macros
 # --------------------------------
-#alias burn='cdrecord -dao -driveropts=burnfree -dev=ATA:1,1,0 -v'
 alias bgd='bg; disown %1'
 alias cp='nocorrect cp'            # don't correct spelling for 'cp'
 #alias dispatch-conf='sudo dispatch-conf'
-alias di='dirs -v'
-alias ec="$EDITOR ~/config/"
 alias ev="$EDITOR ~/config/vim/vimrc"
 alias ez="$EDITOR $ZDOTDIR/zshrc && source $ZDOTDIR/zshrc"
 alias rz="source $ZDOTDIR/zshrc"
@@ -254,12 +247,10 @@ alias irb='irb --readline -r irb/completion'
 alias rii='ri -Tf ansi'
 
 # git
-if which hub >/dev/null 2>/dev/null; then
-	alias f='hub fetch'
-	alias m='hub merge'
-fi
-
-if which git >/dev/null 2>/dev/null; then
+if command_exists git; then
+	if command_exists hub; then
+		alias git='hub'
+	fi
 	alias a='git add'
 	alias b='git branch'
 	alias c='git commit'
@@ -269,13 +260,15 @@ if which git >/dev/null 2>/dev/null; then
 	alias d='git diff'
 	alias dc='git diff --cached'
 	alias ds='git diff --stat'
+	alias f='git fetch'
 	alias gl='git log'
 	alias glo='git log --oneline --decorate'
 	alias gls='git log --stat'
+	alias m='git merge'
 	alias rbi='git rebase -i --autosquash'
 	alias rbiom='git rebase -i --autosquash origin/master'
 
-	GIT_VERSION="$(git --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')"
+	GIT_VERSION="$(git --version | head -n1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')"
 	GIT_VERSION_MAJOR="${GIT_VERSION%%.*}"
 	GIT_VERSION_MINOR="${${GIT_VERSION%.*}#*.}"
 	GIT_VERSION_REVISION="${GIT_VERSION##*.}"
@@ -300,10 +293,6 @@ function cd () {
   else
     builtin cd "$1"
   fi
-}
-
-function like(){
-  print -l **/*${1}*{,/**}
 }
 
 
@@ -332,45 +321,31 @@ bindkey '^I' complete-word      # complete on tab, leave expansion to _expand
 #stty erase '^?'
 TERMINFO=$HOME/.terminfo
 
-function keep {
-    setopt localoptions nomarkdirs nonomatch nocshnullglob nullglob
-    kept=()         # Erase old value in case of error on next line
-    kept=($~*)
-    if [[ ! -t 0 ]]; then
-        local line
-        while read line; do
-            kept+=( $line )         # += is a zsh 4.2+ feature
-        done
-    fi
-print -Rc - ${^kept%/}(T)
-}
-alias keep='noglob keep '
-
-# if [ -r "$HOME/.ruby/lib/sjs.rb" ]; then
-#   export RUBYLIB="$HOME/.ruby/lib"
-#   export RUBYOPT="rsjs"
-# fi
-
-
 # curl convenience functions
 # ==========================
 curl=`which curl`
 if [[ -x "$curl" ]]; then
+
+	# get <url>
     function get {
         $curl -i -H 'x-requested-with: XMLHttpRequest' "$1"
     }
 
+	# put <url> <json>
     function put {
         $curl -i -X PUT -H 'x-requested-with: XMLHttpRequest' -H 'content-type: application/json' -d "$2" "$1"
     }
 
+	# post <url> <json>
     function post {
         $curl -i -X POST -H 'x-requested-with: XMLHttpRequest' -H 'content-type: application/json' -d "$2" "$1"
     }
 
+	# delete <url>
     function delete {
         $curl -i -X DELETE -H 'x-requested-with: XMLHttpRequest' "$1"
     }
+
 fi
 
 # 9. Completion
@@ -386,13 +361,10 @@ zstyle :completion::complete:cd:: tag-order \
 zstyle ':completion:*' auto-description 'specify %d:'
 zstyle ':completion:*' completer _expand _complete _files
 zstyle ':completion:*' expand prefix
-#zstyle ':completion:*' format 'Complete %d:'
 zstyle ':completion:*' group-name ''
-#zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
 zstyle ':completion:*' list-suffixes true
 zstyle ':completion:*' matcher-list 'r:|[._-]=* r:|=*' 'r:|[._-]=* r:|=*' 'r:|[._-]=* r:|=*' 'r:|[._-]=* r:|=*'
-#zstyle ':completion:*' max-errors 2
 zstyle ':completion:*' menu select=0
 zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
 zstyle ':completion:*' verbose true
@@ -406,7 +378,7 @@ compinit
 # 10. SSH Keychain
 # ================
 # OS X includes keychain now, cool.
-if which keychain >/dev/null 2>&1; then
+if command_exists keychain; then
     keychain ~/.ssh/id_rsa ~/.ssh/id_rsa-dreamhost
-    source ~/.keychain/${KEYCHAIN_HOST}-sh > /dev/null
+    source "~/.keychain/$(hostname)-sh" >/dev/null
 fi
