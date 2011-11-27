@@ -4,7 +4,7 @@ path=($HOME/bin $HOME/apps/bin /usr/local/riak/bin /usr/local/bin /usr/local/sbi
 [[ -e "$HOME/.rbenv/bin" ]] && path=($HOME/.rbenv/bin $path)
 
 if [[ -d $HOME/apps/ ]]; then
-    for bindir in $HOME/apps/*/bin; do
+    for bindir in $HOME/apps/*/bin(N); do
         path=($bindir $path)
     done
 fi
