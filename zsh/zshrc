@@ -379,6 +379,6 @@ compinit
 # ================
 # OS X includes keychain now, cool.
 if command_exists keychain; then
-    keychain ~/.ssh/id_rsa ~/.ssh/id_rsa-dreamhost
+    keychain --nogui ~/.ssh/id_rsa ~/.ssh/id_rsa-dreamhost
     source "~/.keychain/$(hostname)-sh" >/dev/null
 fi
