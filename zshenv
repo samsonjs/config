@@ -3,9 +3,11 @@ path=($HOME/bin $HOME/apps/bin /usr/local/riak/bin /usr/local/bin /usr/local/sbi
 [[ -e "$HOME/apps/android/platform-tools" ]] && path=($HOME/apps/android/platform-tools $path)
 [[ -e "$HOME/.rbenv/bin" ]] && path=($HOME/.rbenv/bin $path)
 
-for bindir in $HOME/apps/*/bin; do
-    path=($bindir $path)
-done
+if [[ -d $HOME/apps/ ]]; then
+    for bindir in $HOME/apps/*/bin; do
+        path=($bindir $path)
+    done
+fi
 
 ZDOTDIR=~/config/zsh
 
