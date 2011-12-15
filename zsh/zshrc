@@ -74,9 +74,10 @@ else
     export VISUAL=vi
 fi
 
-if command_exists rbenv; then
-	eval "$(rbenv init -)"
+if command_exists rmate; then
+	export RMATE_HOST="h.samhuri.net"
 fi
+
 
 # 2. Limits
 # =========
@@ -102,9 +103,7 @@ setopt pushdignoredups      # don't push dups on stack
 setopt pushdminus           # pushd -N goes to Nth dir in stack
 export DIRSTACKSIZE=8
 
-# need to find out the difference between these two, just the export?
-setopt autonamedirs             # % export h=/home/sjs; cd ~h; pwd
-                                # => /home/sjs
+setopt autonamedirs             # % export h=/home/sjs; cd ~h; pwd => /home/sjs
 setopt cdablevars               # blah=~/media/movies; cd blah; pwd => ~/media/movies
 
 # 3.3. Shell Completion
@@ -390,4 +389,12 @@ if command_exists keychain; then
     if [[ -f $KEYCHAINFILE ]]; then
         source $KEYCHAINFILE >/dev/null
     fi
+fi
+
+
+# 11. rbenv
+# =========
+
+if command_exists rbenv; then
+	eval "$(rbenv init -)"
 fi
