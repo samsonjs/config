@@ -382,7 +382,8 @@ compinit
 if command_exists keychain; then
     if [[ -f ~/.ssh/id_rsa ]]; then
         keychain --nogui ~/.ssh/id_rsa
-    elif [[ -f ~/.ssh/id_rsa-dreamhost ]]; then
+    fi
+    if [[ -f ~/.ssh/id_rsa-dreamhost ]]; then
         keychain --nogui ~/.ssh/id_rsa-dreamhost
     fi
     KEYCHAINFILE="$HOME/.keychain/$(hostname)-sh"
