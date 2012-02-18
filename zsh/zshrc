@@ -205,10 +205,6 @@ alias ev="$EDITOR ~/config/vim/vimrc"
 alias ez="$EDITOR $ZDOTDIR/zshrc && source $ZDOTDIR/zshrc"
 alias rz="source $ZDOTDIR/zshrc"
 
-if mac; then
-    alias hide='sudo /Developer/Tools/SetFile -a VP'
-fi
-
 alias mkdir='nocorrect mkdir'      # don't correct spelling for 'mkdir'
 alias mv='nocorrect mv'            # don't correct spelling for 'mv'
 #alias ns='newscript'
