@@ -1,16 +1,23 @@
-#!/bin/sh
+#!/bin/bash
 
 BASENAME="${0##*/}"
 
 if [ x"$1" != x ]; then
     CONFIG_PATH="$1"
-else
+elif [ -d "${HOME}/Dropbox/Personal/config" ]; then
+    CONFIG_PATH="${HOME}/Dropbox/Personal/config"
+elif [ -d "${HOME}/config" ]; then
     CONFIG_PATH="${HOME}/config"
+else
+    echo "Error: no config dir found"
+    exit 1
 fi
 
 link_config() {
     file="$1"
-    [ -e ".$file" ] || ln -s "${CONFIG_PATH}/$file" ".$file"
+    if [ ! -e "${HOME}/.$file" ]; then
+        ln -s "${CONFIG_PATH}/$file" "${HOME}/.$file"
+    fi
 }
 
 CONFIG_FILES="ackrc emacs emacs.d gitconfig screenrc vimrc zshenv gdbinit"
