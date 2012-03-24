@@ -20,8 +20,10 @@ link_config() {
     fi
 }
 
-CONFIG_FILES="ackrc emacs emacs.d gitconfig screenrc vimrc zshenv gdbinit"
+cd "$CONFIG_PATH"
 
-for file in $CONFIG_FILES; do
-    link_config "$file"
+for file in *; do
+    if [ "$file" != "init.sh" ]; then
+        link_config "$file"
+    fi
 done
