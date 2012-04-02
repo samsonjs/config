@@ -1,14 +1,11 @@
-path=($HOME/bin $HOME/apps/bin /usr/local/bin /usr/local/sbin /opt/local/bin /opt/local/sbin $path)
-[[ -e "$HOME/apps/android/tools" ]] && path=($HOME/apps/android/tools $path)
-[[ -e "$HOME/apps/android/platform-tools" ]] && path=($HOME/apps/android/platform-tools $path)
-[[ -e "$HOME/.rbenv/bin" ]] && path=($HOME/.rbenv/bin $path)
-[[ -e "/Applications/Xcode.app/Contents/Developer/usr/bin" ]] && path=(/Applications/Xcode.app/Contents/Developer/usr/bin $path)
-
-if [[ -d $HOME/apps/ ]]; then
-    for bindir in $HOME/apps/*/bin(N); do
-        path=($bindir $path)
-    done
-fi
+custom_paths=(/sbin /usr/sbin $HOME/bin $HOME/.rbenv/bin /usr/local/android/tools /usr/local/android/platform-tools /Applications/Xcode.app/Contents/Developer/usr/bin)
+for dir in $custom_paths; do
+    if [[ -d "$dir" ]]; then
+        path=($dir $path)
+    fi
+done
+export path
+typeset -U path
 
 ZDOTDIR=~/config/zsh
 
