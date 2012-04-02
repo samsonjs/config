@@ -7,7 +7,7 @@ done
 export path
 typeset -U path
 
-ZDOTDIR=~/config/zsh
+[[ -d "$HOME/config/zsh" ]] && ZDOTDIR="$HOME/config/zsh"
 
 fpath=($fpath $ZDOTDIR/functions)
 typeset -U fpath
