@@ -13,4 +13,4 @@ fpath=($fpath $ZDOTDIR/functions)
 typeset -U fpath
 
 # source non-standard zshrc
-source "$ZDOTDIR/zshrc"
+. "$ZDOTDIR/zshrc"
