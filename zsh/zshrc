@@ -377,14 +377,8 @@ compinit
 
 # 10. SSH Keychain
 # ================
-# OS X includes keychain now, cool.
 if command_exists keychain; then
-    if [[ -f ~/.ssh/id_rsa ]]; then
-        keychain --nogui ~/.ssh/id_rsa
-    fi
-    if [[ -f ~/.ssh/id_rsa-dreamhost ]]; then
-        keychain --nogui ~/.ssh/id_rsa-dreamhost
-    fi
+    keychain --nogui ~/.ssh/id_rsa*~*.pub
     KEYCHAINFILE="$HOME/.keychain/$(hostname)-sh"
     if [[ -f $KEYCHAINFILE ]]; then
         source $KEYCHAINFILE >/dev/null
