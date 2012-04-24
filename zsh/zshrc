@@ -377,12 +377,12 @@ compinit
 
 # 10. SSH Keychain
 # ================
-if command_exists keychain; then
-    keychain --nogui ~/.ssh/id_rsa*~*.pub
-    KEYCHAINFILE="$HOME/.keychain/$(hostname)-sh"
-    if [[ -f $KEYCHAINFILE ]]; then
-        source $KEYCHAINFILE >/dev/null
-    fi
+if command_exists keychain && [[ -d ~/.ssh ]]; then
+  keychain --nogui ~/.ssh/id_rsa*~*.pub(N)
+  KEYCHAINFILE="$HOME/.keychain/$(hostname)-sh"
+  if [[ -f $KEYCHAINFILE ]]; then
+    source $KEYCHAINFILE >/dev/null
+  fi
 fi
 
 
