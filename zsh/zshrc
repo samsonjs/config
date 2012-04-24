@@ -218,8 +218,6 @@ alias uuu='cd ../../..'
 alias uuuu='cd ../../../..'
 alias myip='curl icanhazip.com'
 
-alias rhino='java org.mozilla.javascript.tools.shell.Main'
-
 # ls Aliases
 # ----------------
 if command_exists ls-comma; then
