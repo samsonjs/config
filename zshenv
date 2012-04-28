@@ -1,9 +1,12 @@
-custom_paths=(/sbin /usr/sbin $HOME/bin $HOME/.rbenv/bin /usr/local/android/tools /usr/local/android/platform-tools /Applications/Xcode.app/Contents/Developer/usr/bin)
+custom_paths=(/sbin /usr/sbin $HOME/bin $HOME/.rbenv/bin /usr/local/android/tools /usr/local/android/platform-tools)
 for dir in $custom_paths; do
     if [[ -d "$dir" ]]; then
         path=($dir $path)
     fi
 done
+if [[ -d /Applications/Xcode.app/Contents/Developer/usr/bin ]]; then
+    path=($path /Applications/Xcode.app/Contents/Developer/usr/bin)
+fi
 export path
 typeset -U path
 
