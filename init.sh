@@ -15,9 +15,12 @@ fi
 
 link_config() {
     file="$1"
-    if [ ! -e "${HOME}/.$file" ]; then
-        ln -s "${CONFIG_PATH}/$file" "${HOME}/.$file"
+    if [ -e "${HOME}/.$file" ]; then
+        mkdir "${HOME}/original-dot-files" >/dev/null 2>/dev/null
+        echo "Existing file found at $HOME/.$file, moving to ~/original-dot-files."
+        mv ".$file" original-dot-files/
     fi
+    ln -s "${CONFIG_PATH}/$file" "${HOME}/.$file"
 }
 
 cd "$CONFIG_PATH"
