@@ -16,8 +16,9 @@ set clipboard+=unnamed		" put yanks/etc on the clipboard
 set history=1000			" How many lines of history to remember
 set path=~/,.,,
 set cdpath=~/,.,
-set nobackup					" create backup files
+set nobackup					" don't create backup files
 "set backupcopy=yes          " copy the file, then overwrite the original
+set backupskip=/tmp/*,/private/tmp/*" " don't mess with cron, visudo, etc
 
 " }}}
 
@@ -48,7 +49,7 @@ set smartcase					" ignore case unless uppercase letters in search
 set iskeyword=@,48-57,_,-		" chars which are parts of words
 								" @ = a-z,A-Z (really means isalpha() is true)
 set lz							" do not redraw while running macros (much faster) (LazyRedraw)
-set mouse=a						" use mouse everywhere
+set mouse=						" don't use the mouse
 "set number						" turn on line numbers
 set report=0					" tell us when anything is changed via :...
 set shortmess=aItr				" shortens messages to avoid 'press a key' prompt 
