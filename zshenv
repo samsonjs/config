@@ -1,4 +1,4 @@
-custom_paths=(/sbin /usr/sbin $HOME/bin $HOME/.rbenv/bin /usr/local/android/tools /usr/local/android/platform-tools)
+custom_paths=(/sbin /usr/sbin $HOME/bin $HOME/.rbenv/bin /usr/local/android/tools /usr/local/android/platform-tools /usr/local/lib/cw)
 for dir in $custom_paths; do
     if [[ -d "$dir" ]]; then
         path=($dir $path)
