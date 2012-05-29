@@ -184,7 +184,7 @@ prompt sjs
 alias bgd='bg; disown %1'
 alias cp='nocorrect cp'            # don't correct spelling for 'cp'
 #alias dispatch-conf='sudo dispatch-conf'
-alias ev="$EDITOR ~/config/vim/vimrc"
+alias ev="$EDITOR ~/config/vimrc"
 alias ez="$EDITOR $ZDOTDIR/zshrc && source $ZDOTDIR/zshrc"
 alias rz="source $ZDOTDIR/zshrc"
 
