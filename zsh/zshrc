@@ -302,33 +302,6 @@ bindkey '^I' complete-word      # complete on tab, leave expansion to _expand
 #stty erase '^?'
 TERMINFO=$HOME/.terminfo
 
-# curl convenience functions
-# ==========================
-curl=`which curl`
-if [[ -x "$curl" ]]; then
-
-	# get <url>
-    function get {
-        $curl -i -H 'x-requested-with: XMLHttpRequest' "$1"
-    }
-
-	# put <url> <json>
-    function put {
-        $curl -i -X PUT -H 'x-requested-with: XMLHttpRequest' -H 'content-type: application/json' -d "$2" "$1"
-    }
-
-	# post <url> <json>
-    function post {
-        $curl -i -X POST -H 'x-requested-with: XMLHttpRequest' -H 'content-type: application/json' -d "$2" "$1"
-    }
-
-	# delete <url>
-    function delete {
-        $curl -i -X DELETE -H 'x-requested-with: XMLHttpRequest' "$1"
-    }
-
-fi
-
 # 9. Completion
 # =============
 
