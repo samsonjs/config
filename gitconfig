@@ -21,7 +21,7 @@
 	quotepath = false
 	whitespace = trailing-space,space-before-tab
 	excludesfile = ~/config/gitignore
-	editor = mate -w
+	editor = subl -w
 [diff]
 	mnemonicprefix = true
 	renames = copies
@@ -38,3 +38,5 @@
 
 [difftool "FileMerge"]
     cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+[credential]
+	helper = osxkeychain
