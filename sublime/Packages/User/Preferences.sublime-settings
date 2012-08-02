@@ -1,0 +1,9 @@
+{ "translate_tabs_to_spaces": true,
+  "indent_to_bracket": true,
+  "tab_size": 2,
+  "dictionary": "Packages/Language - English/en_GB.dic",
+  "trim_trailing_white_space_on_save": true,
+  "ensure_newline_at_eof_on_save": true,
+  "auto_complete_commit_on_tab": true,
+  "highlight_modified_tabs": true
+}
