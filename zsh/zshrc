@@ -184,6 +184,7 @@ prompt sjs
 alias bgd='bg; disown %1'
 alias cp='nocorrect cp'            # don't correct spelling for 'cp'
 #alias dispatch-conf='sudo dispatch-conf'
+alias e='subl -n'
 alias ev="$EDITOR ~/config/vimrc"
 alias ez="$EDITOR $ZDOTDIR/zshrc && source $ZDOTDIR/zshrc"
 alias rz="source $ZDOTDIR/zshrc"
@@ -229,9 +230,6 @@ alias rii='ri -Tf ansi'
 
 # git
 if command_exists git; then
-	if command_exists hub; then
-		alias git='hub'
-	fi
 	alias a='git add'
 	alias b='git branch'
 	alias c='git commit'
