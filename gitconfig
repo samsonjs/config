@@ -16,12 +16,11 @@
 	autosetupmerge = true
 [github]
 	user = samsonjs
-	token = 04f822d719928ee8dd9b1f0dec23ac0c
+	token = xxx
 [core]
 	quotepath = false
 	whitespace = trailing-space,space-before-tab
 	excludesfile = ~/config/gitignore
-	editor = subl -w
 [diff]
 	mnemonicprefix = true
 	renames = copies
