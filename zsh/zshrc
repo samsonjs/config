@@ -272,6 +272,8 @@ function cd () {
   else
     builtin cd "$1"
   fi
+  tabname=$(basename $(pwd))
+  printf "\e]1;${tabname}\a"
 }
 
 
