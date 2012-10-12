@@ -14,8 +14,6 @@
 [branch]
 	autosetuprebase = always
 	autosetupmerge = true
-[include]
-    path = "$HOME/config/gitconfig.github"
 [core]
 	quotepath = false
 	whitespace = trailing-space,space-before-tab

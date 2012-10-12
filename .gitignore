@@ -4,4 +4,3 @@ emacs.d/auto-save-list/.saves*
 .DS_Store
 *.pyc
 *.cache
-gitconfig.github
