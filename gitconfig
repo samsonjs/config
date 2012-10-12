@@ -14,9 +14,8 @@
 [branch]
 	autosetuprebase = always
 	autosetupmerge = true
-[github]
-	user = samsonjs
-	token = xxx
+[include]
+    path = "$HOME/config/gitconfig.github"
 [core]
 	quotepath = false
 	whitespace = trailing-space,space-before-tab
