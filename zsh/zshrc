@@ -105,8 +105,8 @@ setopt extendedglob         # use extended globbing (#, ~, ^)
 # 3.5. History and History Expansion
 # ----------------------------------
 export HISTFILE="$ZDOTDIR/zhistory"    # save history
-export HISTSIZE=200000                 # huge internal buffer
-export SAVEHIST=200000                 # huge history file
+export HISTSIZE=2000000                # huge internal buffer
+export SAVEHIST=2000000                # huge history file
 
 setopt extendedhistory      # save timestamps in history
 setopt no_histbeep          # don't beep for erroneous history expansions
