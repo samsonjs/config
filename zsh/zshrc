@@ -6,6 +6,9 @@ function mac()   { [[ "$uname" = "Darwin" ]] }
 # check if a command is available
 function command_exists() { which "$1" >/dev/null 2>/dev/null }
 
+# check if this is an interactive session
+# (tests if stdout is a tty)
+function is_interactive() { [ -t 1 ] }
 
 # 1. Environment Vars
 # ===================
@@ -329,7 +332,7 @@ compinit
 
 # 10. SSH Keychain
 # ================
-if command_exists keychain && [[ -d ~/.ssh ]]; then
+if is_interactive && command_exists keychain && [[ -d ~/.ssh ]]; then
   keychain --nogui ~/.ssh/id_rsa*~*.pub(N)
   KEYCHAINFILE="$HOME/.keychain/$(hostname)-sh"
   if [[ -f $KEYCHAINFILE ]]; then
