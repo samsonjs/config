@@ -42,10 +42,13 @@
 		"no_italic"
 	],
 	"font_size": 10.0,
+	"find_selected_text": true,
+	"highlight_line": true,
 	"highlight_modified_tabs": true,
 	"indent_to_bracket": true,
 	"open_files_in_new_window": true,
 	"tab_size": 2,
 	"translate_tabs_to_spaces": true,
-	"trim_trailing_white_space_on_save": true
+	"trim_trailing_white_space_on_save": true,
+	"show_full_path": true
 }
