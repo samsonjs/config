@@ -1,0 +1,65 @@
+[
+
+		{
+				"args": {
+						"type": "cr"
+				},
+				"caption": "Line Ending: Mac OS 9",
+				"checkbox": true,
+				"command": "set_line_ending"
+		},
+		{
+				"args": {
+						"type": "windows"
+				},
+				"caption": "Line Ending: Windows",
+				"checkbox": true,
+				"command": "set_line_ending"
+		},
+		{
+				"args": {
+						"type": "unix"
+				},
+				"caption": "Line Ending: Unix",
+				"checkbox": true,
+				"command": "set_line_ending"
+		},
+
+		{
+				"args": {
+						"type": "cr"
+				},
+				"caption": "Line Ending to all views on window: Mac OS 9",
+				"command": "set_line_ending_window"
+		},
+		{
+				"args": {
+						"type": "windows"
+				},
+				"caption": "Line Ending to all views on window: Windows",
+				"command": "set_line_ending_window"
+		},
+		{
+				"args": {
+						"type": "unix"
+				},
+				"caption": "Line Ending to all views on window: Unix",
+				"command": "set_line_ending_window"
+		},
+
+		{
+				"args": {
+						"type": "spaces"
+				},
+				"caption": "Indentation: Convert to all views on window to Spaces",
+				"command": "convert_indentation_window"
+		},
+		{
+				"args": {
+						"type": "tabs"
+				},
+				"caption": "Indentation: Convert to all views on window to Tabs",
+				"command": "convert_indentation_window"
+		}
+
+]

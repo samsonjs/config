@@ -1,0 +1,12 @@
+{
+	// To show line endings type on status bar
+	"show_line_endings_on_status_bar" : true,
+
+	// show an alert when the line ending is on the list.
+	"alert_when_line_ending_is" : [],
+	//example: "alert_when_line_ending_is":["Windows","Unix","CR"]
+
+	// auto convert line endings onload to:
+	"auto_convert_line_endings_to" : ""
+
+}
