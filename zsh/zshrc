@@ -160,6 +160,11 @@ for op in \| \< \> \&
   do bindkey "$op" self-insert-redir
 done
 
+# 3.9. Auto quote pasted URLs
+# ---------------------------
+autoload -U url-quote-magic
+zle -N self-insert url-quote-magic
+
 
 
 # 4. Terminal Settings
