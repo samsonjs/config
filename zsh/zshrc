@@ -129,8 +129,6 @@ setopt histfindnodups       # backwards search produces diff result each time
 setopt histreduceblanks     # compact consecutive white space chars (cool)
 setopt histnostore          # don't store history related functions
 setopt incappendhistory     # incrementally add items to HISTFILE
-# this is very annoying
-#setopt histverify           # confirm !: or ^ command results before execution
 
 
 # 3.6. Job Control
@@ -299,9 +297,6 @@ function cd () {
 
 # if commands takes more than 60 seconds tell me how long it took
 export REPORTTIME=60
-
-# use less instead of the default more when no cmd is specified
-export READNULLCMD=less
 
 # set shell options
 setopt no_badpattern            # supress err msgs
