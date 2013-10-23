@@ -1,6 +1,6 @@
 [user]
 	name = Sami Samhuri
-	email = sami.samhuri@gmail.com
+	email = sami@samhuri.net
 [alias]
 	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
 	co = checkout
@@ -10,9 +10,8 @@
 	a = add
 	c = commit
 [push]
-	default = tracking
+	default = upstream
 [branch]
-	autosetuprebase = always
 	autosetupmerge = true
 [core]
 	quotepath = false
@@ -28,11 +27,14 @@
 	ui = auto
 [merge]
 	stat = true
-
+[rebase]
+    autosquash = true
 [difftool]
     prompt = false
-
 [difftool "FileMerge"]
     cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 [credential]
 	helper = osxkeychain
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path =
