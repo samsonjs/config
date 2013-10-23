@@ -5,6 +5,8 @@
 		"AAAPackageDev",
 		"LESS",
 		"LineEndings",
-		"Package Control"
+		"Package Control",
+		"SFTP",
+		"Web Inspector"
 	]
 }

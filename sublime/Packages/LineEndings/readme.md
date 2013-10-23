@@ -23,3 +23,4 @@ Install this repository via "Package Control" http://wbond.net/sublime_packages/
 # Contributors
 
  * polyvertex
+ * Nicholas Buse

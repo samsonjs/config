@@ -48,7 +48,7 @@ class SetLineEndingWindowCommand(sublime_plugin.TextCommand):
 		sublime.active_window().focus_view(active_view);
 
 	def is_enabled(self):
-		return len(sublime.active_window().views())
+		return len(sublime.active_window().views()) > 0
 
 class ConvertIndentationWindowCommand(sublime_plugin.TextCommand):
 
@@ -64,4 +64,4 @@ class ConvertIndentationWindowCommand(sublime_plugin.TextCommand):
 
 
 	def is_enabled(self):
-		return len(sublime.active_window().views())
+		return len(sublime.active_window().views()) > 0
