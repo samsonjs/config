@@ -15,6 +15,10 @@ function is_interactive() { [ -t 1 ] }
 
 [ -d /usr/local/riak ] && export RIAK=/usr/local/riak
 
+# Android SDK
+export ANDROID_SDK='/usr/local/android/sdk'
+export ANDROID_TARGET='18'
+
 if mac; then
     # for riak and possibly building javascriptcore
     export COMMAND_MODE=unix2003
@@ -24,6 +28,7 @@ if mac; then
 
     # Develop on Mac
     export RACK_ENV="development"
+    export RACK_PORT=4001
     export NODE_ENV="development"
 fi
 
