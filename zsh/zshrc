@@ -27,12 +27,6 @@ if mac; then
     export NODE_ENV="development"
 fi
 
-if linux; then
-    # Deploy on Linux
-    export RACK_ENV="production"
-    export NODE_ENV="production"
-fi
-
 cdpath=(~)
 
 HOSTNAME=`hostname -s`
@@ -293,52 +287,19 @@ setopt cbases                   # 0xFF instead of 16#FF
 setopt globsubst                # parameter expns eligible for filename expn & generation
 setopt interactivecomments      # comments allowed in interactive shells
 setopt no_hup                   # leave bg tasks running (a la nohup)
-#setopt magicequalsubst         # performs filename expansion on 'arg' part of
-                                #  foo=arg parameters.
 
 bindkey -e                      # emacs style key bindings
-bindkey '^I' complete-word      # complete on tab, leave expansion to _expand
-
-# default in linux is backspace sends ^H, emacs no likey
-#stty erase '^?'
-TERMINFO=$HOME/.terminfo
-
-# 9. Completion
-# =============
-
-# more verbose completion prompt
-zstyle ':completion:*' format '%SCompleting %U%d%u%s'
-zstyle :completion::complete:cd:: tag-order \
-        local-directories path-directories
-
-# The following lines were added by compinstall
-
-zstyle ':completion:*' auto-description 'specify %d:'
-zstyle ':completion:*' completer _expand _complete _files
-zstyle ':completion:*' expand prefix
-zstyle ':completion:*' group-name ''
-zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
-zstyle ':completion:*' list-suffixes true
-zstyle ':completion:*' matcher-list 'r:|[._-]=* r:|=*' 'r:|[._-]=* r:|=*' 'r:|[._-]=* r:|=*' 'r:|[._-]=* r:|=*'
-zstyle ':completion:*' menu select=0
-zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
-zstyle ':completion:*' verbose true
-zstyle :compinstall filename "$ZDOTDIR/zshrc"
-
-autoload -Uz compinit
-compinit
-# End of lines added by compinstall
 
 
 # 10. SSH Keychain
 # ================
-if is_interactive && command_exists keychain && [[ -d ~/.ssh ]]; then
-  keychain --nogui ~/.ssh/id_rsa*~*.pub(N)
-  KEYCHAINFILE="$HOME/.keychain/$(hostname)-sh"
-  if [[ -f $KEYCHAINFILE ]]; then
-    source $KEYCHAINFILE >/dev/null
-  fi
-fi
+#if is_interactive && command_exists keychain && [[ -d ~/.ssh ]]; then
+#  keychain --nogui ~/.ssh/id_rsa*~*.pub(N)
+#  KEYCHAINFILE="$HOME/.keychain/$(hostname)-sh"
+#  if [[ -f $KEYCHAINFILE ]]; then
+#    source $KEYCHAINFILE >/dev/null
+#  fi
+#fi
 
 
 # 11. rbenv
