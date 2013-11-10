@@ -14,19 +14,23 @@ else
 fi
 
 link_config() {
-    file="$1"
-    if [ -e "${HOME}/.$file" ]; then
+    SRC="$1"
+    NAME=$(basename "$SRC")
+    DEST="${HOME}/.${NAME}"
+    if [ -e "$DEST" ]; then
+        echo "Existing file found at ${DEST}, moving to ~/original-dot-files."
         mkdir "${HOME}/original-dot-files" >/dev/null 2>/dev/null
-        echo "Existing file found at $HOME/.$file, moving to ~/original-dot-files."
-        mv ".$file" original-dot-files/
+        mv "$DEST" original-dot-files/
     fi
-    ln -s "${CONFIG_PATH}/$file" "${HOME}/.$file"
+    ln -s "$SRC" "$DEST"
 }
 
 cd "$CONFIG_PATH"
 
-for file in *; do
-    if [ "$file" != "init.sh" ]; then
-        link_config "$file"
+for FILE in *; do
+    if [ "$FILE" != "init.sh" ]; then
+        link_config "${CONFIG_PATH}/$FILE"
     fi
 done
+
+link_config "zsh/zshrc"
