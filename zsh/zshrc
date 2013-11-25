@@ -347,3 +347,22 @@ compinit
 if command_exists rbenv; then
 	eval "$(rbenv init -)"
 fi
+
+
+# 12. Attach to screen
+# ====================
+#
+# Automatically attach to a screen session.
+
+function not_in_screen() {
+  [[ "$STY" = "" ]] && [[ "$SHLVL" = "1" ]]
+}
+
+function is_screen_running() {
+  NSCREENS="$(screen -ls | egrep 'Attached|Detached' | wc -l)"
+  [[ "${NSCREENS// /}" != "0" ]]
+}
+
+if is_interactive && command_exists screen && not_in_screen && is_screen_running; then
+  screen -rx
+fi
