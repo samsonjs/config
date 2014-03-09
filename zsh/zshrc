@@ -90,6 +90,7 @@ if [[ $TERM_PROGRAM == "Apple_Terminal" ]] && [[ -z "$INSIDE_EMACS" ]] {
   chpwd
 }
 
+export HOMEBREW_CASK_OPTS="--appdir=/Applications --caskroom=$HOME/Caskroom"
 
 # 2. Limits
 # =========
