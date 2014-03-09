@@ -9,6 +9,7 @@
 	lo = log --oneline
 	a = add
 	c = commit
+	g = grep --break --heading --line-number
 [push]
 	default = upstream
 [branch]
@@ -38,3 +39,6 @@
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 	path =
+[grep]
+	extendRegexp = true
+	lineNumber = true
