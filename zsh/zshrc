@@ -372,3 +372,6 @@ function is_screen_running() {
 if is_interactive && command_exists screen && not_in_screen && is_screen_running; then
   screen -rx
 fi
+
+# added by travis gem
+[ -f /Users/sjs/.travis/travis.sh ] && source /Users/sjs/.travis/travis.sh
