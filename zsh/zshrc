@@ -307,6 +307,11 @@ function cd () {
   fi
 }
 
+function objcrun() {
+  NAME="${1%.m}"
+  BINPATH="/tmp/$NAME"
+  clang -fobjc-arc -framework Foundation "${NAME}.m" -o "$BINPATH" && "$BINPATH"
+}
 
 # 8. Unsorted (new) stuff
 # =======================
