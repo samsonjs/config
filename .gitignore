@@ -5,3 +5,7 @@ emacs.d/auto-save-list/.saves*
 *.pyc
 *.cache
 irb_history
+atom/compile-cache
+atom/.node-gyp
+atom/storage
+atom/packages

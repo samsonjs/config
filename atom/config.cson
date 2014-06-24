@@ -1,0 +1,25 @@
+'exception-reporting':
+  'userId': 'cdd550b3-4a3f-778c-9b88-71ba634f106c'
+'release-notes':
+  'viewedVersion': '0.94.0'
+'welcome':
+  'showOnStartup': false
+'metrics':
+  'userId': 'e31a97b67a24d6f167e790f4438b2b7f86422ca7'
+'editor':
+  'fontFamily': 'Menlo'
+  'softWrap': true
+  'fontSize': 14
+'core':
+  'themes': [
+    'atom-dark-ui'
+    'atom-light-syntax'
+  ]
+  'projectHome': '/Users/sjs/Projects'
+'markdown-preview':
+  'grammars': [
+    'source.gfm'
+    'source.litcoffee'
+    'text.plain'
+    'text.plain.null-grammar'
+  ]
