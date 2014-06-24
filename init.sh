@@ -28,9 +28,9 @@ link_config() {
 cd "$CONFIG_PATH"
 
 for FILE in *; do
-    if [ "$FILE" != "init.sh" ]; then
+    if [ "$FILE" != "init.sh" ] && [ "$FILE" != "Gemfile" ] && [ "$FILE" != "Gemfile.lock" ] && [ "$FILE" != "zsh" ]; then
         link_config "${CONFIG_PATH}/$FILE"
     fi
 done
 
-link_config "zsh/zshrc"
+link_config "${CONFIG_PATH}/zsh/zshrc"
