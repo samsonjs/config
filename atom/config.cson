@@ -9,13 +9,14 @@
 'editor':
   'fontFamily': 'Menlo'
   'softWrap': true
-  'fontSize': 14
+  'fontSize': 12
 'core':
   'themes': [
     'atom-dark-ui'
     'atom-light-syntax'
   ]
   'projectHome': '/Users/sjs/Projects'
+  'useReactEditor': true
 'markdown-preview':
   'grammars': [
     'source.gfm'
