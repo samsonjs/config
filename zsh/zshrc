@@ -1,4 +1,5 @@
-# sniff out the platform
+# 0. Sniff out the platform
+# =========================
 uname=`uname -s`
 function linux() { [[ "$uname" = "Linux"  ]] }
 function mac()   { [[ "$uname" = "Darwin" ]] }
@@ -12,16 +13,12 @@ function is_interactive() { [ -t 1 ] }
 
 # 1. Environment Vars
 # ===================
-
-custom_paths=(/sbin /usr/sbin $HOME/bin $HOME/.rbenv/bin /usr/local/android/sdk/tools /usr/local/android/sdk/platform-tools /usr/local/android/tools /usr/local/android/platform-tools /usr/local/bin /usr/local/share/npm/bin)
+custom_paths=(/sbin /usr/sbin /usr/local/bin $HOME/.rbenv/bin /Applications/Xcode.app/Contents/Developer/usr/bin /Applications/Android\ Studio.app/sdk/tools $HOME/bin)
 for dir in $custom_paths; do
     if [[ -d "$dir" ]]; then
         path=($dir $path)
     fi
 done
-if [[ -d /Applications/Xcode.app/Contents/Developer/usr/bin ]]; then
-    path=($path /Applications/Xcode.app/Contents/Developer/usr/bin)
-fi
 export path
 typeset -U path
 
@@ -30,28 +27,11 @@ typeset -U path
 fpath=($fpath $ZDOTDIR/functions)
 typeset -U fpath
 
-# Android SDK
-export ANDROID_SDK='/usr/local/android/sdk'
-export ANDROID_TARGET='18'
-
-if mac; then
-    # for riak and possibly building javascriptcore
-    export COMMAND_MODE=unix2003
-
-    # Don't pollute tar archives with ._ files (Apple double files)
-    export COPYFILE_DISABLE=true
-
-    # Develop on Mac
-    export RACK_ENV="development"
-    export RACK_PORT=4001
-    export NODE_ENV="development"
-fi
-
 cdpath=(~)
 
 HOSTNAME=`hostname -s`
 
-if [[ "x$INSIDE_EMACS" != "x" ]] || [[ "$EMACS" = "t" ]]; then
+if [[ "$INSIDE_EMACS" != "" ]] || [[ "$EMACS" = "t" ]]; then
     export PAGER=cat
     export MANPAGER=cat
 else
@@ -62,14 +42,6 @@ else
     fi
 fi
 
-if [[ -r "$HOME/.pythonrc" ]]; then
-    export PYTHONSTARTUP="$HOME/.pythonrc"
-fi
-
-if [[ -d /usr/local/lib/python ]]; then
-    export PYTHONPATH="/usr/local/lib/python"
-fi
-
 if command_exists vim; then
     export EDITOR="vim"
     export VISUAL="vim"
@@ -78,36 +50,39 @@ else
     export VISUAL="vi"
 fi
 
-# Set Apple Terminal.app resume directory
-if [[ $TERM_PROGRAM == "Apple_Terminal" ]] && [[ -z "$INSIDE_EMACS" ]] {
-  function chpwd {
-    local SEARCH=' '
-    local REPLACE='%20'
-    local PWD_URL="file://$HOSTNAME${PWD//$SEARCH/$REPLACE}"
-    printf '\e]7;%s\a' "$PWD_URL"
-  }
+if mac; then
+    # susv3 compliance over 10.3 - for riak and possibly building javascriptcore
+    export COMMAND_MODE=unix2003
 
-  chpwd
-}
+    # Don't pollute tar archives with ._ files (Apple double files)
+    export COPYFILE_DISABLE=true
 
-export HOMEBREW_CASK_OPTS="--appdir=/Applications --caskroom=$HOME/Caskroom"
+    export HOMEBREW_CASK_OPTS="--appdir=/Applications --caskroom=$HOME/Caskroom"    
 
-# 2. Limits
-# =========
-# limit coredumpsize        30m          # limit core dumps to 30mb
-# limit stacksize            8m          # limit stack to 8mb
+    # Set Apple Terminal.app resume directory
+    if [[ $TERM_PROGRAM == "Apple_Terminal" ]] && [[ -z "$INSIDE_EMACS" ]] {
+      function chpwd {
+        local SEARCH=' '
+        local REPLACE='%20'
+        local PWD_URL="file://$HOSTNAME${PWD//$SEARCH/$REPLACE}"
+        printf '\e]7;%s\a' "$PWD_URL"
+      }
 
-# 3. Shell Options
+      chpwd
+    }
+fi
+
+# 4. Shell Options
 # ================
 
-# 3.1. Parameters and Shell Functionality
+# 4.1. Parameters and Shell Functionality
 # ---------------------------------------
 #setopt ignoreeof           # ignore EOF ('^D') (i.e. don't log out on it)
 setopt braceccl             # {a-d} expands to a b c d
 setopt noclobber            # don't overwrite existing files w/ > output redir
 setopt hist_allow_clobber   # C-p or UP and command has >| now, ready to go
 
-# 3.2. Changing Directories
+# 4.2. Changing Directories
 # -------------------------
 setopt autocd               # automatically cd to a directory if not cmd
 setopt autopushd            # automatically pushd directories on dirstack
@@ -115,24 +90,21 @@ setopt nopushdsilent        # print dirstack after each cd/pushd
 setopt pushdignoredups      # don't push dups on stack
 setopt pushdminus           # pushd -N goes to Nth dir in stack
 export DIRSTACKSIZE=8
+setopt autonamedirs         # % export h=/home/sjs; cd ~h; pwd => /home/sjs
+setopt cdablevars           # blah=~/media/movies; cd blah; pwd => ~/media/movies
 
-setopt autonamedirs             # % export h=/home/sjs; cd ~h; pwd => /home/sjs
-setopt cdablevars               # blah=~/media/movies; cd blah; pwd => ~/media/movies
-
-# 3.3. Shell Completion
+# 4.3. Shell Completion
 # ---------------------
 setopt correct              # try to correct spelling...
 setopt no_correctall        # ...only for commands, not filenames
 setopt no_listbeep          # don't beep on ambiguous listings
 setopt listpacked           # variable col widths (takes up less space)
 
-
-# 3.4. Shell Expansion and Globbing
+# 4.4. Shell Expansion and Globbing
 # ---------------------------------
 setopt extendedglob         # use extended globbing (#, ~, ^)
 
-
-# 3.5. History and History Expansion
+# 4.5. History and History Expansion
 # ----------------------------------
 export HISTFILE="$ZDOTDIR/zhistory"    # save history
 export HISTSIZE=2000000                # huge internal buffer
@@ -146,19 +118,16 @@ setopt histreduceblanks     # compact consecutive white space chars (cool)
 setopt histnostore          # don't store history related functions
 setopt incappendhistory     # incrementally add items to HISTFILE
 
-
-# 3.6. Job Control
+# 4.6. Job Control
 # ----------------
 setopt longlistjobs         # list jobs in long format
 
-
-# 3.7. Shell Prompt
+# 4.7. Shell Prompt
 # -----------------
 setopt promptsubst          # allow paramater, command, so on in prompt
 setopt transient_rprompt    # hide RPROMPT after cmdline is executed
 
-
-# 3.8. ZLE
+# 4.8. ZLE
 # --------
 setopt no_beep          # don't beep on errors (in ZLE)
 
@@ -174,32 +143,25 @@ for op in \| \< \> \&
   do bindkey "$op" self-insert-redir
 done
 
-# 3.9. Auto quote pasted URLs
+# 4.9. Auto quote pasted URLs
 # ---------------------------
 autoload -U url-quote-magic
 zle -N self-insert url-quote-magic
 
-
-
-# 4. Terminal Settings
+# 5. Terminal Settings
 # ====================
-
 function precmd {
     rehash
 }
-
 autoload -U colors            # we need the colors for some formats below
 colors
 
-
-# 5. ZLE Keybindings
+# 6. ZLE Keybindings
 # ==================
 bindkey '\ep' history-beginning-search-backward
 
-
-# 6. Prompt Subsystem
+# 7. Prompt Subsystem
 # ===================
-
 # Load the prompt theme system
 autoload -U promptinit
 promptinit
@@ -207,28 +169,18 @@ promptinit
 # Use my prompt theme, based on wunjo (zsh-git)
 prompt sjs
 
-
-
-# 7. Aliases
+# 8. Aliases
 # ===========
 
-# 7.1. Convenience Aliases/Macros
+# 8.1. Convenience Aliases/Macros
 # --------------------------------
 alias bgd='bg; disown %1'
 alias cp='nocorrect cp'            # don't correct spelling for 'cp'
-#alias dispatch-conf='sudo dispatch-conf'
 alias e='mate'
-alias ev="$EDITOR ~/config/vimrc"
 alias ez="$EDITOR $ZDOTDIR/zshrc && source $ZDOTDIR/zshrc"
-alias rz="source $ZDOTDIR/zshrc"
 
 alias mkdir='nocorrect mkdir'      # don't correct spelling for 'mkdir'
 alias mv='nocorrect mv'            # don't correct spelling for 'mv'
-#alias ns='newscript'
-#alias perldoc='LC_ALL=en_US perldoc'
-#alias reboot='sudo shutdown -r now'
-#alias shutdown='sudo shutdown -h now'
-#alias ssh='ssh -X'
 alias u='cd ..'
 alias uu='cd ../..'
 alias uuu='cd ../../..'
@@ -259,7 +211,6 @@ alias lld='ls -dl'
 
 # ruby
 alias irb='irb --readline -r irb/completion'
-alias rii='ri -Tf ansi'
 
 # git
 if command_exists git; then
@@ -277,24 +228,8 @@ if command_exists git; then
 	alias glo='git log --oneline --decorate'
 	alias gls='git log --stat'
 	alias m='git merge'
-	alias rbi='git rebase -i --autosquash'
-	alias rbiom='git rebase -i --autosquash origin/master'
-
-	GIT_VERSION="$(git --version | head -n1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')"
-	GIT_VERSION_MAJOR="${GIT_VERSION%%.*}"
-	GIT_VERSION_MINOR="${${GIT_VERSION%.*}#*.}"
-	GIT_VERSION_REVISION="${GIT_VERSION##*.}"
-	if [ "$GIT_VERSION_MINOR" -ge 7 ] && [ "$GIT_VERSION_REVISION" -ge 1 ]; then
-	    alias s='git status -sb'
-	else
-	    alias s='git status'
-	fi
+  alias s='git status -sb'
 fi
-
-function e() {
-    $EDITOR "$@" >/dev/null
-}
-alias em='emacsclient'
 
 # `cd /path/to/a/file` does `cd /path/to/a`
 function cd () {
@@ -307,15 +242,8 @@ function cd () {
   fi
 }
 
-function objcrun() {
-  NAME="${1%.m}"
-  BINPATH="/tmp/$NAME"
-  clang -fobjc-arc -framework Foundation "${NAME}.m" -o "$BINPATH" && "$BINPATH"
-}
-
-# 8. Unsorted (new) stuff
+# 9. Unsorted (new) stuff
 # =======================
-
 # if commands takes more than 60 seconds tell me how long it took
 export REPORTTIME=60
 
@@ -328,38 +256,36 @@ setopt no_hup                   # leave bg tasks running (a la nohup)
 
 bindkey -e                      # emacs style key bindings
 
-
-# 9. Completion
+# 10. Completion
 # =============
-
 autoload -Uz compinit
 compinit
 
-
-# 10. SSH Keychain
+# 11. SSH Keychain
 # ================
-#if is_interactive && command_exists keychain && [[ -d ~/.ssh ]]; then
-#  keychain --nogui ~/.ssh/id_rsa*~*.pub(N)
-#  KEYCHAINFILE="$HOME/.keychain/$(hostname)-sh"
-#  if [[ -f $KEYCHAINFILE ]]; then
-#    source $KEYCHAINFILE >/dev/null
-#  fi
-#fi
+if is_interactive && command_exists keychain && [[ -d ~/.ssh ]]; then
+ keychain --nogui ~/.ssh/id_rsa*~*.pub(N)
+ KEYCHAINFILE="$HOME/.keychain/$(hostname)-sh"
+ if [[ -f $KEYCHAINFILE ]]; then
+   source $KEYCHAINFILE >/dev/null
+ fi
+fi
 
-
-# 11. rbenv
+# 12. rbenv
 # =========
-
 if command_exists rbenv; then
 	eval "$(rbenv init -)"
 fi
 
+# 13. travis
+# ==========
+# added by travis gem
+[ -f /Users/sjs/.travis/travis.sh ] && source /Users/sjs/.travis/travis.sh
 
-# 12. Attach to screen
+
+# 14. screen
 # ====================
-#
 # Automatically attach to a screen session.
-
 function not_in_screen() {
   [[ "$STY" = "" ]] && [[ "$SHLVL" = "1" ]]
 }
@@ -372,6 +298,3 @@ function is_screen_running() {
 if is_interactive && command_exists screen && not_in_screen && is_screen_running; then
   screen -rx
 fi
-
-# added by travis gem
-[ -f /Users/sjs/.travis/travis.sh ] && source /Users/sjs/.travis/travis.sh
