@@ -22,6 +22,9 @@ done
 export path
 typeset -U path
 
+# remove / from word chars
+export WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
+
 [[ -d "$HOME/config/zsh" ]] && ZDOTDIR="$HOME/config/zsh"
 
 fpath=($fpath $ZDOTDIR/functions)
