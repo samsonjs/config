@@ -9,3 +9,4 @@ atom/compile-cache
 atom/.node-gyp
 atom/storage
 atom/packages
+netrc
