@@ -276,10 +276,13 @@ if is_interactive && command_exists keychain && [[ -d ~/.ssh ]]; then
  fi
 fi
 
-# 12. rbenv
-# =========
+# 12. rbenv and pyenv
+# ===================
 if command_exists rbenv; then
 	eval "$(rbenv init -)"
+fi
+if command_exists pyenv; then
+    eval "$(pyenv init -)"
 fi
 
 # 13. travis
