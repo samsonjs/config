@@ -233,8 +233,18 @@ if command_exists git; then
     alias m='git merge'
     alias s='git status -sb'
     alias st='git stash'
+    alias stl='git stash list'
     alias stp='git stash pop'
 fi
+
+function gup() {
+    BRANCH=$(git branch --no-color --list | grep '^\*' | awk '{print $2}')
+    if [[ "$BRANCH" != "(detached" ]]; then
+        git stash && git fetch origin && git rebase "origin/$BRANCH" && git stash pop
+    else
+        echo "Cannot update in a detached HEAD state"
+    fi
+}
 
 # `cd /path/to/a/file` does `cd /path/to/a`
 function cd () {
