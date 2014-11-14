@@ -298,7 +298,7 @@ fi
 # 13. travis
 # ==========
 # added by travis gem
-[ -f /Users/sjs/.travis/travis.sh ] && source /Users/sjs/.travis/travis.sh
+[ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh
 
 
 # 14. screen
