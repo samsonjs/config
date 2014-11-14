@@ -5,8 +5,9 @@ emacs.d/auto-save-list/.saves*
 *.pyc
 *.cache
 irb_history
-atom/compile-cache
+atom/.atom
 atom/.node-gyp
 atom/storage
 atom/packages
 netrc
+
