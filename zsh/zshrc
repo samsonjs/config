@@ -240,7 +240,13 @@ fi
 function gup() {
     BRANCH=$(git branch --no-color --list | grep '^\*' | awk '{print $2}')
     if [[ "$BRANCH" != "(detached" ]]; then
-        git stash && git fetch origin && git rebase "origin/$BRANCH" && git stash pop
+        STASH_OUTPUT=$(git stash)
+        if [[ "$STASH_OUTPUT" = "No local changes to save" ]]; then
+            POP_STASH=0
+        else
+            POP_STASH=1
+        fi
+        git fetch origin && git rebase "origin/$BRANCH" && ([[ $POP_STASH -eq 1 ]] && git stash pop) || true
     else
         echo "Cannot update in a detached HEAD state"
     fi
