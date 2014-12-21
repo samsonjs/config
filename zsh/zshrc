@@ -217,6 +217,9 @@ alias irb='irb --readline -r irb/completion'
 
 # git
 if command_exists git; then
+    if command_exists hub; then
+        eval "$(hub alias -s)"
+    fi
     alias a='git add'
     alias b='git branch'
     alias c='git commit'
@@ -246,7 +249,7 @@ function gup() {
         else
             POP_STASH=1
         fi
-        git fetch origin && git rebase "origin/$BRANCH" && ([[ $POP_STASH -eq 1 ]] && git stash pop) || true
+        git fetch --prune --tags origin && git rebase "origin/$BRANCH" && ([[ $POP_STASH -eq 1 ]] && git stash pop) || true
     else
         echo "Cannot update in a detached HEAD state"
     fi
