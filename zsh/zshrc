@@ -233,27 +233,13 @@ if command_exists git; then
     alias gl='git log'
     alias glo='git log --oneline --decorate'
     alias gls='git log --stat'
+    alias gup='git update'
     alias m='git merge'
     alias s='git status -sb'
     alias st='git stash'
     alias stl='git stash list'
     alias stp='git stash pop'
 fi
-
-function gup() {
-    BRANCH=$(git branch --no-color --list | grep '^\*' | awk '{print $2}')
-    if [[ "$BRANCH" != "(detached" ]]; then
-        STASH_OUTPUT=$(git stash)
-        if [[ "$STASH_OUTPUT" = "No local changes to save" ]]; then
-            POP_STASH=0
-        else
-            POP_STASH=1
-        fi
-        git fetch --prune --tags origin && git rebase "origin/$BRANCH" && ([[ $POP_STASH -eq 1 ]] && git stash pop) || true
-    else
-        echo "Cannot update in a detached HEAD state"
-    fi
-}
 
 # `cd /path/to/a/file` does `cd /path/to/a`
 function cd () {
