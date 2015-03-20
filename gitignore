@@ -1,4 +1,5 @@
 .DS_Store
 Icon\?
 .idea
+*.iml
 .tm_properties
