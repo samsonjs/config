@@ -9,5 +9,7 @@ atom/.atom
 atom/.node-gyp
 atom/storage
 atom/packages
+atom/compile-cache
+atom/.apm
 netrc
 
