@@ -4,8 +4,6 @@ BASENAME="${0##*/}"
 
 if [ x"$1" != x ]; then
     CONFIG_PATH="$1"
-elif [ -d "${HOME}/Dropbox/Personal/config" ]; then
-    CONFIG_PATH="${HOME}/Dropbox/Personal/config"
 elif [ -d "${HOME}/config" ]; then
     CONFIG_PATH="${HOME}/config"
 else
@@ -32,5 +30,3 @@ for FILE in *; do
         link_config "${CONFIG_PATH}/$FILE"
     fi
 done
-
-link_config "${CONFIG_PATH}/zsh/zshrc"

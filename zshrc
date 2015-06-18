@@ -13,7 +13,7 @@ function is_interactive() { [ -t 1 ] }
 
 # 1. Environment Vars
 # ===================
-custom_paths=(/sbin /usr/sbin /Applications/Xcode.app/Contents/Developer/usr/bin /usr/local/android/tools /usr/local/android/platform-tools /usr/local/bin $HOME/bin)
+custom_paths=(/sbin /usr/sbin /Applications/Xcode.app/Contents/Developer/usr/bin /usr/local/android/tools /usr/local/android/platform-tools /usr/local/bin /usr/local/sbin $HOME/bin)
 for dir in $custom_paths; do
     if [[ -d "$dir" ]]; then
         path=($dir $path)
