@@ -217,9 +217,6 @@ alias irb='irb --readline -r irb/completion'
 
 # git
 if command_exists git; then
-    if command_exists hub; then
-        eval "$(hub alias -s)"
-    fi
     alias a='git add'
     alias b='git branch'
     alias c='git commit'
@@ -230,6 +227,7 @@ if command_exists git; then
     alias dc='git diff --cached'
     alias dmcr='git diff-merge-conflict-resolution'
     alias ds='git diff --stat'
+    alias ecf='git edit-conflicted-files mate'
     alias f='git fetch'
     alias gl='git log'
     alias glo='git log --oneline --decorate'
