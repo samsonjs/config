@@ -217,28 +217,31 @@ alias irb='irb --readline -r irb/completion'
 
 # git
 if command_exists git; then
-    alias a='git add'
-    alias b='git branch'
-    alias c='git commit'
-    alias cam='git commit -a -m'
-    alias co='git checkout'
-    alias chp='git cherry-pick'
-    alias d='git diff'
-    alias dc='git diff --cached'
-    alias dmcr='git diff-merge-conflict-resolution'
-    alias ds='git diff --stat'
-    alias ecf='git edit-conflicted-files mate'
-    alias f='git fetch'
-    alias gl='git log'
-    alias glo='git log --oneline --decorate'
-    alias gls='git log --stat'
-    alias gup='git update'
-    alias m='git merge'
-    alias rmb='git remove-merged-branches'
-    alias s='git status -sb'
-    alias st='git stash'
-    alias stl='git stash list'
-    alias stp='git stash pop'
+  alias a='git add'
+  alias b='git branch'
+  alias c='git commit'
+  alias cam='git commit -a -m'
+  alias co='git checkout'
+  alias chp='git cherry-pick'
+  alias d='git diff'
+  alias dc='git diff --cached'
+  alias dmcr='git diff-merge-conflict-resolution'
+  alias ds='git diff --stat'
+  alias ecf='git edit-conflicted-files mate'
+  alias f='git fetch'
+  alias gl='git log'
+  alias gls='git log --stat'
+  alias gup='git update'
+  alias m='git merge'
+  alias rmb='git remove-merged-branches'
+  alias s='git status -sb'
+  alias st='git stash'
+  alias stl='git stash list'
+  alias stp='git stash pop'
+
+  function glo() {
+    git log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim   white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+  }
 fi
 
 # `cd /path/to/a/file` does `cd /path/to/a`
