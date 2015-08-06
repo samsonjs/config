@@ -229,7 +229,7 @@ if command_exists git; then
   alias ds='git diff --stat'
   alias ecf='git edit-conflicted-files mate'
   alias f='git fetch'
-  alias gl='git log'
+  alias glo='git log --oneline --decorate'
   alias gls='git log --stat'
   alias gup='git update'
   alias m='git merge'
@@ -239,8 +239,8 @@ if command_exists git; then
   alias stl='git stash list'
   alias stp='git stash pop'
 
-  function glo() {
-    git log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim   white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+  function gl() {
+    git log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim   white)- %an%C(reset)%C(bold yellow)%d%C(reset)'
   }
 fi
 
