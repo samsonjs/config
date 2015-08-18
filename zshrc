@@ -218,6 +218,7 @@ alias irb='irb --readline -r irb/completion'
 # git
 if command_exists git; then
   alias a='git add'
+  alias b='git branch'
   alias c='git commit'
   alias cam='git commit -a -m'
   alias co='git checkout'
