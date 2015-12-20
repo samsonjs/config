@@ -50,3 +50,6 @@
 	clean = git hawser clean %f
 	smudge = git hawser smudge %f
 	required = true
+[merge "mergepbx"]
+    name = XCode project files merger
+    driver = mergepbx %O %A %B
