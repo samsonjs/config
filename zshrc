@@ -13,7 +13,7 @@ function is_interactive() { [ -t 1 ] }
 
 # 1. Environment Vars
 # ===================
-custom_paths=(/sbin /usr/sbin /Applications/Xcode.app/Contents/Developer/usr/bin /usr/local/android/tools /usr/local/android/platform-tools /usr/local/bin /usr/local/sbin $HOME/bin)
+custom_paths=(/sbin /usr/sbin /Applications/Xcode.app/Contents/Developer/usr/bin /Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin /usr/local/bin /usr/local/sbin $HOME/bin)
 for dir in $custom_paths; do
     if [[ -d "$dir" ]]; then
         path=($dir $path)
@@ -180,7 +180,7 @@ prompt sjs
 alias bgd='bg; disown %1'
 alias cp='nocorrect cp'            # don't correct spelling for 'cp'
 alias e='mate'
-alias ez="$EDITOR $ZDOTDIR/zshrc && source $ZDOTDIR/zshrc"
+alias ez="$EDITOR ~/.zshrc && source ~/.zshrc"
 
 alias mkdir='nocorrect mkdir'      # don't correct spelling for 'mkdir'
 alias mv='nocorrect mv'            # don't correct spelling for 'mv'
