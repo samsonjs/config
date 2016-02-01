@@ -53,3 +53,9 @@
 [merge "mergepbx"]
     name = XCode project files merger
     driver = mergepbx %O %A %B
+[transfer]
+    fsckobjects = true
+[fetch]
+    fsckobjects = true
+[receive]
+    fsckObjects = true
