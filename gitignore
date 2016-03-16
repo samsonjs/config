@@ -1,5 +1,18 @@
+# OS X
 .DS_Store
 Icon\?
+
+# IntelliJ IDEs
 .idea
 *.iml
+
+# Xcode
+*.pbxuser
+!default.pbxuser
+xcuserdata
+*.xccheckout
+*.moved-aside
+
+# TextMate
 .tm_properties
+
