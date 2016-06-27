@@ -21,6 +21,7 @@
 [diff]
 	mnemonicprefix = true
 	renames = copies
+    compactionHeuristic = true
 [advice]
 	statusHints = false
 	pushNonFastForward = false
@@ -55,7 +56,5 @@
     driver = mergepbx %O %A %B
 [transfer]
     fsckobjects = true
-[fetch]
-    fsckobjects = true
-[receive]
-    fsckObjects = true
+[submodule]
+    fetchJobs = 4
