@@ -1,0 +1,7 @@
+BasedOnStyle: LLVM
+
+ColumnLimit: 140
+IndentWidth: 4
+ObjCSpaceAfterProperty: true
+ObjCSpaceBeforeProtocolList: true
+TabWidth: 4
