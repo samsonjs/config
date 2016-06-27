@@ -316,3 +316,9 @@ function is_screen_running() {
 if is_interactive && command_exists screen && not_in_screen && is_screen_running; then
   screen -rx
 fi
+
+if [[ -e ~/.opam ]]; then
+  # OPAM configuration
+  . ~/.opam/opam-init/init.zsh > /dev/null
+fi
+
