@@ -16,3 +16,5 @@ xcuserdata
 # TextMate
 .tm_properties
 
+# Carthage
+Carthage
