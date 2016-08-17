@@ -190,6 +190,8 @@ alias uuu='cd ../../..'
 alias uuuu='cd ../../../..'
 alias myip='curl icanhazip.com'
 
+alias be='bundle exec'
+
 # ls Aliases
 # ----------------
 if command_exists ls-comma; then
