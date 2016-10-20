@@ -58,3 +58,5 @@
     fsckobjects = true
 [submodule]
     fetchJobs = 4
+[commit]
+	gpgsign = true
