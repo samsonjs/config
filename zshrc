@@ -288,6 +288,9 @@ if is_interactive && command_exists keychain && [[ -d ~/.ssh ]]; then
    source $KEYCHAINFILE >/dev/null
  fi
 fi
+if is_interactive && command_exists ssh-add && [[ -d ~/.ssh ]]; then
+ ssh-add -A
+fi
 
 # 12. rbenv and pyenv
 # ===================
