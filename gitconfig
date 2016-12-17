@@ -22,6 +22,7 @@
 	mnemonicprefix = true
 	renames = copies
     compactionHeuristic = true
+	renameLimit = 1000
 [advice]
 	statusHints = false
 	pushNonFastForward = false
