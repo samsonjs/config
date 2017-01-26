@@ -307,7 +307,14 @@ fi
 [ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh
 
 
-# 14. screen
+# 14. go
+# ==========
+if [[ -e $HOME/go ]]; then
+  export GOPATH=$HOME/go
+fi
+
+
+# 15. screen
 # ====================
 # Automatically attach to a screen session.
 function not_in_screen() {
