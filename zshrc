@@ -289,9 +289,6 @@ if is_interactive && command_exists keychain && [[ -d ~/.ssh ]]; then
    source $KEYCHAINFILE >/dev/null
  fi
 fi
-if is_interactive && command_exists ssh-add && [[ -d ~/.ssh ]]; then
- ssh-add -A
-fi
 
 # 12. rbenv and pyenv
 # ===================
@@ -306,13 +303,6 @@ fi
 # ==========
 # added by travis gem
 [ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh
-
-
-# 14. go
-# ==========
-if [[ -e $HOME/go ]]; then
-  export GOPATH=$HOME/go
-fi
 
 
 # 15. screen
