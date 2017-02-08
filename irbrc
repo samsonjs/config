@@ -19,7 +19,7 @@ begin
     end.new
   end
 rescue LoadError => e
-  puts "!! Failed to load awesome print."
+  # puts "!! Failed to load awesome print."
 end
 
 # Use the simple prompt if possible.
