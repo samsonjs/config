@@ -191,6 +191,7 @@ alias uuuu='cd ../../../..'
 alias myip='curl icanhazip.com'
 
 alias be='bundle exec'
+alias doc='docker-compose'
 
 # ls Aliases
 # ----------------
