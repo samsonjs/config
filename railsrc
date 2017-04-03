@@ -1,0 +1,5 @@
+--webpack
+--skip-action-cable
+--skip-spring
+--skip-coffee
+--skip-turbolinks
