@@ -6,6 +6,8 @@ wrapColumn     = "Use Window Frame"
 spellChecking  = false
 showInvisibles = false
 windowTitle    = "$TM_DISPLAYNAME — ${TM_DIRECTORY/.*\///} — $windowTitleSCM"
+exclude = "{$exclude,*.zip}"
+include = "{$include,.gitignore,.tm_properties}"
 
 [ Makefile ]
 softTabs = false
