@@ -4,8 +4,6 @@
 [alias]
     l = log --graph --abbrev-commit --date=relative --pretty=format:'%Cred%h%Creset %C(yellow)%d%Creset %s %Cgreen(%an, %C(bold green)%cr%Cgreen)%Creset'
 	g = grep --break --heading --line-number
-[push]
-	default = upstream
 [branch]
 	autosetupmerge = true
 [core]
@@ -32,20 +30,9 @@
     cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 [credential]
 	helper = osxkeychain
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path =
 [grep]
 	extendRegexp = true
 	lineNumber = true
-[filter "media"]
-	required = true
-	clean = git media clean %f
-	smudge = git media smudge %f
-[filter "hawser"]
-	clean = git hawser clean %f
-	smudge = git hawser smudge %f
-	required = true
 [merge "mergepbx"]
     name = XCode project files merger
     driver = mergepbx %O %A %B
