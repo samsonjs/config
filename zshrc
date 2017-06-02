@@ -27,7 +27,7 @@ export WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 
 [[ -d "$HOME/config/zsh" ]] && ZDOTDIR="$HOME/config/zsh"
 
-fpath=($fpath $ZDOTDIR/functions)
+fpath=($fpath $ZDOTDIR/functions $ZDOTDIR/completions)
 typeset -U fpath
 
 cdpath=(~)
@@ -60,7 +60,7 @@ if mac; then
     # Don't pollute tar archives with ._ files (Apple double files)
     export COPYFILE_DISABLE=true
 
-    export HOMEBREW_CASK_OPTS="--appdir=/Applications --caskroom=$HOME/Caskroom"    
+    export HOMEBREW_CASK_OPTS="--appdir=/Applications --caskroom=$HOME/Caskroom"
 
     # Set Apple Terminal.app resume directory
     if [[ $TERM_PROGRAM == "Apple_Terminal" ]] && [[ -z "$INSIDE_EMACS" ]] {
