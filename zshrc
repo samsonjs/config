@@ -283,10 +283,14 @@ compinit
 # 11. SSH Keychain
 # ================
 if is_interactive && command_exists keychain && [[ -d ~/.ssh ]]; then
- keychain --nogui ~/.ssh/id_rsa*~*.pub(N)
- KEYCHAINFILE="$HOME/.keychain/$(hostname)-sh"
- if [[ -f $KEYCHAINFILE ]]; then
-   source $KEYCHAINFILE >/dev/null
+  if command_exists keychain; then
+   keychain --nogui ~/.ssh/id_rsa*~*.pub(N)
+   KEYCHAINFILE="$HOME/.keychain/$(hostname)-sh"
+   if [[ -f $KEYCHAINFILE ]]; then
+     source $KEYCHAINFILE >/dev/null
+   fi
+ elif command_exists ssh-add; then
+   ssh-add
  fi
 fi
 
