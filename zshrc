@@ -75,6 +75,10 @@ if mac; then
     }
 fi
 
+if [[ -r "$ZDOTDIR/zlocal" ]]; then
+  source "$ZDOTDIR/zlocal"
+fi
+
 # 4. Shell Options
 # ================
 
