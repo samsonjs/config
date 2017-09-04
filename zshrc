@@ -76,7 +76,11 @@ if mac; then
 fi
 
 if [[ -r "$ZDOTDIR/zlocal" ]]; then
-  source "$ZDOTDIR/zlocal"
+    source "$ZDOTDIR/zlocal"
+fi
+
+if [[ -d ~/Library/Mobile\ Documents/com\~apple\~CloudDocs ]]; then
+    export icloud=~/Library/Mobile\ Documents/com\~apple\~CloudDocs
 fi
 
 # 4. Shell Options
