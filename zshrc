@@ -228,45 +228,45 @@ alias irb='irb --readline -r irb/completion'
 
 # git
 if command_exists git; then
-  alias a='git add'
-  alias b='git branch'
-  alias c='git commit'
-  alias cam='git commit -a -m'
-  alias co='git checkout'
-  alias chp='git cherry-pick'
-  alias d='git diff'
-  alias dc='git diff --cached'
-  alias dmcr='git diff-merge-conflict-resolution'
-  alias ds='git diff --stat'
-  alias ecf='git edit-conflicted-files mate'
-  alias f='git fetch'
-  alias gh='git open-in-github'
-  alias glo='git log --oneline --decorate'
-  alias gls='git log --stat'
-  alias gup='git update'
-  alias m='git merge'
-  alias pfb='git push-feature-branch'
-  alias rmb='git remove-merged-branches'
-  alias s='git status -sb'
-  alias st='git stash'
-  alias stl='git stash list'
-  alias stp='git stash pop'
-  alias t='git tag'
+    alias a='git add'
+    alias b='git branch'
+    alias c='git commit'
+    alias cam='git commit -a -m'
+    alias co='git checkout'
+    alias chp='git cherry-pick'
+    alias d='git diff'
+    alias dc='git diff --cached'
+    alias dmcr='git diff-merge-conflict-resolution'
+    alias ds='git diff --stat'
+    alias ecf='git edit-conflicted-files mate'
+    alias f='git fetch'
+    alias gh='git open-in-github'
+    alias glo='git log --oneline --decorate'
+    alias gls='git log --stat'
+    alias gup='git update'
+    alias m='git merge'
+    alias pfb='git push-feature-branch'
+    alias rmb='git remove-merged-branches'
+    alias s='git status -sb'
+    alias st='git stash'
+    alias stl='git stash list'
+    alias stp='git stash pop'
+    alias t='git tag'
 
-  function gl() {
-    git log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim   white)- %an%C(reset)%C(bold yellow)%d%C(reset)'
+    function gl() {
+        git log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim   white)- %an%C(reset)%C(bold yellow)%d%C(reset)'
   }
 fi
 
 # `cd /path/to/a/file` does `cd /path/to/a`
 function cd () {
-  if [[ -f "$1" ]]; then
-    builtin cd "${1:h}"
-  elif [[ "$1" = "" ]]; then
-    builtin cd
-  else
-    builtin cd "$1"
-  fi
+    if [[ -f "$1" ]]; then
+        builtin cd "${1:h}"
+    elif [[ "$1" = "" ]]; then
+        builtin cd
+    else
+        builtin cd "$1"
+    fi
 }
 
 # 9. Unsorted (new) stuff
@@ -291,21 +291,21 @@ compinit
 # 11. SSH Keychain
 # ================
 if is_interactive && command_exists keychain && [[ -d ~/.ssh ]]; then
-  if command_exists keychain; then
-   keychain --nogui ~/.ssh/id_rsa*~*.pub(N)
-   KEYCHAINFILE="$HOME/.keychain/$(hostname)-sh"
-   if [[ -f $KEYCHAINFILE ]]; then
-     source $KEYCHAINFILE >/dev/null
-   fi
- elif command_exists ssh-add; then
-   ssh-add
- fi
+    if command_exists keychain; then
+        keychain --nogui ~/.ssh/id_rsa*~*.pub(N)
+        KEYCHAINFILE="$HOME/.keychain/$(hostname)-sh"
+        if [[ -f $KEYCHAINFILE ]]; then
+            source $KEYCHAINFILE >/dev/null
+        fi
+    elif command_exists ssh-add; then
+        ssh-add
+    fi
 fi
 
 # 12. rbenv and pyenv
 # ===================
 if command_exists rbenv; then
-	eval "$(rbenv init -)"
+    eval "$(rbenv init -)"
 fi
 if command_exists pyenv; then
     eval "$(pyenv init -)"
@@ -321,20 +321,20 @@ fi
 # ====================
 # Automatically attach to a screen session.
 function not_in_screen() {
-  [[ "$STY" = "" ]] && [[ "$SHLVL" = "1" ]]
+    [[ "$STY" = "" ]] && [[ "$SHLVL" = "1" ]]
 }
 
 function is_screen_running() {
-  NSCREENS="$(screen -ls | egrep 'Attached|Detached' | wc -l)"
-  [[ "${NSCREENS// /}" != "0" ]]
+    NSCREENS="$(screen -ls | egrep 'Attached|Detached' | wc -l)"
+    [[ "${NSCREENS// /}" != "0" ]]
 }
 
 if is_interactive && command_exists screen && not_in_screen && is_screen_running; then
-  screen -rx
+    screen -rx
 fi
 
 if [[ -e ~/.opam ]]; then
-  # OPAM configuration
-  . ~/.opam/opam-init/init.zsh > /dev/null
+    # OPAM configuration
+    . ~/.opam/opam-init/init.zsh > /dev/null
 fi
 
