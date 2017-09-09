@@ -10,6 +10,7 @@
 	quotepath = false
 	whitespace = trailing-space,space-before-tab
 	excludesfile = ~/config/gitignore
+	hooksPath = ~/config/git-hooks
 [diff]
 	mnemonicprefix = true
 	renames = copies
