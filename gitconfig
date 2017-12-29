@@ -16,6 +16,7 @@
 	renames = copies
     compactionHeuristic = true
 	renameLimit = 5000
+	colorMoved = zebra
 [advice]
 	statusHints = false
 	pushNonFastForward = false
