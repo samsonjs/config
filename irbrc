@@ -1,27 +1,6 @@
 require 'rubygems'
 require 'irb/completion'
 
-# Use awesome print for awesome output
-begin
-  require 'awesome_print'
-
-  unless IRB.version.include?('DietRB')
-    IRB::Irb.class_eval do
-      def output_value
-        ap @context.last_value
-      end
-    end
-  else # MacRuby
-    IRB.formatter = Class.new(IRB::Formatter) do
-      def inspect_object(object)
-        object.ai
-      end
-    end.new
-  end
-rescue LoadError => e
-  # puts "!! Failed to load awesome print."
-end
-
 # Use the simple prompt if possible.
 IRB.conf[:PROMPT_MODE] = :SIMPLE if IRB.conf[:PROMPT_MODE] == :DEFAULT
 
