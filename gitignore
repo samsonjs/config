@@ -21,3 +21,6 @@ Carthage
 
 # Visual Studio Code
 .vscode
+
+# Bundler for Rubygems
+.bundle
