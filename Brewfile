@@ -1,8 +1,5 @@
 tap "heroku/brew"
-tap "homebrew/dupes"
 tap "homebrew/core"
-tap "homebrew/versions"
-tap "homebrew/gui"
 tap "homebrew/bundle"
 tap "homebrew/services"
 tap "caskroom/cask"
