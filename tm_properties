@@ -42,3 +42,4 @@ softWrap       = false
 wrapColumn     = "Use Window Frame"
 softTabs       = true
 tabSize        = 2
+spellChecking  = false
