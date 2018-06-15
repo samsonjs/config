@@ -4,6 +4,7 @@
 [alias]
     l = log --graph --abbrev-commit --date=relative --pretty=format:'%Cred%h%Creset %C(yellow)%d%Creset %s %Cgreen(%an, %C(bold green)%cr%Cgreen)%Creset'
 	g = grep --break --heading --line-number
+	yolo = push --force-with-lease
 [branch]
 	autosetupmerge = true
 [core]
