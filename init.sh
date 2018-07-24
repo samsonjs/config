@@ -26,7 +26,7 @@ link_config() {
 cd "$CONFIG_PATH"
 
 for FILE in *; do
-    if [ "$FILE" != "init.sh" ] && [ "$FILE" != "Gemfile" ] && [ "$FILE" != "Gemfile.lock" ] && [ "$FILE" != "zsh" ]; then
+    if [ "$FILE" != "init.sh" ] && [ "$FILE" != "Gemfile" ] && [ "$FILE" != "Gemfile.lock" ] && [ "$FILE" != "zsh" ] && [ "$FILE" != "Brewfile" ]; then
         link_config "${CONFIG_PATH}/$FILE"
     fi
 done
