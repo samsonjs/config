@@ -7,8 +7,8 @@ GEM
     json (1.8.1)
     multipart-post (1.2.0)
     mysql2 (0.3.14)
-    rack (1.5.2)
-    rack-protection (1.5.1)
+    rack (1.6.11)
+    rack-protection (1.5.5)
       rack
     rake (10.1.0)
     redis (3.0.6)
