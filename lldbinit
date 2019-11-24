@@ -1,6 +1,5 @@
-command alias uikit expr @import UIKit
-command alias foundation expr @import Foundation
-command regex rd 's/^[[:space:]]*$/po [[[UIApplication sharedApplication] keyWindow] recursiveDescription]/' 's/^(.+)$/po [%1 recursiveDescription]/'
+# Not working in Xcode 11
+#command script import /usr/local/opt/chisel/libexec/fblldb.py
+
 command alias altrace po [[UIWindow keyWindow] _autolayoutTrace]
-command script import /usr/local/opt/chisel/libexec/fblldb.py
 command alias cpo expression -l objective-c -o --
