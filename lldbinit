@@ -1,5 +1,1 @@
-# Not working in Xcode 11
-#command script import /usr/local/opt/chisel/libexec/fblldb.py
-
-command alias altrace po [[UIWindow keyWindow] _autolayoutTrace]
 command alias cpo expression -l objective-c -o --
