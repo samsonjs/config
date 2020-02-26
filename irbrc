@@ -14,7 +14,7 @@ begin
     puts "Read #{lines.length} saved history commands from '#{histfile}'." if $VERBOSE
     Readline::HISTORY.push(*lines)
   else
-    puts "History file '#{histfile}' was empty or non-existant." if $VERBOSE
+    puts "History file '#{histfile}' was empty or non-existent." if $VERBOSE
   end
   Kernel::at_exit do
     lines = Readline::HISTORY.to_a.reverse.uniq.reverse
