@@ -83,6 +83,10 @@ if [[ -d ~/Library/Mobile\ Documents/com\~apple\~CloudDocs ]]; then
     export icloud=~/Library/Mobile\ Documents/com\~apple\~CloudDocs
 fi
 
+if [[ -d /usr/local/opt/libxml2/lib/pkgconfig ]]; then
+    export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
+fi
+
 # 4. Shell Options
 # ================
 
@@ -240,7 +244,10 @@ if command_exists git; then
     alias ds='git diff --stat'
     alias ecf='git edit-conflicted-files mate'
     alias f='git fetch'
-    alias gh='git open-in-github'
+    # Don't clobber the new GitHub CLI
+    if ! command_exists gh; then
+      alias gh='git open-in-github'
+    fi
     alias glo='git log --oneline --decorate'
     alias gls='git log --stat'
     alias gup='git update'
@@ -333,8 +340,11 @@ if is_interactive && command_exists screen && not_in_screen && is_screen_running
     screen -rx
 fi
 
+
+# 16. misc
+# ========
+
 if [[ -e ~/.opam ]]; then
     # OPAM configuration
     . ~/.opam/opam-init/init.zsh > /dev/null
 fi
-
