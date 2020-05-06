@@ -62,6 +62,8 @@ if mac; then
 
     export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 
+    export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
+
     # Set Apple Terminal.app resume directory
     if [[ $TERM_PROGRAM == "Apple_Terminal" ]] && [[ -z "$INSIDE_EMACS" ]] {
       function chpwd {
