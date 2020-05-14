@@ -54,14 +54,10 @@ else
 fi
 
 if mac; then
-    # susv3 compliance over 10.3 - for riak and possibly building javascriptcore
-    export COMMAND_MODE=unix2003
-
     # Don't pollute tar archives with ._ files (Apple double files)
     export COPYFILE_DISABLE=true
 
-    export HOMEBREW_CASK_OPTS="--appdir=/Applications"
-
+    # Use Homebrew's OpenSSL to build Ruby
     export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
 
     # Set Apple Terminal.app resume directory
@@ -320,13 +316,7 @@ if command_exists pyenv; then
     eval "$(pyenv init -)"
 fi
 
-# 13. travis
-# ==========
-# added by travis gem
-[ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh
-
-
-# 15. screen
+# 13. screen
 # ====================
 # Automatically attach to a screen session.
 function not_in_screen() {
@@ -340,13 +330,4 @@ function is_screen_running() {
 
 if is_interactive && command_exists screen && not_in_screen && is_screen_running; then
     screen -rx
-fi
-
-
-# 16. misc
-# ========
-
-if [[ -e ~/.opam ]]; then
-    # OPAM configuration
-    . ~/.opam/opam-init/init.zsh > /dev/null
 fi
