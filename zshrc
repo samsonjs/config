@@ -291,6 +291,10 @@ bindkey -e                      # emacs style key bindings
 # 10. Completion
 # =============
 
+if type brew &>/dev/null; then
+  FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
+fi
+
 autoload -Uz compinit
 
 # Sharing Homebrew in /usr/local with multiple users on the same machine means
