@@ -57,9 +57,6 @@ if mac; then
     # Don't pollute tar archives with ._ files (Apple double files)
     export COPYFILE_DISABLE=true
 
-    # Use Homebrew's OpenSSL to build Ruby
-    export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
-
     # Set Apple Terminal.app resume directory
     if [[ $TERM_PROGRAM == "Apple_Terminal" ]] && [[ -z "$INSIDE_EMACS" ]] {
       function chpwd {
