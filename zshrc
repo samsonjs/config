@@ -321,13 +321,16 @@ if is_interactive && command_exists keychain && [[ -d ~/.ssh ]]; then
     fi
 fi
 
-# 12. rbenv and pyenv
-# ===================
+# 12. various environments
+# ========================
 if command_exists rbenv; then
     eval "$(rbenv init -)"
 fi
 if command_exists pyenv; then
     eval "$(pyenv init -)"
+fi
+if command_exists direnv; then
+    eval "$(direnv hook zsh)"
 fi
 
 # 13. screen
