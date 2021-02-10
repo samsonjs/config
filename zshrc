@@ -57,6 +57,11 @@ if mac; then
     # Don't pollute tar archives with ._ files (Apple double files)
     export COPYFILE_DISABLE=true
 
+    # Use Homebrew's OpenSSL to build Ruby
+    if [[ -d /usr/local/opt/openssl@1.1 ]]; then
+        export RUBY_CONFIGURE_OPTS="--with-openssl-dir=/usr/local/opt/openssl@1.1"
+    fi
+
     # Set Apple Terminal.app resume directory
     if [[ $TERM_PROGRAM == "Apple_Terminal" ]] && [[ -z "$INSIDE_EMACS" ]] {
       function chpwd {
@@ -82,17 +87,17 @@ if [[ -d /usr/local/opt/libxml2/lib/pkgconfig ]]; then
     export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
 fi
 
-# 4. Shell Options
+# 2. Shell Options
 # ================
 
-# 4.1. Parameters and Shell Functionality
+# 2.1. Parameters and Shell Functionality
 # ---------------------------------------
 #setopt ignoreeof           # ignore EOF ('^D') (i.e. don't log out on it)
 setopt braceccl             # {a-d} expands to a b c d
 setopt noclobber            # don't overwrite existing files w/ > output redir
 setopt hist_allow_clobber   # C-p or UP and command has >| now, ready to go
 
-# 4.2. Changing Directories
+# 2.2. Changing Directories
 # -------------------------
 setopt autocd               # automatically cd to a directory if not cmd
 setopt autopushd            # automatically pushd directories on dirstack
@@ -103,18 +108,18 @@ export DIRSTACKSIZE=8
 setopt autonamedirs         # % export h=/home/sjs; cd ~h; pwd => /home/sjs
 setopt cdablevars           # blah=~/media/movies; cd blah; pwd => ~/media/movies
 
-# 4.3. Shell Completion
+# 2.3. Shell Completion
 # ---------------------
 setopt correct              # try to correct spelling...
 setopt no_correctall        # ...only for commands, not filenames
 setopt no_listbeep          # don't beep on ambiguous listings
 setopt listpacked           # variable col widths (takes up less space)
 
-# 4.4. Shell Expansion and Globbing
+# 2.4. Shell Expansion and Globbing
 # ---------------------------------
 setopt extendedglob         # use extended globbing (#, ~, ^)
 
-# 4.5. History and History Expansion
+# 2.5. History and History Expansion
 # ----------------------------------
 export HISTFILE="$ZDOTDIR/zhistory"    # save history
 export HISTSIZE=2000000                # huge internal buffer
@@ -128,16 +133,16 @@ setopt histreduceblanks     # compact consecutive white space chars (cool)
 setopt histnostore          # don't store history related functions
 setopt incappendhistory     # incrementally add items to HISTFILE
 
-# 4.6. Job Control
+# 2.6. Job Control
 # ----------------
 setopt longlistjobs         # list jobs in long format
 
-# 4.7. Shell Prompt
+# 2.7. Shell Prompt
 # -----------------
 setopt promptsubst          # allow paramater, command, so on in prompt
 setopt transient_rprompt    # hide RPROMPT after cmdline is executed
 
-# 4.8. ZLE
+# 2.8. ZLE
 # --------
 setopt no_beep          # don't beep on errors (in ZLE)
 
@@ -153,12 +158,12 @@ for op in \| \< \> \&
   do bindkey "$op" self-insert-redir
 done
 
-# 4.9. Auto quote pasted URLs
+# 2.9. Auto quote pasted URLs
 # ---------------------------
 autoload -U url-quote-magic
 zle -N self-insert url-quote-magic
 
-# 5. Terminal Settings
+# 3. Terminal Settings
 # ====================
 function precmd {
     rehash
@@ -166,11 +171,11 @@ function precmd {
 autoload -U colors            # we need the colors for some formats below
 colors
 
-# 6. ZLE Keybindings
+# 4. ZLE Keybindings
 # ==================
 bindkey '\ep' history-beginning-search-backward
 
-# 7. Prompt Subsystem
+# 5. Prompt Subsystem
 # ===================
 # Load the prompt theme system
 autoload -U promptinit
@@ -179,10 +184,10 @@ promptinit
 # Use my prompt theme, based on wunjo (zsh-git)
 prompt sjs
 
-# 8. Aliases
+# 6. Aliases
 # ===========
 
-# 8.1. Convenience Aliases/Macros
+# 6.1. Convenience Aliases/Macros
 # --------------------------------
 alias bgd='bg; disown %1'
 alias cp='nocorrect cp'            # don't correct spelling for 'cp'
@@ -200,7 +205,7 @@ alias myip='curl icanhazip.com'
 alias be='bundle exec'
 alias doc='docker-compose'
 
-# ls Aliases
+# 6.2 ls Aliases
 # ----------------
 if command_exists ls-comma; then
     alias ls='ls-comma'
@@ -222,10 +227,10 @@ alias ll='ls -l'
 alias lsd='ls -d'
 alias lld='ls -dl'
 
-# ruby
+# 6.3 ruby
 alias irb='irb --readline -r irb/completion'
 
-# git
+# 6.4 git
 if command_exists git; then
     alias a='git add'
     alias b='git branch'
@@ -271,7 +276,7 @@ function cd () {
     fi
 }
 
-# 9. Unsorted (new) stuff
+# 7. Unsorted (new) stuff
 # =======================
 # if commands takes more than 60 seconds tell me how long it took
 export REPORTTIME=60
@@ -285,11 +290,11 @@ setopt no_hup                   # leave bg tasks running (a la nohup)
 
 bindkey -e                      # emacs style key bindings
 
-# 10. Completion
+# 8. Completion
 # =============
 
 if type brew &>/dev/null; then
-  FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
+    FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
 fi
 
 autoload -Uz compinit
@@ -298,31 +303,17 @@ autoload -Uz compinit
 # that group writable files in /usr/local are deemed insecure. But I'm the only
 # actual user so tell compinit not to bother me about compaudit's complaints.
 is_group_writable() {
-  local ls=$(ls -ld "$1")
-  [[ "${ls:5:1}" = "w" ]]
+    local ls=$(ls -ld "$1")
+    [[ "${ls:5:1}" = "w" ]]
 }
 if mac && is_group_writable /usr/local/share; then
-  compinit -u
+    compinit -u
 else
-  compinit
+    compinit
 fi
 
-# 11. SSH Keychain
-# ================
-if is_interactive && command_exists keychain && [[ -d ~/.ssh ]]; then
-    if command_exists keychain; then
-        keychain --nogui ~/.ssh/id_rsa*~*.pub(N)
-        KEYCHAINFILE="$HOME/.keychain/$(hostname)-sh"
-        if [[ -f $KEYCHAINFILE ]]; then
-            source $KEYCHAINFILE >/dev/null
-        fi
-    elif command_exists ssh-add; then
-        ssh-add
-    fi
-fi
-
-# 12. various environments
-# ========================
+# 9. Various environments
+# =======================
 if command_exists rbenv; then
     eval "$(rbenv init -)"
 fi
@@ -331,20 +322,4 @@ if command_exists pyenv; then
 fi
 if command_exists direnv; then
     eval "$(direnv hook zsh)"
-fi
-
-# 13. screen
-# ====================
-# Automatically attach to a screen session.
-function not_in_screen() {
-    [[ "$STY" = "" ]] && [[ "$SHLVL" = "1" ]]
-}
-
-function is_screen_running() {
-    NSCREENS="$(screen -ls | egrep 'Attached|Detached' | wc -l)"
-    [[ "${NSCREENS// /}" != "0" ]]
-}
-
-if is_interactive && command_exists screen && not_in_screen && is_screen_running; then
-    screen -rx
 fi
