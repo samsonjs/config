@@ -1,6 +1,7 @@
 zsh/zhistory
 zsh/zlocal
 zsh/.zcompdump
+zsh/.zcompcache
 emacs.d/auto-save-list/.saves*
 .DS_Store
 *.pyc
