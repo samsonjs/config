@@ -13,7 +13,7 @@ function is_interactive() { [ -t 1 ] }
 
 # 1. Environment Vars
 # ===================
-custom_paths=(/sbin /usr/sbin /Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin $HOME/.gem/ruby/2.5.0/bin /usr/local/bin /usr/local/sbin /opt/homebrew/bin /opt/homebrew/sbin $HOME/bin)
+custom_paths=(/sbin /usr/sbin /Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin /usr/local/bin /usr/local/sbin /opt/homebrew/bin /opt/homebrew/sbin $HOME/bin)
 for dir in $custom_paths; do
     if [[ -d "$dir" ]]; then
         path=($dir $path)
