@@ -318,3 +318,9 @@ fi
 if command_exists direnv; then
     eval "$(direnv hook zsh)"
 fi
+
+# 10. SSH keys
+# ============
+if mac; then
+    ssh-add -A
+fi
