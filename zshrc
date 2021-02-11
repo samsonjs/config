@@ -83,10 +83,6 @@ if [[ -d ~/Library/Mobile\ Documents/com\~apple\~CloudDocs ]]; then
     export icloud=~/Library/Mobile\ Documents/com\~apple\~CloudDocs
 fi
 
-if [[ -d /usr/local/opt/libxml2/lib/pkgconfig ]]; then
-    export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
-fi
-
 # 2. Shell Options
 # ================
 
