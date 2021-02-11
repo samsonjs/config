@@ -303,8 +303,7 @@ autoload -Uz compinit
 # that group writable files in /usr/local are deemed insecure. But I'm the only
 # actual user so tell compinit not to bother me about compaudit's complaints.
 is_group_writable() {
-    local ls=$(ls -ld "$1")
-    [[ "${ls:5:1}" = "w" ]]
+    [[ -d "$1" ]] && [[ "${$(ls -ld "$1"):5:1}" = "w" ]]
 }
 if mac && is_group_writable /usr/local/share; then
     compinit -u
