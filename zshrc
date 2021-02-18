@@ -135,7 +135,7 @@ setopt longlistjobs         # list jobs in long format
 
 # 2.7. Shell Prompt
 # -----------------
-setopt promptsubst          # allow paramater, command, so on in prompt
+setopt promptsubst          # allow parameter, command, so on in prompt
 setopt transient_rprompt    # hide RPROMPT after cmdline is executed
 
 # 2.8. ZLE
@@ -187,7 +187,7 @@ prompt sjs
 # --------------------------------
 alias bgd='bg; disown %1'
 alias cp='nocorrect cp'            # don't correct spelling for 'cp'
-alias e='mate'
+alias e='code'
 alias ez="$EDITOR ~/.zshrc && source ~/.zshrc"
 
 alias mkdir='nocorrect mkdir'      # don't correct spelling for 'mkdir'
