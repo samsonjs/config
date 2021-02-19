@@ -238,7 +238,7 @@ if command_exists git; then
     alias dc='git diff --cached'
     alias dmcr='git diff-merge-conflict-resolution'
     alias ds='git diff --stat'
-    alias ecf='git edit-conflicted-files mate'
+    alias ecf='git edit-conflicted-files'
     alias f='git fetch'
     # Don't clobber the new GitHub CLI
     if ! command_exists gh; then
