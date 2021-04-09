@@ -42,3 +42,5 @@
     fsckobjects = true
 [submodule]
     fetchJobs = 4
+[init]
+	defaultBranch = main
