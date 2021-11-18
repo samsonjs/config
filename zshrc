@@ -328,5 +328,5 @@ fi
 # 10. SSH keys
 # ============
 if mac; then
-    ssh-add -A
+    ssh-add --apple-load-keychain
 fi
