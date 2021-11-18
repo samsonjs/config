@@ -64,6 +64,13 @@ if mac; then
     if [[ -d /opt/homebrew/opt/openssl@1.1 ]]; then
         export RUBY_CONFIGURE_OPTS="--with-openssl-dir=/opt/homebrew/opt/openssl@1.1"
     fi
+    if [[ -d $HOME/homebrew/opt/openssl@1.1 ]]; then
+        export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$HOME/homebrew/opt/openssl@1.1"
+    fi
+
+    if [[ -x $HOME/homebrew/bin/brew ]]; then
+        eval "$($HOME/homebrew/bin/brew shellenv)"
+    fi
 
     # Set Apple Terminal.app resume directory
     if [[ $TERM_PROGRAM == "Apple_Terminal" ]] && [[ -z "$INSIDE_EMACS" ]] {
