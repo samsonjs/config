@@ -250,10 +250,6 @@ if command_exists git; then
     alias ds='git diff --stat'
     alias ecf='git edit-conflicted-files'
     alias f='git fetch'
-    # Don't clobber the new GitHub CLI
-    if ! command_exists gh; then
-      alias gh='git open-in-github'
-    fi
     alias glo='git log --oneline --decorate'
     alias gls='git log --stat'
     alias gup='git update'
