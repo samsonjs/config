@@ -1,6 +1,7 @@
 [user]
 	name = Sami Samhuri
 	email = sami@samhuri.net
+	signingkey = 2742FC16
 [alias]
     l = log --graph --abbrev-commit --date=relative --pretty=format:'%Cred%h%Creset %C(yellow)%d%Creset %s %Cgreen(%an, %C(bold green)%cr%Cgreen)%Creset'
 	g = grep --break --heading --line-number
@@ -44,3 +45,7 @@
     fetchJobs = 4
 [init]
 	defaultBranch = main
+[gpg]
+	program = /usr/local/bin/gpg
+[commit]
+	gpgsign = true
