@@ -206,7 +206,7 @@ alias u='cd ..'
 alias uu='cd ../..'
 alias uuu='cd ../../..'
 alias uuuu='cd ../../../..'
-alias myip='curl icanhazip.com'
+alias myip='curl -4 icanhazip.com'
 
 alias be='bundle exec'
 alias doc='docker-compose'
