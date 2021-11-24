@@ -45,7 +45,10 @@ else
     fi
 fi
 
-if command_exists vim; then
+if command_exists mate; then
+    export EDITOR="mate -w"
+    export VISUAL="mate -w"
+elif command_exists vim; then
     export EDITOR="vim"
     export VISUAL="vim"
 else
@@ -197,7 +200,7 @@ prompt sjs
 # --------------------------------
 alias bgd='bg; disown %1'
 alias cp='nocorrect cp'            # don't correct spelling for 'cp'
-alias e='code -n'
+alias e='mate'
 alias ez="$EDITOR ~/.zshrc && source ~/.zshrc"
 
 alias mkdir='nocorrect mkdir'      # don't correct spelling for 'mkdir'
