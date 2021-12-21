@@ -45,10 +45,7 @@ else
     fi
 fi
 
-if command_exists mate; then
-    export EDITOR="mate -w"
-    export VISUAL="mate -w"
-elif command_exists vim; then
+if command_exists vim; then
     export EDITOR="vim"
     export VISUAL="vim"
 else
