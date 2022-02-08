@@ -32,7 +32,7 @@ fi
 ### SSH keys
 # ============
 
-if mac; then
+if mac && [[ "$TERM_PROGRAM" != "vscode" ]]; then
     ssh-add --apple-load-keychain
 fi
 
