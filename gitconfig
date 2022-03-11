@@ -12,6 +12,7 @@
 	quotepath = false
 	whitespace = trailing-space,space-before-tab
 	excludesfile = /Users/sjs/config/gitignore
+	pager = diff-so-fancy | less --tabs=4 -RFX
 [diff]
 	mnemonicprefix = true
 	renames = copies
