@@ -39,7 +39,14 @@ fi
 ### Environment Vars
 # ===================
 
-custom_paths=(/sbin /usr/sbin /Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin /usr/local/bin /usr/local/sbin $HOME/go/bin $HOME/bin)
+custom_paths=(
+    /sbin /usr/sbin
+    /Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin
+    /usr/local/bin /usr/local/sbin
+    $HOME/homebrew/Cellar/python@3.9/3.9.12/Frameworks/Python.framework/Versions/3.9/bin
+    $HOME/go/bin
+    $HOME/bin
+)
 for dir in $custom_paths; do
     if [[ -d "$dir" ]]; then
         path=($dir $path)
