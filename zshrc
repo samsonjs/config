@@ -32,7 +32,7 @@ fi
 ### SSH keys
 # ============
 
-if mac && [[ "$TERM_PROGRAM" != "vscode" ]]; then
+if mac && [[ "$TERM_PROGRAM" != "vscode" ]] && [[ -z "$INTELLIJ_ENVIRONMENT_READER" ]]; then
     ssh-add --apple-load-keychain
 fi
 
@@ -42,9 +42,10 @@ fi
 custom_paths=(
     /sbin /usr/sbin
     /Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin
-    /usr/local/bin /usr/local/sbin
+    $HOME/Library/Android/sdk/platform-tools
     $HOME/homebrew/Cellar/python@3.9/3.9.12/Frameworks/Python.framework/Versions/3.9/bin
     $HOME/go/bin
+    /usr/local/bin /usr/local/sbin
     $HOME/bin
 )
 for dir in $custom_paths; do
@@ -99,6 +100,9 @@ if mac; then
     fi
     if [[ -d $HOME/homebrew/opt/openssl@1.1 ]]; then
         export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$HOME/homebrew/opt/openssl@1.1"
+    fi
+    if [[ -d $HOME/homebrew/opt/libpq/bin ]]; then
+        export PATH="$HOME/homebrew/opt/libpq/bin:$PATH"
     fi
 
     # Set Apple Terminal.app resume directory
