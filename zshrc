@@ -15,10 +15,6 @@ function is_interactive() { [ -t 1 ] }
 # =======================
 # Do this before setting up PATH so ~/bin and similar still have the highest precedence.
 
-if mac && [[ -x $HOME/homebrew/bin/brew ]]; then
-    eval "$($HOME/homebrew/bin/brew shellenv)"
-fi
-
 if command_exists rbenv; then
     eval "$(rbenv init -)"
 fi
@@ -41,11 +37,8 @@ fi
 
 custom_paths=(
     /sbin /usr/sbin
-    /Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin
-    $HOME/Library/Android/sdk/platform-tools
-    $HOME/homebrew/Cellar/python@3.9/3.9.12/Frameworks/Python.framework/Versions/3.9/bin
-    $HOME/go/bin
     /usr/local/bin /usr/local/sbin
+    $HOME/go/bin
     $HOME/bin
 )
 for dir in $custom_paths; do
@@ -90,20 +83,6 @@ fi
 if mac; then
     # Don't pollute tar archives with ._ files (Apple double files)
     export COPYFILE_DISABLE=true
-
-    # Use Homebrew's OpenSSL to build Ruby
-    if [[ -d /usr/local/opt/openssl@1.1 ]]; then
-        export RUBY_CONFIGURE_OPTS="--with-openssl-dir=/usr/local/opt/openssl@1.1"
-    fi
-    if [[ -d /opt/homebrew/opt/openssl@1.1 ]]; then
-        export RUBY_CONFIGURE_OPTS="--with-openssl-dir=/opt/homebrew/opt/openssl@1.1"
-    fi
-    if [[ -d $HOME/homebrew/opt/openssl@1.1 ]]; then
-        export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$HOME/homebrew/opt/openssl@1.1"
-    fi
-    if [[ -d $HOME/homebrew/opt/libpq/bin ]]; then
-        export PATH="$HOME/homebrew/opt/libpq/bin:$PATH"
-    fi
 
     # Set Apple Terminal.app resume directory
     if [[ $TERM_PROGRAM == "Apple_Terminal" ]] && [[ -z "$INSIDE_EMACS" ]] {
@@ -333,16 +312,4 @@ if command_exists brew; then
 fi
 
 autoload -Uz compinit
-
-# Sharing Homebrew in /usr/local with multiple users on the same machine means
-# that group writable files in /usr/local are deemed insecure. But I'm the only
-# actual user so tell compinit not to bother me about compaudit's complaints.
-is_group_writable() {
-    [[ -d "$1" ]] && [[ "${$(ls -ld "$1"):5:1}" = "w" ]]
-}
-if mac && is_group_writable /usr/local/share; then
-    compinit -u
-else
-    compinit
-fi
-
+compinit
