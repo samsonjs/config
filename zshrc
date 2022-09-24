@@ -11,6 +11,12 @@ function command_exists() { which "$1" >/dev/null 2>/dev/null }
 # (tests if stdout is a tty)
 function is_interactive() { [ -t 1 ] }
 
+[[ -d "$HOME/config/zsh" ]] && ZDOTDIR="$HOME/config/zsh"
+
+if [[ -r "$ZDOTDIR/zlocal" ]]; then
+    source "$ZDOTDIR/zlocal"
+fi
+
 ### Various environments
 # =======================
 # Do this before setting up PATH so ~/bin and similar still have the highest precedence.
@@ -51,8 +57,6 @@ typeset -U path
 
 # remove / from word chars
 export WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
-
-[[ -d "$HOME/config/zsh" ]] && ZDOTDIR="$HOME/config/zsh"
 
 fpath=($fpath $ZDOTDIR/functions $ZDOTDIR/completions)
 typeset -U fpath
@@ -95,10 +99,6 @@ if mac; then
 
       chpwd
     }
-fi
-
-if [[ -r "$ZDOTDIR/zlocal" ]]; then
-    source "$ZDOTDIR/zlocal"
 fi
 
 if [[ -d ~/Library/Mobile\ Documents/com\~apple\~CloudDocs ]]; then
