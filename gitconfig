@@ -13,6 +13,7 @@
 	whitespace = trailing-space,space-before-tab
 	excludesfile = /Users/sjs/config/gitignore
 	pager = diff-so-fancy | less --tabs=4 -RFX
+	attributesfile = /Users/work/.gitattributes
 [diff]
 	mnemonicprefix = true
 	renames = copies
@@ -50,3 +51,5 @@
 	program = /usr/local/bin/gpg
 [commit]
 	gpgsign = true
+[diff "swift"]
+    xfuncname = ^[ \t]*(((private |public |internal |final |open )*class|(private |public |internal )*struct|(private |public |internal )*actor|(private |public |internal )*func|(private |public |internal )*extension|(private |public |internal )*enum)[ \t].*)$
