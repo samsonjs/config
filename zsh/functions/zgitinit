@@ -66,23 +66,23 @@ zgit_head() {
 
 	if [ -z "$zgit_info[head]" ]; then
 		local name=''
-		name=$(git symbolic-ref -q HEAD)
+		name="$(git symbolic-ref -q HEAD)"
 		if [ $? -eq 0 ]; then
-			if [[ $name == refs/(heads|tags)/* ]]; then
-				name=${name#refs/(heads|tags)/}
+			if [[ "$name" == refs/(heads|tags)/* ]]; then
+				name="${name#refs/(heads|tags)/}"
 			fi
 		else
-			name=$(git name-rev --name-only --no-undefined --always HEAD)
+			name="$(git name-rev --name-only --no-undefined --always HEAD)"
 			if [ $? -ne 0 ]; then
 				return 1
-			elif [[ $name == remotes/* ]]; then
-				name=${name#remotes/}
+			elif [[ "$name" == remotes/* ]]; then
+				name="${name#remotes/}"
 			fi
 		fi
-		zgit_info[head]=$name
+		zgit_info[head]="$name"
 	fi
 
-	echo $zgit_info[head]
+	echo "$zgit_info[head]"
 }
 
 zgit_branch() {
