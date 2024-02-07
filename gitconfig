@@ -1,32 +1,28 @@
 [user]
-	name = Sami Samhuri
-	email = sami@samhuri.net
-	signingkey = 2742FC16
-[alias]
-    l = log --graph --abbrev-commit --date=relative --pretty=format:'%Cred%h%Creset %C(yellow)%d%Creset %s %Cgreen(%an, %C(bold green)%cr%Cgreen)%Creset'
-	g = grep --break --heading --line-number
-	yolo = push --force-with-lease
+    name = Sami Samhuri
+    email = sami@samhuri.net
+    signingkey = 2742FC16
 [branch]
-	autosetupmerge = true
+    autosetupmerge = true
 [core]
-	quotepath = false
-	whitespace = trailing-space,space-before-tab
-	excludesfile = /Users/sjs/config/gitignore
-	pager = diff-so-fancy | less --tabs=4 -RFX
-	attributesfile = /Users/work/.gitattributes
+    quotepath = false
+    whitespace = trailing-space,space-before-tab
+    excludesfile = /Users/sjs/config/gitignore
+    pager = diff-so-fancy | less --tabs=4 -RFX
+    attributesfile = /Users/work/.gitattributes
 [diff]
-	mnemonicprefix = true
-	renames = copies
+    mnemonicprefix = true
+    renames = copies
     compactionHeuristic = true
-	renameLimit = 5000
-	colorMoved = zebra
+    renameLimit = 5000
+    colorMoved = zebra
 [advice]
-	statusHints = false
-	pushNonFastForward = false
+    statusHints = false
+    pushNonFastForward = false
 [color]
-	ui = auto
+    ui = auto
 [merge]
-	stat = true
+    stat = true
 [rebase]
     autosquash = true
 [difftool]
@@ -34,10 +30,10 @@
 [difftool "FileMerge"]
     cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 [credential]
-	helper = osxkeychain
+    helper = osxkeychain
 [grep]
-	extendRegexp = true
-	lineNumber = true
+    extendRegexp = true
+    lineNumber = true
 [merge "mergepbx"]
     name = XCode project files merger
     driver = mergepbx %O %A %B
@@ -46,10 +42,10 @@
 [submodule]
     fetchJobs = 4
 [init]
-	defaultBranch = main
+    defaultBranch = main
 [gpg]
-	program = /usr/local/bin/gpg
+    program = /usr/local/bin/gpg
 [commit]
-	gpgsign = true
+    gpgsign = true
 [diff "swift"]
     xfuncname = ^[ \t]*(((private |public |internal |final |open )*class|(private |public |internal )*struct|(private |public |internal )*actor|(private |public |internal )*func|(private |public |internal )*extension|(private |public |internal )*enum)[ \t].*)$
