@@ -3,6 +3,7 @@ zsh/zlocal
 zsh/.zcompdump
 zsh/.zcompcache
 emacs.d/auto-save-list/.saves*
+emacs.d/recentf
 .DS_Store
 *.pyc
 *.cache
