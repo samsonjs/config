@@ -3,13 +3,19 @@
     email = sami@samhuri.net
     signingkey = 2742FC16
 [branch]
-    autosetupmerge = true
+    autosetupmerge = simple
+    autosetuprebase = always
 [core]
     quotepath = false
     whitespace = trailing-space,space-before-tab
     excludesfile = /Users/sjs/config/gitignore
     pager = diff-so-fancy | less --tabs=4 -RFX
     attributesfile = /Users/work/.gitattributes
+[pull]
+    ff = only
+    rebase = true
+[commit]
+    verbose = true
 [diff]
     mnemonicprefix = true
     renames = copies
