@@ -1,7 +1,7 @@
 [user]
     name = Sami Samhuri
     email = sami@samhuri.net
-    signingkey = 2742FC16
+    signingKey = ~/.ssh/id_ed25519
 [branch]
     autosetupmerge = simple
     autosetuprebase = always
@@ -11,12 +11,20 @@
     excludesfile = /Users/sjs/config/gitignore
     pager = diff-so-fancy | less --tabs=4 -RFX
     attributesfile = /Users/work/.gitattributes
+[fetch]
+    fsckobjects = true
+    prune = true
 [pull]
     ff = only
     rebase = true
+[receive]
+    fsckobjects = true
+[push]
+    autosetupremote = true
 [commit]
     verbose = true
 [diff]
+    algorithm = histogram
     mnemonicprefix = true
     renames = copies
     compactionHeuristic = true
@@ -28,13 +36,18 @@
 [color]
     ui = auto
 [merge]
+    conflictstyle = zdiff3
     stat = true
 [rebase]
     autosquash = true
+    autostash = true
+    updateRefs = true
 [difftool]
     prompt = false
 [difftool "FileMerge"]
     cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+[interactive]
+    diffFilter = diff-so-fancy --patch
 [credential]
     helper = osxkeychain
 [grep]
@@ -50,7 +63,7 @@
 [init]
     defaultBranch = main
 [gpg]
-    program = /usr/local/bin/gpg
+    format = ssh
 [commit]
     gpgsign = true
 [diff "swift"]
