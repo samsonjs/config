@@ -313,3 +313,10 @@ fi
 
 autoload -Uz compinit
 compinit
+
+### devicectl
+# ==========
+# Gui Rambo's iOS device control functions
+# https://gist.github.com/insidegui/b570ec998b9e2aeb730f4e142f0593d1
+
+source $ZDOTDIR/devicectl.sh
