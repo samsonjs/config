@@ -1,7 +1,0 @@
-[
-    { "keys": ["super+l"], "command": "show_overlay", "args": {"overlay": "goto", "text": ":"} }
-,   { "keys": ["super+shift+t"], "command": "show_overlay", "args": {"overlay": "goto", "text": "@"} }
-,   { "keys": ["super+r"], "command": "reopen_last_file" }
-,   { "keys": ["super+alt+["], "command": "reindent", "args": {"single_line": true} }
-,   { "keys": ["ctrl+shift+d"], "command": "duplicate_line" }
-]
