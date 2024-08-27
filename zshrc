@@ -290,6 +290,23 @@ function cd () {
     fi
 }
 
+if mac; then
+    # Courtesy of https://curtclifton.net/finder-and-terminal-are-friends
+    pwdf() {
+        /usr/bin/osascript <<"        EOT"
+            tell application "Finder"
+                try
+                    set currFolder to (folder of the front window as alias)
+                on error
+                    set currFolder to (path to desktop folder as alias)
+                end try
+                POSIX path of currFolder
+            end tell
+        EOT
+   }
+   alias cdf='cd "`pwdf`"'
+fi
+
 ### Unsorted (new) stuff
 # =======================
 # if commands takes more than 60 seconds tell me how long it took
