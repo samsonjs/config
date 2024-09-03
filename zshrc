@@ -209,7 +209,6 @@ prompt sjs
 # --------------------------------
 alias bgd='bg; disown %1'
 alias cp='nocorrect cp'            # don't correct spelling for 'cp'
-alias e='mate'
 alias ez="$EDITOR ~/.zshrc && source ~/.zshrc"
 
 alias mkdir='nocorrect mkdir'      # don't correct spelling for 'mkdir'
@@ -228,53 +227,41 @@ alias doc='docker-compose'
 if mac; then
     gls_path=`which gls`
     if [[ -x "$gls_path" ]]; then
-        alias ls='$gls_path -BF --color=auto'
-        alias la='$gls_path -AF --color=auto'
+        alias ls="$gls_path -BF --color=auto"
     else
         alias ls='ls -BF'
-        alias la='ls -AF'
     fi
 else
     alias ls='ls -BF --color=auto'
-    alias la='ls -AF --color=auto'
 fi
-alias ll='ls -l'
-alias lsd='ls -d'
-alias lld='ls -dl'
 
 ### ruby
 alias irb='irb --readline -r irb/completion'
 
 ### git
-if command_exists git; then
-    alias a='git add'
-    alias b='git branch'
-    alias c='git commit'
-    alias cam='git commit -a -m'
-    alias co='git checkout'
-    alias chp='git cherry-pick'
-    alias d='git diff'
-    alias dc='git diff --cached'
-    alias dmcr='git diff-merge-conflict-resolution'
-    alias ds='git diff --stat'
-    alias ecf='git edit-conflicted-files'
-    alias f='git fetch'
-    alias glo='git log --oneline --decorate'
-    alias gls='git log --stat'
-    alias gup='git update'
-    alias m='git merge'
-    alias pfb='git push-feature-branch'
-    alias rmb='git remove-merged-branches'
-    alias s='git status -sb'
-    alias st='git stash'
-    alias stl='git stash list'
-    alias stp='git stash pop'
-    alias t='git tag'
+alias a='git add'
+alias b='git branch'
+alias c='git commit'
+alias co='git checkout'
+alias chp='git cherry-pick'
+alias d='git diff'
+alias dc='git diff --cached'
+alias ds='git diff --stat'
+alias f='git fetch'
+alias glo='git log --oneline --decorate'
+alias gls='git log --stat'
+alias gup='git update'
+alias m='git merge'
+alias rmb='git remove-merged-branches'
+alias s='git status -sb'
+alias st='git stash'
+alias stl='git stash list'
+alias stp='git stash pop'
+alias t='git tag'
 
-    function gl() {
-        git log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim   white)- %an%C(reset)%C(bold yellow)%d%C(reset)' "$@"
-  }
-fi
+function gl() {
+    git log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim   white)- %an%C(reset)%C(bold yellow)%d%C(reset)' "$@"
+}
 
 # `cd /path/to/a/file` does `cd /path/to/a`
 function cd () {
