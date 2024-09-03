@@ -225,9 +225,6 @@ alias doc='docker-compose'
 
 ### ls Aliases
 # ----------------
-if command_exists ls-comma; then
-    alias ls='ls-comma'
-fi
 if mac; then
     gls_path=`which gls`
     if [[ -x "$gls_path" ]]; then
