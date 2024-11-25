@@ -314,6 +314,7 @@ fi
 
 autoload -Uz compinit
 compinit
+compdef _gnu_generic zed
 
 ### devicectl
 # ==========
