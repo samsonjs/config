@@ -154,6 +154,7 @@ setopt histfindnodups       # backwards search produces diff result each time
 setopt histreduceblanks     # compact consecutive white space chars (cool)
 setopt histnostore          # don't store history related functions
 setopt incappendhistory     # incrementally add items to HISTFILE
+setopt histignorespace      # omit from history commands that start with a space
 
 ### Job Control
 # ----------------
