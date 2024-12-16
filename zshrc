@@ -29,17 +29,14 @@ fi
 # Do this before setting up PATH so ~/bin and similar still have the highest precedence.
 
 if command_exists rbenv; then
-    _evalcache rbenv init -
+    eval "$(rbenv init -)"
 fi
 if command_exists pyenv; then
-    _evalcache pyenv init -
+    eval "$(pyenv init -)"
 fi
 if command_exists direnv; then
-    _evalcache direnv hook zsh
+    eval "$(direnv hook zsh)"
 fi
-
-### SSH keys
-# ============
 
 ### Environment Vars
 # ===================
