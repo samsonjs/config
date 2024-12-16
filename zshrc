@@ -41,10 +41,6 @@ fi
 ### SSH keys
 # ============
 
-if mac && [[ "$TERM_PROGRAM" != "vscode" ]] && [[ -z "$INTELLIJ_ENVIRONMENT_READER" ]]; then
-    ssh-add --apple-load-keychain
-fi
-
 ### Environment Vars
 # ===================
 
