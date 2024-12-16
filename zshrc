@@ -13,6 +13,13 @@ function is_interactive() { [ -t 1 ] }
 
 [[ -d "$HOME/config/zsh" ]] && ZDOTDIR="$HOME/config/zsh"
 
+fpath=($fpath $ZDOTDIR/functions $ZDOTDIR/completions)
+typeset -U fpath
+
+# Cache the output of commands that take a long time to run even
+# though they almost always return the same output.
+autoload _evalcache
+
 if [[ -r "$ZDOTDIR/zlocal" ]]; then
     source "$ZDOTDIR/zlocal"
 fi
@@ -22,13 +29,13 @@ fi
 # Do this before setting up PATH so ~/bin and similar still have the highest precedence.
 
 if command_exists rbenv; then
-    eval "$(rbenv init -)"
+    _evalcache rbenv init -
 fi
 if command_exists pyenv; then
-    eval "$(pyenv init -)"
+    _evalcache pyenv init -
 fi
 if command_exists direnv; then
-    eval "$(direnv hook zsh)"
+    _evalcache direnv hook zsh
 fi
 
 ### SSH keys
@@ -57,9 +64,6 @@ typeset -U path
 
 # remove / from word chars
 export WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
-
-fpath=($fpath $ZDOTDIR/functions $ZDOTDIR/completions)
-typeset -U fpath
 
 cdpath=(~)
 
