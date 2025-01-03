@@ -19,7 +19,7 @@ brew 'terraform-ls'
 brew 'wget'
 brew 'yt-dlp'
 
-cask 'neardrop'
+cask 'grishka/grishka/neardrop'
 cask 'ngrok'
 cask 'xcodes'
 cask 'zoom'
