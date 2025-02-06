@@ -36,7 +36,6 @@
 [color]
     ui = auto
 [merge]
-    conflictstyle = zdiff3
     stat = true
 [rebase]
     autosquash = true
