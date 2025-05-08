@@ -178,6 +178,9 @@ done
 # ---------------------------
 autoload -U url-quote-magic
 zle -N self-insert url-quote-magic
+# See https://docs.jade.fyi/zsh/zsh.html#index-bracketed_002dpaste_002dmagic
+autoload -Uz bracketed-paste-magic
+zle -N bracketed-paste bracketed-paste-magic
 
 ### Terminal Settings
 # ====================
