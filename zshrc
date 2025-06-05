@@ -221,6 +221,7 @@ alias uuuu='cd ../../../..'
 alias myip='curl -4 icanhazip.com'
 
 alias be='bundle exec'
+alias cc="claude --dangerously-skip-permissions"
 alias doc='docker-compose'
 
 ### ls Aliases
