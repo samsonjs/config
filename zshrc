@@ -217,7 +217,6 @@ alias mv='nocorrect mv'            # don't correct spelling for 'mv'
 alias u='cd ..'
 alias uu='cd ../..'
 alias uuu='cd ../../..'
-alias uuuu='cd ../../../..'
 alias myip='curl -4 icanhazip.com'
 
 alias be='bundle exec'
