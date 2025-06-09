@@ -61,8 +61,8 @@ These short aliases make git really easy to use in your shell:
 
 **Custom scripts:**
 See [~/bin](https://github.com/samsonjs/bin) for these ones.
-- `rmb` - `git remove-merged-branches` (custom command)
-- `gup` - `git update` (custom command)
+- `rmb` - [`git remove-merged-branches`](https://github.com/samsonjs/bin/blob/main/git-remove-merged-branches) (custom command)
+- `gup` - [`git update`](https://github.com/samsonjs/bin/blob/main/git-update) (custom command)
 
 ## other aliases
 
