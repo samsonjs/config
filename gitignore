@@ -6,21 +6,10 @@ Icon\?
 .idea
 *.iml
 
-# Xcode
-*.pbxuser
-!default.pbxuser
-xcuserdata
-*.xccheckout
-*.moved-aside
-
-# TextMate
-.tm_properties
-
-# Carthage
-Carthage
-
 # Visual Studio Code
 .vscode
 
 # Bundler for Rubygems
 .bundle
+
+claude-scratchpad
