@@ -12,4 +12,6 @@ Icon\?
 # Bundler for Rubygems
 .bundle
 
+# Local Claude stuff
 claude-scratchpad
+CLAUDE.local.md
