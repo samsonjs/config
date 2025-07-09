@@ -12,6 +12,11 @@ Icon\?
 # Bundler for Rubygems
 .bundle
 
+# direnv
+.envrc
+
 # Local Claude stuff
 claude-scratchpad
 CLAUDE.local.md
+.claude
+
