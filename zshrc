@@ -31,6 +31,10 @@ fi
 if command_exists rbenv; then
     eval "$(rbenv init -)"
 fi
+if [ -s "$HOME/.nvm/nvm.sh" ]; then
+    export NVM_DIR="$HOME/.nvm"
+    source "$NVM_DIR/nvm.sh"
+fi
 if command_exists pyenv; then
     eval "$(pyenv init -)"
 fi
