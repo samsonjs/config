@@ -24,6 +24,7 @@
 [commit]
     verbose = true
 [diff]
+    external = difft
     algorithm = histogram
     mnemonicprefix = true
     renames = copies

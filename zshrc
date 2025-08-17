@@ -321,6 +321,10 @@ autoload -Uz compinit
 compinit
 compdef _gnu_generic zed
 
+if command_exists fzf; then
+    source <(fzf --zsh)
+fi
+
 ### devicectl
 # ==========
 # Gui Rambo's iOS device control functions
