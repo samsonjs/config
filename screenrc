@@ -67,6 +67,9 @@
 # Change default scrollback value for new windows
   defscrollback 10000			# default: 100
 
+# Enable the scroll wheel / trackpad
+termcapinfo xterm* ti@:te@
+
 # Define the time that all windows monitored for silence should 
 # wait before displaying a message. Default 30 seconds.
   silencewait 15			# default: 30
