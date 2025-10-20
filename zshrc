@@ -224,7 +224,7 @@ alias uuu='cd ../../..'
 alias myip='curl -4 icanhazip.com'
 
 alias be='bundle exec'
-alias cc="claude --dangerously-skip-permissions"
+alias cc="codex --dangerously-bypass-approvals-and-sandbox"
 alias doc='docker-compose'
 
 ### ls Aliases
