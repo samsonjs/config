@@ -11,14 +11,13 @@
     excludesfile = /Users/sjs/config/gitignore
     pager = diff-so-fancy | less --tabs=4 -RFX
     attributesfile = /Users/work/.gitattributes
-[fetch]
+[transfer]
     fsckobjects = true
+[fetch]
     prune = true
 [pull]
     ff = only
     rebase = true
-[receive]
-    fsckobjects = true
 [push]
     autosetupremote = true
 [commit]
@@ -42,10 +41,6 @@
     autosquash = true
     autostash = true
     updateRefs = true
-[difftool]
-    prompt = false
-[difftool "FileMerge"]
-    cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 [interactive]
     diffFilter = diff-so-fancy --patch
 [credential]
@@ -56,8 +51,6 @@
 [merge "mergepbx"]
     name = XCode project files merger
     driver = mergepbx %O %A %B
-[transfer]
-    fsckobjects = true
 [submodule]
     fetchJobs = 4
 [init]
