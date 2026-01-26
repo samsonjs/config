@@ -113,7 +113,9 @@ fi
 # ---------------------------------------
 #setopt ignoreeof           # ignore EOF ('^D') (i.e. don't log out on it)
 setopt braceccl             # {a-d} expands to a b c d
-setopt noclobber            # don't overwrite existing files w/ > output redir
+if is_interactive; then
+    setopt noclobber        # don't overwrite existing files w/ > output redir
+fi
 setopt hist_allow_clobber   # C-p or UP and command has >| now, ready to go
 
 ### Changing Directories
@@ -201,11 +203,13 @@ bindkey '\ep' history-beginning-search-backward
 ### Prompt Subsystem
 # ===================
 # Load the prompt theme system
-autoload -U promptinit
-promptinit
+if is_interactive; then
+    autoload -U promptinit
+    promptinit
 
-# Use my prompt theme, based on wunjo (zsh-git)
-prompt sjs
+    # Use my prompt theme, based on wunjo (zsh-git)
+    prompt sjs
+fi
 
 ### Aliases
 # ===========
