@@ -16,3 +16,4 @@ atom/compile-cache
 atom/.apm
 netrc
 bundle
+gitconfig-ssh
