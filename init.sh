@@ -61,4 +61,27 @@ for FILE in "$CONFIG_PATH"/*; do
     fi
 done
 
+setup_jj_identity() {
+    if ! command -v jj >/dev/null 2>&1; then
+        echo "Note: jj is not installed, skipping jj identity setup"
+        return 0
+    fi
+
+    if ! jj config get user.name >/dev/null 2>&1; then
+        jj config set --user user.name "Sami Samhuri"
+        echo "→ Set jj user.name"
+    else
+        echo "✓ jj user.name already set"
+    fi
+
+    if ! jj config get user.email >/dev/null 2>&1; then
+        jj config set --user user.email "sami@samhuri.net"
+        echo "→ Set jj user.email"
+    else
+        echo "✓ jj user.email already set"
+    fi
+}
+
+setup_jj_identity
+
 echo "Done!"
