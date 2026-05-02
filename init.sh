@@ -67,14 +67,14 @@ setup_jj_identity() {
         return 0
     fi
 
-    if ! jj config get user.name >/dev/null 2>&1; then
+    if [ -z "$(jj config get user.name 2>/dev/null)" ]; then
         jj config set --user user.name "Sami Samhuri"
         echo "→ Set jj user.name"
     else
         echo "✓ jj user.name already set"
     fi
 
-    if ! jj config get user.email >/dev/null 2>&1; then
+    if [ -z "$(jj config get user.email 2>/dev/null)" ]; then
         jj config set --user user.email "sami@samhuri.net"
         echo "→ Set jj user.email"
     else
