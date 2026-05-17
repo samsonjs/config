@@ -82,6 +82,39 @@ setup_jj_identity() {
     fi
 }
 
+# Prefer the "github" remote over the default "origin" everywhere jj defaults
+# to it: trunk() resolution, git push, git fetch. The trunk() alias is a
+# fallback chain — repo-level trunk() (written by jj at init) still wins.
+setup_jj_github_defaults() {
+    if ! command -v jj >/dev/null 2>&1; then
+        return 0
+    fi
+
+    local trunk_alias='latest(present(main@github) | present(master@github) | present(main@origin) | present(master@origin) | root())'
+
+    if [ "$(jj config get 'revset-aliases."trunk()"' 2>/dev/null)" = "$trunk_alias" ]; then
+        echo "✓ jj trunk() alias already set"
+    else
+        jj config set --user 'revset-aliases."trunk()"' "$trunk_alias"
+        echo "→ Set jj trunk() alias to prefer github"
+    fi
+
+    if [ "$(jj config get git.push 2>/dev/null)" = "github" ]; then
+        echo "✓ jj git.push already set to github"
+    else
+        jj config set --user git.push github
+        echo "→ Set jj git.push to github"
+    fi
+
+    if [ "$(jj config get git.fetch 2>/dev/null)" = "github" ]; then
+        echo "✓ jj git.fetch already set to github"
+    else
+        jj config set --user git.fetch github
+        echo "→ Set jj git.fetch to github"
+    fi
+}
+
 setup_jj_identity
+setup_jj_github_defaults
 
 echo "Done!"
