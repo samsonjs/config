@@ -105,6 +105,7 @@ prompt_sjs_setup() {
 	local p_rc
 
 	PROMPT=
+	PROMPT+="\$(prompt_sjs_scm_jj)"
 	PROMPT+="$pc[time][%t]$pc[reset] "
 	PROMPT+="%(?..$pc[rc]-%1v- $pc[reset])"
 	PROMPT+="$pc[path]%(2~.%~.%/)$pc[reset]"
@@ -219,8 +220,110 @@ prompt_sjs_scm_status() {
 	fi
 }
 
+prompt_sjs_in_jj() {
+	local d=$PWD
+	while [[ $d != / && -n $d ]]; do
+		[[ -d $d/.jj ]] && return 0
+		d=${d:h}
+	done
+	return 1
+}
+
+prompt_sjs_scm_jj() {
+	prompt_sjs_in_jj || return
+	local -A pc
+	pc=(${(kv)sjs_prompt_colors})
+
+	local sep=$'\x1f'
+	local tmpl='
+		change_id.shortest(8) ++ "'$sep'" ++
+		bookmarks.join(",") ++ "'$sep'" ++
+		if(empty, "1", "") ++ "'$sep'" ++
+		if(conflict, "1", "") ++ "'$sep'" ++
+		if(divergent, "1", "") ++ "'$sep'" ++
+		parents.map(|p| p.bookmarks().join(",") ++ "(" ++ p.change_id().shortest(8) ++ ")").join(" ") ++ "'$sep'" ++
+		parents.map(|p| p.description().first_line()).join(" / ") ++ "'$sep'" ++
+		description.first_line()
+	'
+
+	local info
+	info=$(jj log -r @ --no-graph --color=never -T "$tmpl" 2>/dev/null) || return
+
+	local change bookmarks empty conflict divergent parents parent_desc desc
+	IFS=$sep read -r change bookmarks empty conflict divergent parents parent_desc desc <<< "$info"
+
+	local parent_display=$parents
+	local desc_suffix=
+	if [ -n "$desc" ]; then
+		local truncated=$desc
+		[ ${#desc} -gt 80 ] && truncated="${desc[1,80]}…"
+		truncated=${truncated//\%/%%}
+		desc_suffix=" $pc[default]\"$truncated\"$pc[reset]"
+	elif [ -n "$parent_desc" ]; then
+		local truncated=$parent_desc
+		[ ${#parent_desc} -gt 60 ] && truncated="${parent_desc[1,60]}…"
+		truncated=${truncated//\%/%%}
+		if [[ "$parents" != *" / "* ]] && [[ "$parents" == *')' ]]; then
+			parent_display="${parents[1,-2]} \"$truncated\")"
+		else
+			desc_suffix=" $pc[default]← \"$truncated\"$pc[reset]"
+		fi
+	fi
+
+	local out=
+	local -a flags
+	[ -n "$empty" ] && flags+=$'∅'
+	[ -n "$conflict" ] && flags+='!'
+	[ -n "$divergent" ] && flags+=$'≠'
+	if [ $#flags -gt 0 ]; then
+		out+="$pc[scm_status_dirty]${(j::)flags}$pc[reset] "
+	fi
+	out+="$pc[scm_commitid]$change$pc[reset]"
+	if [ -n "$bookmarks" ]; then
+		out+="$pc[punc]($pc[scm_branch]$bookmarks$pc[punc])$pc[reset]"
+	fi
+
+	if [ -z "$empty" ]; then
+		local summary
+		summary=$(jj diff --stat -r @ --ignore-working-copy 2>/dev/null | tail -n1)
+		local ins=0 del=0
+		[[ $summary =~ '([0-9]+) insertion' ]] && ins=$match[1]
+		[[ $summary =~ '([0-9]+) deletion' ]] && del=$match[1]
+		if [ "$ins" != 0 ] || [ "$del" != 0 ]; then
+			out+=" $pc[scm_status_staged]+$ins$pc[reset]/$pc[scm_status_dirty]-$del$pc[reset]"
+		fi
+
+		local summary_out
+		summary_out=$(jj diff --summary -r @ --ignore-working-copy 2>/dev/null)
+		local added=0 modified=0 deleted=0
+		local line
+		while IFS= read -r line; do
+			case "$line" in
+				'A '*) (( added++ )) ;;
+				'M '*|'R '*|'C '*) (( modified++ )) ;;
+				'D '*) (( deleted++ )) ;;
+			esac
+		done <<< "$summary_out"
+		local -a amd
+		[ $added -gt 0 ] && amd+="$pc[scm_status_staged]A$added$pc[reset]"
+		[ $modified -gt 0 ] && amd+="$pc[scm_commitid]M$modified$pc[reset]"
+		[ $deleted -gt 0 ] && amd+="$pc[scm_status_dirty]D$deleted$pc[reset]"
+		if [ $#amd -gt 0 ]; then
+			out+=" ${(j: :)amd}"
+		fi
+	fi
+
+	if [ -n "$parent_display" ]; then
+		out+=" $pc[default]on $pc[scm_branch]$parent_display$pc[reset]"
+	fi
+	out+="$desc_suffix"
+
+	print -rn -- "$out"$'\n'"%{%}"
+}
+
 prompt_sjs_scm_branch() {
 	zgit_isgit || return
+	prompt_sjs_in_jj && return
 	local -A pc
 	pc=(${(kv)sjs_prompt_colors})
 
