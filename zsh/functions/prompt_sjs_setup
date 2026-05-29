@@ -91,12 +91,17 @@ prompt_sjs_setup() {
 	pc[rc]='red'
 	pc[scm_branch]='Cyan'
 	pc[scm_commitid]='Yellow'
+	pc[scm_changeid]='Magenta'
+	pc[scm_changeid_rest]='Black'
+	pc[paren]='Black'
 	pc[scm_status_dirty]='Red'
 	pc[scm_status_staged]='Green'
 	pc[#]='Yellow'
 	for cn in ${(k)pc}; do
 		pc[${cn}]=$(colorword $pc[$cn])
 	done
+	pc[scm_changeid]=$(colorword Magenta . bold)
+	pc[scm_changeid_rest]=$(colorword Black . normal)
 	pc[reset]=$(colorword . . 00)
 
 	typeset -Ag sjs_prompt_colors
@@ -234,14 +239,20 @@ prompt_sjs_scm_jj() {
 	local -A pc
 	pc=(${(kv)sjs_prompt_colors})
 
-	local sep=$'\x1f'
+	# sep: outer field separator. rsep: between parent records. fsep: within a parent record.
+	local sep=$'\x1f' rsep=$'\x1e' fsep=$'\x1d'
 	local tmpl='
-		change_id.shortest(8) ++ "'$sep'" ++
+		change_id.shortest(8).prefix() ++ "'$sep'" ++
+		change_id.shortest(8).rest() ++ "'$sep'" ++
 		bookmarks.join(",") ++ "'$sep'" ++
 		if(empty, "1", "") ++ "'$sep'" ++
 		if(conflict, "1", "") ++ "'$sep'" ++
 		if(divergent, "1", "") ++ "'$sep'" ++
-		parents.map(|p| p.bookmarks().join(",") ++ "(" ++ p.change_id().shortest(8) ++ ")").join(" ") ++ "'$sep'" ++
+		parents.map(|p|
+			p.bookmarks().join(",") ++ "'$fsep'" ++
+			p.change_id().shortest(8).prefix() ++ "'$fsep'" ++
+			p.change_id().shortest(8).rest()
+		).join("'$rsep'") ++ "'$sep'" ++
 		parents.map(|p| p.description().first_line()).join(" / ") ++ "'$sep'" ++
 		description.first_line()
 	'
@@ -249,41 +260,67 @@ prompt_sjs_scm_jj() {
 	local info
 	info=$(jj log -r @ --no-graph --color=never -T "$tmpl" 2>/dev/null) || return
 
-	local change bookmarks empty conflict divergent parents parent_desc desc
-	IFS=$sep read -r change bookmarks empty conflict divergent parents parent_desc desc <<< "$info"
+	local change_prefix change_rest bookmarks empty conflict divergent parents_data parent_desc desc
+	IFS=$sep read -r change_prefix change_rest bookmarks empty conflict divergent parents_data parent_desc desc <<< "$info"
 
-	local parent_display=$parents
+	local -a parent_records
+	parent_records=("${(@ps.$rsep.)parents_data}")
+
+	# splice parent_desc into the parens only for the single-parent case
+	local desc_in_parens=0
+	if [ -z "$desc" ] && [ -n "$parent_desc" ] && [ ${#parent_records} -eq 1 ] && [ -n "$parent_records[1]" ]; then
+		desc_in_parens=1
+	fi
+
+	local -a parent_displays
+	local rec
+	for rec in "${parent_records[@]}"; do
+		[ -z "$rec" ] && continue
+		local -a pf
+		pf=("${(@ps.$fsep.)rec}")
+		local p_bookmarks=$pf[1]
+		local p_prefix=$pf[2]
+		local p_rest=$pf[3]
+		local parent_str="$p_bookmarks$pc[paren]($pc[scm_changeid]$p_prefix$pc[scm_changeid_rest]$p_rest"
+		if [ $desc_in_parens -eq 1 ]; then
+			local truncated=$parent_desc
+			[ ${#parent_desc} -gt 60 ] && truncated="${parent_desc[1,60]}…"
+			truncated=${truncated//\%/%%}
+			parent_str+=" $pc[default]\"$truncated\"$pc[scm_branch]"
+		fi
+		parent_str+="$pc[paren])$pc[scm_branch]"
+		parent_displays+=$parent_str
+	done
+	local parent_display="${(j: / :)parent_displays}"
+
 	local desc_suffix=
 	if [ -n "$desc" ]; then
 		local truncated=$desc
 		[ ${#desc} -gt 80 ] && truncated="${desc[1,80]}…"
 		truncated=${truncated//\%/%%}
 		desc_suffix=" $pc[default]\"$truncated\"$pc[reset]"
-	elif [ -n "$parent_desc" ]; then
+	elif [ -n "$parent_desc" ] && [ $desc_in_parens -eq 0 ]; then
 		local truncated=$parent_desc
 		[ ${#parent_desc} -gt 60 ] && truncated="${parent_desc[1,60]}…"
 		truncated=${truncated//\%/%%}
-		if [[ "$parents" != *" / "* ]] && [[ "$parents" == *')' ]]; then
-			parent_display="${parents[1,-2]} \"$truncated\")"
-		else
-			desc_suffix=" $pc[default]← \"$truncated\"$pc[reset]"
-		fi
+		desc_suffix=" $pc[default]← \"$truncated\"$pc[reset]"
 	fi
 
 	local out=
-	local -a flags
-	[ -n "$empty" ] && flags+=$'∅'
-	[ -n "$conflict" ] && flags+='!'
-	[ -n "$divergent" ] && flags+=$'≠'
-	if [ $#flags -gt 0 ]; then
-		out+="$pc[scm_status_dirty]${(j::)flags}$pc[reset] "
+	local -a prefix_flags
+	[ -n "$conflict" ] && prefix_flags+='!'
+	[ -n "$divergent" ] && prefix_flags+=$'≠'
+	if [ $#prefix_flags -gt 0 ]; then
+		out+="$pc[scm_status_dirty]${(j::)prefix_flags}$pc[reset] "
 	fi
-	out+="$pc[scm_commitid]$change$pc[reset]"
+	out+="$pc[scm_changeid]$change_prefix$pc[scm_changeid_rest]$change_rest$pc[reset]"
 	if [ -n "$bookmarks" ]; then
-		out+="$pc[punc]($pc[scm_branch]$bookmarks$pc[punc])$pc[reset]"
+		out+="$pc[paren]($pc[scm_branch]$bookmarks$pc[paren])$pc[reset]"
 	fi
 
-	if [ -z "$empty" ]; then
+	if [ -n "$empty" ]; then
+		out+=" $pc[scm_status_dirty]∅$pc[reset]"
+	else
 		local summary
 		summary=$(jj diff --stat -r @ --ignore-working-copy 2>/dev/null | tail -n1)
 		local ins=0 del=0
