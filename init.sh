@@ -61,60 +61,35 @@ for FILE in "$CONFIG_PATH"/*; do
     fi
 done
 
-setup_jj_identity() {
-    if ! command -v jj >/dev/null 2>&1; then
-        echo "Note: jj is not installed, skipping jj identity setup"
+# Symlink jj/config.toml into ~/.config/jj/. To override anything on a specific
+# machine/account, drop any *.toml into ~/.config/jj/conf.d/ — jj loads that
+# directory and it takes precedence over config.toml.
+setup_jj_config() {
+    local src="${CONFIG_PATH}/jj/config.toml"
+    local dest="${HOME}/.config/jj/config.toml"
+
+    if [ ! -f "$src" ]; then
+        echo "Note: ${src} not found, skipping jj config link"
         return 0
     fi
 
-    if [ -z "$(jj config get user.name 2>/dev/null)" ]; then
-        jj config set --user user.name "Sami Samhuri"
-        echo "→ Set jj user.name"
-    else
-        echo "✓ jj user.name already set"
-    fi
+    mkdir -p "${HOME}/.config/jj"
 
-    if [ -z "$(jj config get user.email 2>/dev/null)" ]; then
-        jj config set --user user.email "sami@samhuri.net"
-        echo "→ Set jj user.email"
-    else
-        echo "✓ jj user.email already set"
-    fi
-}
-
-# Prefer the "github" remote over the default "origin" everywhere jj defaults
-# to it: trunk() resolution, git push, git fetch. The trunk() alias is a
-# fallback chain — repo-level trunk() (written by jj at init) still wins.
-setup_jj_github_defaults() {
-    if ! command -v jj >/dev/null 2>&1; then
+    if [ -L "$dest" ] && [ "$(readlink "$dest")" = "$src" ]; then
+        echo "✓ ${dest} already linked correctly"
         return 0
     fi
 
-    local trunk_alias='latest(present(main@github) | present(master@github) | present(main@origin) | present(master@origin) | root())'
-
-    if [ "$(jj config get 'revset-aliases."trunk()"' 2>/dev/null)" = "$trunk_alias" ]; then
-        echo "✓ jj trunk() alias already set"
-    else
-        jj config set --user 'revset-aliases."trunk()"' "$trunk_alias"
-        echo "→ Set jj trunk() alias to prefer github"
+    if [ -e "$dest" ] || [ -L "$dest" ]; then
+        echo "Backing up existing ${dest} to ~/original-dot-files/"
+        mkdir -p "${HOME}/original-dot-files"
+        mv "$dest" "${HOME}/original-dot-files/jj-config.toml.$(date +%Y%m%d_%H%M%S)"
     fi
 
-    if [ "$(jj config get git.push 2>/dev/null)" = "github" ]; then
-        echo "✓ jj git.push already set to github"
-    else
-        jj config set --user git.push github
-        echo "→ Set jj git.push to github"
-    fi
-
-    if [ "$(jj config get git.fetch 2>/dev/null)" = "github" ]; then
-        echo "✓ jj git.fetch already set to github"
-    else
-        jj config set --user git.fetch github
-        echo "→ Set jj git.fetch to github"
-    fi
+    ln -s "$src" "$dest"
+    echo "→ Linked ${dest} to ${src}"
 }
 
-setup_jj_identity
-setup_jj_github_defaults
+setup_jj_config
 
 echo "Done!"

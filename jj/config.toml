@@ -1,0 +1,42 @@
+#:schema https://docs.jj-vcs.dev/latest/config-schema.json
+
+# Symlinked to ~/.config/jj/config.toml by init.sh. To override anything on a
+# specific machine/account, drop any *.toml into ~/.config/jj/conf.d/ — jj loads
+# that directory and it wins over this file.
+
+[user]
+name = "Sami Samhuri"
+email = "sami@samhuri.net"
+
+[git]
+push = "github"
+fetch = "github"
+
+[revset-aliases]
+# Prefer the github remote, and treat a `dev` integration branch as trunk when
+# it exists (hobby repos where dev is worked on and merged to main to release).
+# latest() picks the most recently-committed of whichever are present.
+"trunk()" = "latest(present(dev@github) | present(dev@origin) | present(main@github) | present(master@github) | present(main@origin) | present(master@origin) | root())"
+
+# Tip changes (heads) you own that carry no bookmark and aren't in trunk.
+"unbookmarked()" = "(visible_heads() & mine()) ~ bookmarks() ~ ::trunk()"
+
+# Your mutable work-in-progress: everything you own that isn't in trunk yet.
+"open()" = "mine() & ~::trunk()"
+
+# The bookmark nearest below a given rev — powers `tug`.
+"closest_bookmark(to)" = "heads(::to & bookmarks())"
+
+[aliases]
+# Compact log of your open work.
+wip = ["log", "-r", "open()"]
+
+# Your unbookmarked tip changes.
+tips = ["log", "-r", "unbookmarked()"]
+
+# Bookmarks (local + remote) with date + name.
+bks = ["log", "--no-graph", "-r", "bookmarks() | remote_bookmarks()",
+       "-T", "separate(\" \", committer.timestamp().local().format(\"%Y-%m-%d %H:%M\"), separate(\" \", bookmarks, remote_bookmarks)) ++ \"\\n\""]
+
+# Drag the closest bookmark up to @.
+tug = ["bookmark", "move", "--from", "closest_bookmark(@)", "--to", "@"]
