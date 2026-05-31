@@ -27,6 +27,10 @@ fetch = "github"
 # The bookmark nearest below a given rev — powers `tug`.
 "closest_bookmark(to)" = "heads(::to & bookmarks())"
 
+# Where `tug` should land the bookmark: @ normally, but @- when @ is an
+# empty change (so a fresh scratchpad doesn't drag the bookmark off the work).
+"tug_target()" = "(@ ~ empty()) | (@ & empty())-"
+
 [aliases]
 # Compact log of your open work.
 wip = ["log", "-r", "open()"]
@@ -38,5 +42,5 @@ tips = ["log", "-r", "unbookmarked()"]
 bks = ["log", "--no-graph", "-r", "bookmarks() | remote_bookmarks()",
        "-T", "separate(\" \", committer.timestamp().local().format(\"%Y-%m-%d %H:%M\"), separate(\" \", bookmarks, remote_bookmarks)) ++ \"\\n\""]
 
-# Drag the closest bookmark up to @.
-tug = ["bookmark", "move", "--from", "closest_bookmark(@)", "--to", "@"]
+# Drag the closest bookmark up to @ (or @- when @ is an empty change).
+tug = ["bookmark", "move", "--from", "closest_bookmark(tug_target())", "--to", "tug_target()"]
