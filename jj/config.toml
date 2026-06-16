@@ -31,6 +31,11 @@ fetch = "github"
 # empty change (so a fresh scratchpad doesn't drag the bookmark off the work).
 "tug_target()" = "(@ ~ empty()) | (@ & empty())-"
 
+# Local bookmarks that have drifted off trunk and likely need rebasing: not yet
+# merged into trunk (~::trunk()) and not already sitting on top of it
+# (~trunk()::). The longer one has been off trunk, the more likely it conflicts.
+"behind_trunk()" = "bookmarks() ~ ::trunk() ~ trunk()::"
+
 [aliases]
 # Compact log of your open work.
 wip = ["log", "-r", "open()"]
@@ -38,9 +43,15 @@ wip = ["log", "-r", "open()"]
 # Your unbookmarked tip changes.
 tips = ["log", "-r", "unbookmarked()"]
 
-# Bookmarks (local + remote) with date + name.
-bks = ["log", "--no-graph", "-r", "bookmarks() | remote_bookmarks()",
+# Your bookmarks (local + remote) with date + name.
+bks = ["log", "--no-graph", "-r", "(bookmarks() | remote_bookmarks()) & mine()",
        "-T", "separate(\" \", committer.timestamp().local().format(\"%Y-%m-%d %H:%M\"), separate(\" \", bookmarks, remote_bookmarks)) ++ \"\\n\""]
 
 # Drag the closest bookmark up to @ (or @- when @ is an empty change).
 tug = ["bookmark", "move", "--from", "closest_bookmark(tug_target())", "--to", "tug_target()"]
+
+# Your bookmarks that have drifted off trunk, date + name. The quick "which of
+# my branches are stale?" view. For "will they conflict when rebased?", run the
+# `jj-rebase-check` script (it actually tests each merge against trunk).
+stale = ["log", "--no-graph", "-r", "behind_trunk() & mine()",
+         "-T", "separate(\" \", committer.timestamp().local().format(\"%Y-%m-%d %H:%M\"), bookmarks) ++ \"\\n\""]
