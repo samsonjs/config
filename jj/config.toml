@@ -12,6 +12,13 @@ email = "sami@samhuri.net"
 push = "github"
 fetch = "github"
 
+[revsets]
+# Where `jj b advance` (aka `jj b a`) lands the closest bookmark: @ normally, but
+# @- when @ is an empty change, so a fresh scratchpad doesn't drag the bookmark
+# off the work. The set of bookmarks to advance comes from the built-in
+# `revsets.bookmark-advance-from` default, heads(::to & bookmarks()).
+bookmark-advance-to = "(@ ~ empty()) | (@ & empty())-"
+
 [revset-aliases]
 # Prefer the github remote, and treat a `dev` integration branch as trunk when
 # it exists (hobby repos where dev is worked on and merged to main to release).
@@ -23,13 +30,6 @@ fetch = "github"
 
 # Your mutable work-in-progress: everything you own that isn't in trunk yet.
 "open()" = "mine() & ~::trunk()"
-
-# The bookmark nearest below a given rev — powers `tug`.
-"closest_bookmark(to)" = "heads(::to & bookmarks())"
-
-# Where `tug` should land the bookmark: @ normally, but @- when @ is an
-# empty change (so a fresh scratchpad doesn't drag the bookmark off the work).
-"tug_target()" = "(@ ~ empty()) | (@ & empty())-"
 
 # Local bookmarks that have drifted off trunk and likely need rebasing: not yet
 # merged into trunk (~::trunk()) and not already sitting on top of it
@@ -46,9 +46,6 @@ tips = ["log", "-r", "unbookmarked()"]
 # Your bookmarks (local + remote) with date + name.
 bks = ["log", "--no-graph", "-r", "(bookmarks() | remote_bookmarks()) & mine()",
        "-T", "separate(\" \", committer.timestamp().local().format(\"%Y-%m-%d %H:%M\"), separate(\" \", bookmarks, remote_bookmarks)) ++ \"\\n\""]
-
-# Drag the closest bookmark up to @ (or @- when @ is an empty change).
-tug = ["bookmark", "move", "--from", "closest_bookmark(tug_target())", "--to", "tug_target()"]
 
 # Your bookmarks that have drifted off trunk, date + name. The quick "which of
 # my branches are stale?" view. For "will they conflict when rebased?", run the
