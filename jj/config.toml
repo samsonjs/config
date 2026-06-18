@@ -41,7 +41,7 @@ bookmark-advance-to = "(@ ~ empty()) | (@ & empty())-"
 wip = ["log", "-r", "open()"]
 
 # Your unbookmarked tip changes.
-tips = ["log", "-r", "unbookmarked()"]
+tips = ["log", "-r", "unbookmarked() & mutable() ~ empty()"]
 
 # Your bookmarks (local + remote) with date + name.
 bks = ["log", "--no-graph", "-r", "(bookmarks() | remote_bookmarks()) & mine()",
