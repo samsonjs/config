@@ -34,6 +34,7 @@ brew 'yt-dlp'
 brew 'zoxide'
 
 cask 'codex'
+cask 'font-fira-code-nerd-font'
 cask 'grishka/grishka/neardrop'
 cask 'ngrok'
 cask 'xcodes-app'

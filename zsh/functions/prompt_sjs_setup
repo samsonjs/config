@@ -306,7 +306,10 @@ prompt_sjs_scm_jj() {
 		desc_suffix=" $pc[default]← \"$truncated\"$pc[reset]"
 	fi
 
-	local out=
+	# Gradient powerline "jj" pill, marking the line as scm status (not output).
+	# Needs a Nerd Font for the powerline separators (U+E0B0).
+	local pill=$'%{\e[48;5;57;38;5;231m%} jj %{\e[0;48;5;33;38;5;57m%}\ue0b0%{\e[0;38;5;33m%}\ue0b0%{\e[0m%} '
+	local out=$pill
 	local -a prefix_flags
 	[ -n "$conflict" ] && prefix_flags+='!'
 	[ -n "$divergent" ] && prefix_flags+=$'≠'
