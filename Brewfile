@@ -1,5 +1,3 @@
-tap 'homebrew/bundle'
-
 brew 'openssl'
 brew 'bat'
 brew 'black'
@@ -45,6 +43,7 @@ brew 'zoxide'
 cask 'codex'
 cask 'font-fira-code-nerd-font'
 cask 'grishka/grishka/neardrop'
+cask 'ghostty'
 cask 'ngrok'
 cask 'xcodes-app'
 cask 'zoom'
