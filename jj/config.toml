@@ -37,6 +37,10 @@ bookmark-advance-to = "(@ ~ empty()) | (@ & empty())-"
 "behind_trunk()" = "bookmarks() ~ ::trunk() ~ trunk()::"
 
 [aliases]
+# Fetch from git, then start fresh work on top of the named bookmark.
+# Usage: jj up main
+up = ["util", "exec", "--", "bash", "-c", 'jj git fetch && jj new "$1"', "jj-up"]
+
 # Compact log of your open work.
 wip = ["log", "-r", "open()"]
 
