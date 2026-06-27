@@ -20,3 +20,5 @@ claude-scratchpad
 CLAUDE.local.md
 .claude
 
+
+*.bbprojectd/
