@@ -52,7 +52,6 @@ These short aliases make git really easy to use in your shell:
 **Commit log:**
 - `gl` - Fancy graph log with colors and relative dates
 - `glo` - `git log --oneline --decorate`
-- `gls` - `git log --stat`
 
 **Stashing:**
 - `st` - `git stash`

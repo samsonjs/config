@@ -238,10 +238,10 @@ alias doc='docker-compose'
 ### ls Aliases
 # ----------------
 if mac; then
-    if (( $+commands[gls] )); then
+    if command_exists gls; then
         alias ls='gls -BF --color=auto'
-    else
-        alias ls='ls -BF'
+    else        
+		alias ls='ls -BF'
     fi
 else
     alias ls='ls -BF --color=auto'
@@ -261,7 +261,6 @@ alias dc='git diff --cached'
 alias ds='git diff --stat'
 alias f='git fetch'
 alias glo='git log --oneline --decorate'
-alias gls='git log --stat'
 alias gup='git update'
 alias m='git merge'
 alias rmb='git remove-merged-branches'
