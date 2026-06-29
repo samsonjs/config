@@ -238,9 +238,8 @@ alias doc='docker-compose'
 ### ls Aliases
 # ----------------
 if mac; then
-    gls_path=`which gls`
-    if [[ -x "$gls_path" ]]; then
-        alias ls="$gls_path -BF --color=auto"
+    if (( $+commands[gls] )); then
+        alias ls='gls -BF --color=auto'
     else
         alias ls='ls -BF'
     fi
