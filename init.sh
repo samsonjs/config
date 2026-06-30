@@ -40,7 +40,7 @@ link_config() {
 }
 
 # Files to exclude from symlinking
-EXCLUDE_FILES=("init.sh" "zsh" "Brewfile", "CLAUDE.md")
+EXCLUDE_FILES=("init.sh" "zsh" "Brewfile" "CLAUDE.md" "gitignore")
 
 echo "Creating symlinks from ${CONFIG_PATH}..."
 

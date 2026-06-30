@@ -8,9 +8,9 @@
 [core]
     quotepath = false
     whitespace = trailing-space,space-before-tab
-    excludesfile = /Users/sjs/config/gitignore
+    excludesfile = ~/.gitignore
     pager = diff-so-fancy | less --tabs=4 -RFX
-    attributesfile = /Users/work/.gitattributes
+    attributesfile = ~/.gitattributes
 [transfer]
     fsckobjects = true
 [fetch]
