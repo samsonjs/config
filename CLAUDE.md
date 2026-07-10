@@ -15,7 +15,7 @@ The main setup script is `init.sh`. Run it to symlink configuration files to the
 ```
 
 This script:
-- Creates symlinks from files in this repo to `~/.filename` 
+- Creates symlinks from files in this repo to `~/.filename`
 - Backs up existing dotfiles to `~/original-dot-files/`
 - Excludes certain files (init.sh, Gemfile, Gemfile.lock, zsh/, Brewfile)
 
@@ -29,13 +29,13 @@ brew bundle install
 
 The `Brewfile` contains essential development tools like:
 - CLI tools: gh, jq, ripgrep, terraform, awscli
-- Development environments: rbenv, direnv
+- Development environments: rbenv/rv, direnv
 - Utilities: diff-so-fancy, parallel, llm
 
 ## Shell Configuration
 
 The zsh configuration is modular and located in:
-- Main config: `zshrc` 
+- Main config: `zshrc`
 - Functions: `zsh/functions/`
 - Completions: `zsh/completions/`
 - Device control utilities: `zsh/devicectl.sh`
@@ -45,7 +45,7 @@ Key features:
 - Extensive git aliases (a, c, co, d, s, etc.)
 - Smart directory navigation with auto-cd
 - History management with 2M line buffer
-- Ruby/rbenv and Python/pyenv integration
+- Ruby/rbenv/rv and Python/pyenv integration
 - iOS device control functions via `devicectl.sh`
 
 Notable aliases:
@@ -82,7 +82,7 @@ The `gitconfig` contains:
 
 The `zsh/devicectl.sh` provides functions for iOS device management:
 - `devicepid <device> <process>` - Find process PID on device
-- `devicekill <device> <process>` - Kill process on device  
+- `devicekill <device> <process>` - Kill process on device
 - `respring <device>` - Restart SpringBoard
 - `devicereboot <device>` - Reboot device
 
@@ -90,7 +90,7 @@ The `zsh/devicectl.sh` provides functions for iOS device management:
 
 Key configuration mappings:
 - `zshrc` → `~/.zshrc`
-- `vimrc` → `~/.vimrc` 
+- `vimrc` → `~/.vimrc`
 - `emacs` → `~/.emacs`
 - `gitconfig` → `~/.gitconfig`
 - `gitignore` → `~/.gitignore` (global)

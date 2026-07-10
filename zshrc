@@ -28,6 +28,9 @@ fi
 # =======================
 # Do this before setting up PATH so ~/bin and similar still have the highest precedence.
 
+if command_exists rv; then
+	eval "$(rv shell init zsh)"
+fi
 if command_exists rbenv; then
     eval "$(rbenv init -)"
 fi
@@ -240,7 +243,7 @@ alias doc='docker-compose'
 if mac; then
     if command_exists gls; then
         alias ls='gls -BF --color=auto'
-    else        
+    else
 		alias ls='ls -BF'
     fi
 else
@@ -288,7 +291,7 @@ function cd () {
 if mac; then
     # Courtesy of https://curtclifton.net/finder-and-terminal-are-friends
     pwdf() {
-        /usr/bin/osascript <<"        EOT"
+        /usr/bin/osascript <<EOT
             tell application "Finder"
                 try
                     set currFolder to (folder of the front window as alias)
@@ -297,7 +300,7 @@ if mac; then
                 end try
                 POSIX path of currFolder
             end tell
-        EOT
+EOT
    }
    alias cdf='cd "`pwdf`"'
 fi
@@ -329,6 +332,9 @@ compdef _gnu_generic zed
 
 if command_exists fzf; then
     source <(fzf --zsh)
+fi
+if command_exists rv; then
+	eval "$(rv shell completions zsh)"
 fi
 
 ### devicectl

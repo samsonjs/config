@@ -9,7 +9,7 @@ After zsh (big time zsh hipster) this is the first thing I set up in my shell en
 - **zsh**: custom prompt with git integration, extensive aliases, lots of nitpicky tweaks like subword navigation excluding / for easy subpath traversal
 - **$EDITOR**: vim and emacs configs, though the emacs one is fairly dated
 - **git**: enhanced diffing, signed commits, pre-commit hooks
-- **ruby**: rbenv integration, IRB customizations
+- **ruby**: rbenv/rv integration, IRB customizations
 - **screen**: yep I'm old, no tmux here
 - **iOS simulator stuff**: [device control utilities](https://gist.github.com/insidegui/b570ec998b9e2aeb730f4e142f0593d1) via `devicectl.sh` (from Gui Rambo)
 
