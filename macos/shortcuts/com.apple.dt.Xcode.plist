@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Balance Delimiters</key>
+	<string>@$b</string>
+	<key>Extract to Method</key>
+	<string>@~m</string>
+	<key>Extract to Variable</key>
+	<string>@~v</string>
+	<key>Refresh Canvas</key>
+	<string>@p</string>
+	<key>Rename...</key>
+	<string>@~^r</string>
+	<key>Reveal in Project Navigator</key>
+	<string>@^r</string>
+	<key>Run Without Building</key>
+	<string>@$r</string>
+</dict>
+</plist>
