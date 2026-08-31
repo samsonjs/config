@@ -20,10 +20,10 @@ fetch = "github"
 bookmark-advance-to = "(@ ~ empty()) | (@ & empty())-"
 
 [revset-aliases]
-# Prefer the github remote, and treat a `dev` integration branch as trunk when
+# Prefer the forgejo remote, then github, and treat a `dev` integration branch as trunk when
 # it exists (hobby repos where dev is worked on and merged to main to release).
 # latest() picks the most recently-committed of whichever are present.
-"trunk()" = "latest(present(dev@github) | present(dev@origin) | present(main@github) | present(master@github) | present(main@origin) | present(master@origin) | root())"
+"trunk()" = "latest(present(dev@forgejo) | present(main@forgejo) | present(master@forgejo) | present(dev@github) | present(dev@origin) | present(main@github) | present(master@github) | present(main@origin) | present(master@origin) | root())"
 
 # Tip changes (heads) you own that carry no bookmark and aren't in trunk.
 "unbookmarked()" = "(visible_heads() & mine()) ~ bookmarks() ~ ::trunk()"
