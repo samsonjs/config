@@ -17,3 +17,4 @@ atom/.apm
 netrc
 bundle
 gitconfig-ssh
+gitconfig-local
