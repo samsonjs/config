@@ -2,10 +2,9 @@ zsh/zhistory
 zsh/zlocal
 zsh/.zcompdump
 zsh/.zcompcache
-# Tools drop completions in here as symlinks to machine-local paths, and jj
-# tracks anything that isn't ignored. Opt in per file instead.
-zsh/completions/*
-!zsh/completions/_hub
+# On fpath via zshrc, but nothing in it is ours: tools drop completions here as
+# symlinks to machine-local paths, and jj tracks whatever isn't ignored.
+zsh/completions/
 emacs.d/auto-save-list/.saves*
 emacs.d/recentf
 .DS_Store
