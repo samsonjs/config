@@ -15,6 +15,13 @@
     fsckobjects = true
 [fetch]
     prune = true
+# transfer.fsckobjects above turns fsck on for fetches, and git 2.53 added a
+# largePathname check that rejects an object in actions/cache's history. That
+# leaves Forgejo Actions unable to fetch that action at all, on any tag, which
+# is a confusing failure a long way from its cause. Ignore that one check;
+# every other thing fsck catches still fails the fetch.
+[fetch "fsck"]
+    largePathname = ignore
 [pull]
     ff = only
     rebase = true
