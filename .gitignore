@@ -8,16 +8,8 @@ zsh/completions/
 emacs.d/auto-save-list/.saves*
 emacs.d/recentf
 .DS_Store
-*.pyc
 *.cache
 irb_history
-atom/.atom
-atom/.node-gyp
-atom/storage
-atom/packages
-atom/compile-cache
-atom/.apm
 netrc
 bundle
 gitconfig-ssh
-gitconfig-local
