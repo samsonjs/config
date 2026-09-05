@@ -80,6 +80,19 @@ The `gitconfig` contains:
 - Advanced merge and diff algorithms
 - Pre-commit hook that runs `git diff --check`
 
+### Commit signing (git and jj)
+
+Both git and jj sign commits with SSH keys and verify against the tracked `allowed_signers` file (principal `sami@samhuri.net`, one line per key). jj is configured in `jj/config.toml` with `signing.behavior = "own"` and a dedicated key at the fixed path `~/.ssh/forgejo`, so the same config works on every machine without any local override. Git signs with the same `~/.ssh/forgejo` key via `signingKey` in `gitconfig`. The key can be a fresh dedicated one or an existing key renamed to that path; either way its public half must be in `allowed_signers`.
+
+Setting up a new machine (or one that hasn't done this yet):
+
+1. `ssh-keygen -t ed25519 -C "jj signing key" -f ~/.ssh/forgejo`
+2. Append the public key to `allowed_signers`: `printf 'sami@samhuri.net %s\n' "$(cut -d' ' -f1,2 ~/.ssh/forgejo.pub)" >> ~/config/allowed_signers`, then commit it.
+3. Optionally upload `~/.ssh/forgejo.pub` to Forgejo/GitHub as an SSH *signing* key so commits show as verified there.
+4. Sanity check in a throwaway repo: `jj log -r @ --no-graph -T 'signature.status()'` should print `good`.
+
+Until step 1 is done on a machine, every jj commit there fails because the key path in the synced config doesn't exist. Do not "fix" that by removing or changing `signing.key`; generate the key instead.
+
 ## iOS Development Tools
 
 The `zsh/devicectl.sh` provides functions for iOS device management:

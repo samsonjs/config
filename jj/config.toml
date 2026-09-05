@@ -56,3 +56,14 @@ bks = ["log", "--no-graph", "-r", "(bookmarks() | remote_bookmarks()) & mine()",
 # `jj-rebase-check` script (it actually tests each merge against trunk).
 stale = ["log", "--no-graph", "-r", "behind_trunk() & mine()",
          "-T", "separate(\" \", committer.timestamp().local().format(\"%Y-%m-%d %H:%M\"), bookmarks) ++ \"\\n\""]
+
+# Signing key at the same path on every machine (fresh or renamed). Generate one
+# with `ssh-keygen -t ed25519 -f ~/.ssh/forgejo` and append the .pub to
+# allowed_signers so signatures verify as "good".
+[signing]
+behavior = "own"
+backend = "ssh"
+key = "~/.ssh/forgejo.pub"
+
+[signing.backends.ssh]
+allowed-signers = "~/config/allowed_signers"

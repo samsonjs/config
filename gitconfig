@@ -1,7 +1,7 @@
 [user]
     name = Sami Samhuri
     email = sami@samhuri.net
-    signingKey = ~/.ssh/id_ed25519
+    signingKey = ~/.ssh/forgejo
 [branch]
     autosetupmerge = simple
     autosetuprebase = always
@@ -72,3 +72,5 @@
 [credential "https://git.samhuri.net"]
 	helper = 
 	helper = !tea login helper
+[gpg "ssh"]
+	allowedSignersFile = ~/config/allowed_signers
