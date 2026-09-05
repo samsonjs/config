@@ -34,7 +34,7 @@ The `Brewfile` contains essential development tools like:
 
 ## Shell Configuration
 
-This config is shared across many machines and operating systems. Tool blocks in `zshrc` are guarded with `command_exists` so one file works everywhere; never remove one because a tool isn.t installed on the current machine. Machine-local settings belong in `zsh/zlocal`, which is gitignored.
+This config is shared across many machines and operating systems. Tool blocks in `zshrc` are guarded with `command_exists` so one file works everywhere; never remove one because a tool isn't installed on the current machine. Machine-local settings belong in `zsh/zlocal`, which is gitignored.
 
 The zsh configuration is modular and located in:
 - Main config: `zshrc`
