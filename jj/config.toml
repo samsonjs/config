@@ -10,7 +10,7 @@ email = "sami@samhuri.net"
 
 [git]
 push = "forgejo"
-fetch = "forgejo"
+fetch = "glob:*"
 
 [revsets]
 # Where `jj b advance` (aka `jj b a`) lands the closest bookmark: @ normally, but
