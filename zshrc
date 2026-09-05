@@ -29,7 +29,7 @@ fi
 # Do this before setting up PATH so ~/bin and similar still have the highest precedence.
 
 if command_exists rv; then
-	eval "$(rv shell init zsh)"
+    eval "$(rv shell init zsh)"
 fi
 if command_exists rbenv; then
     eval "$(rbenv init -)"
