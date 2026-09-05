@@ -12,8 +12,8 @@ defaults write -g AppleKeyboardUIMode -int 2                 # tab moves focus b
 defaults write -g NSAutomaticSpellingCorrectionEnabled -bool false
 defaults write -g NSAutomaticCapitalizationEnabled -bool false
 defaults write -g NSAutomaticPeriodSubstitutionEnabled -bool false
-defaults write -g NSAutomaticQuoteSubstitutionEnabled -bool true
-defaults write -g NSAutomaticDashSubstitutionEnabled -bool true
+defaults write -g NSAutomaticQuoteSubstitutionEnabled -bool false
+defaults write -g NSAutomaticDashSubstitutionEnabled -bool false
 defaults write -g NSAutomaticInlinePredictionEnabled -bool true
 defaults write com.apple.HIToolbox AppleFnUsageType -int 0   # fn key does nothing
 defaults write com.apple.HIToolbox AppleDictationAutoEnable -int 1
