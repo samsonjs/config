@@ -26,7 +26,7 @@ brew 'most'
 brew 'node'
 brew 'parallel'
 brew 'pipx'
-brew 'procs
+brew 'procs'
 brew 'rclone'
 brew 'ripgrep'
 brew 'rsync'
