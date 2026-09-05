@@ -44,7 +44,7 @@ defaults write com.apple.menuextra.clock ShowAMPM -bool true
 defaults write com.apple.Siri StatusMenuVisible -bool false
 
 echo "Dock & hot corners"
-defaults write com.apple.dock show-recents -bool false
+defaults write com.apple.dock show-recents -bool true
 defaults write com.apple.dock mru-spaces -bool false          # don't rearrange spaces by recent use
 defaults write com.apple.dock wvous-bl-corner -int 10         # bottom-left: put display to sleep
 defaults write com.apple.dock wvous-bl-modifier -int 0
