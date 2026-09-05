@@ -29,6 +29,8 @@ There's also a Brewfile with stuff that I usually want for general shell usabili
 brew bundle install
 ```
 
+Everything here is shared across many machines and both operating systems, so tool integrations in `zshrc` are guarded with `command_exists` and only activate where the tool is installed. Machine-specific bits (Homebrew shellenv, extra paths, ssh-add) go in `zsh/zlocal`, which is gitignored and sourced early by `zshrc`.
+
 ## git aliases
 
 These short aliases make git really easy to use in your shell:
