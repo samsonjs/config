@@ -1,0 +1,123 @@
+# Syntax-checks the shell config. This repo is synced to every machine, so a
+# zshrc that doesn't parse breaks every shell everywhere at once; zsh -n and
+# bash -n catch exactly that and cost nothing.
+#
+# Nothing sources the config, so no tools need to exist on the runner and a
+# stock alpine with zsh and bash added is enough.
+#
+# No `uses:` on purpose. Actions get fetched from data.forgejo.org at job start
+# and that has already broken once; shell steps have no such dependency.
+#
+# Path-filtered and cancel-in-progress because the runner is ours: an editor
+# config change shouldn't occupy it, and neither should a superseded push.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - zshrc
+      - "zsh/**"
+      - init.sh
+      - "macos/**"
+      - .forgejo/workflows/ci.yml
+  pull_request:
+    paths:
+      - zshrc
+      - "zsh/**"
+      - init.sh
+      - "macos/**"
+      - .forgejo/workflows/ci.yml
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Syntax and whitespace
+    # The runner maps this label to a plain image; the container below is what
+    # actually runs.
+    runs-on: docker
+    container:
+      image: docker.io/library/alpine:3
+    timeout-minutes: 5
+    steps:
+      # alpine has no bash, so this one step runs under busybox sh and the rest
+      # get to use bash.
+      - name: Install shells and git
+        shell: sh
+        run: apk add --no-cache --quiet bash git zsh
+
+      # Forgejo serves uploadpack.allowAnySHA1InWant, so the run's own commit
+      # and the base can be fetched directly. Not shallow: the whole repo is a
+      # few MB, and the whitespace check below wants the real merge base rather
+      # than wherever the base branch had got to when the run started. The token
+      # goes through an env var and an extraheader rather than into the remote
+      # URL, to keep it out of the git config the rest of the job can read.
+      - name: Check out
+        shell: bash
+        env:
+          TOKEN: ${{ github.token }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          echo "event=$GITHUB_EVENT_NAME ref=$GITHUB_REF sha=$GITHUB_SHA base=$BASE_SHA"
+          git init -q .
+          export GIT_CONFIG_COUNT=1
+          export GIT_CONFIG_KEY_0=safe.directory
+          export GIT_CONFIG_VALUE_0="$PWD"
+          git remote add origin "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY.git"
+          auth="Authorization: Basic $(printf 'x-access-token:%s' "$TOKEN" | base64 | tr -d '\n')"
+          git -c http.extraheader="$auth" fetch -q origin "$GITHUB_SHA"
+          git checkout -qf FETCH_HEAD
+          # A push to a new branch reports an all-zero base, and a force push
+          # can report one that no longer exists; fall back to the parent.
+          if [[ -n "$BASE_SHA" && "$BASE_SHA" != *[^0]* ]]; then
+            BASE_SHA=
+          fi
+          if [[ -n "$BASE_SHA" ]] && ! git -c http.extraheader="$auth" fetch -q origin "$BASE_SHA"; then
+            echo "base $BASE_SHA is gone; diffing against the parent instead"
+            BASE_SHA=
+          fi
+          echo "BASE_SHA=${BASE_SHA:-HEAD^}" >> "$GITHUB_ENV"
+          git --no-pager log -1 --oneline
+          test -f zshrc || { echo "checkout is empty"; exit 1; }
+
+      # The macos scripts are a mix of zsh and bash, so go by the shebang rather
+      # than the directory. zsh -n prints a stray blank line per command on
+      # stderr, hence the capture. zsh/completions is gitignored and usually
+      # absent, but check it when it's there.
+      - name: Syntax-check shell files
+        shell: bash
+        run: |
+          failed=0
+          check() {
+            local shell=$1 file=$2 out
+            if out=$("$shell" -n "$file" 2>&1); then
+              echo "ok   $shell  $file"
+            else
+              echo "FAIL $shell  $file"
+              printf '%s\n' "$out" | grep -v '^$' || true
+              failed=1
+            fi
+          }
+          shopt -s nullglob
+          for f in zshrc zsh/functions/* zsh/completions/* zsh/devicectl.sh; do
+            check zsh "$f"
+          done
+          for f in init.sh macos/*.sh; do
+            if head -n 1 "$f" | grep -q zsh; then
+              check zsh "$f"
+            else
+              check bash "$f"
+            fi
+          done
+          exit "$failed"
+
+      # The same rule the pre-commit hook enforces locally: no trailing
+      # whitespace or space-before-tab on lines this change adds. Three dots so
+      # only the change's own lines count, not whatever the base branch did.
+      - name: Check whitespace
+        shell: bash
+        run: git diff --check "$BASE_SHA...HEAD"
