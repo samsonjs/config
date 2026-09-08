@@ -56,6 +56,11 @@ for FILE in "$CONFIG_PATH"/*; do
         fi
     done
 
+    # Templates are copied into place by scaffold_local below, not symlinked.
+    case "$BASENAME" in
+        *.example) SKIP=true ;;
+    esac
+
     if [ "$SKIP" = false ] && [ -f "$FILE" ]; then
         link_config "$FILE"
     fi
@@ -91,5 +96,25 @@ setup_jj_config() {
 }
 
 setup_jj_config
+
+# Machine-local overrides: copy the tracked template into place once, then leave
+# it alone. The copies are gitignored (or live outside the repo), so each machine
+# edits its own.
+scaffold_local() {
+    local src="$1"
+    local dest="$2"
+
+    if [ -e "$dest" ]; then
+        echo "✓ ${dest} already exists"
+        return 0
+    fi
+
+    mkdir -p "$(dirname "$dest")"
+    cp "$src" "$dest"
+    echo "→ Created ${dest} from $(basename "$src")"
+}
+
+scaffold_local "${CONFIG_PATH}/gitconfig-local.example" "${CONFIG_PATH}/gitconfig-local"
+scaffold_local "${CONFIG_PATH}/jj/local.toml.example" "${HOME}/.config/jj/conf.d/local.toml"
 
 echo "Done!"

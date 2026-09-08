@@ -1,0 +1,19 @@
+#:schema https://docs.jj-vcs.dev/latest/config-schema.json
+
+# Machine-local jj settings. init.sh copies this to ~/.config/jj/conf.d/local.toml
+# when that file is missing; jj loads conf.d after config.toml, so anything set
+# here wins. Uncomment what this machine needs.
+
+# A different identity on this machine, e.g. a work account.
+#[user]
+#email = "someone@example.net"
+
+# Sign with a key held in 1Password instead of ~/.ssh/id_ed25519.pub. Paste the
+# public key literal and add it to allowed_signers.
+#[signing]
+#key = "ssh-ed25519 AAAA..."
+#backends.ssh.program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+
+# Sign with a dedicated key file instead of ~/.ssh/id_ed25519.pub.
+#[signing]
+#key = "~/.ssh/forgejo.pub"

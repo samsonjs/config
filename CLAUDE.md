@@ -82,16 +82,16 @@ The `gitconfig` contains:
 
 ### Commit signing (git and jj)
 
-Both git and jj sign commits with SSH keys and verify against the tracked `allowed_signers` file (principal `sami@samhuri.net`, one line per key). jj is configured in `jj/config.toml` with `signing.behavior = "own"` and a dedicated key at the fixed path `~/.ssh/forgejo`, so the same config works on every machine without any local override. Git signs with the same `~/.ssh/forgejo` key via `signingKey` in `gitconfig`. The key can be a fresh dedicated one or an existing key renamed to that path; either way its public half must be in `allowed_signers`.
+Both git and jj sign commits with SSH keys and verify against the tracked `allowed_signers` file (principal `sami@samhuri.net`, one line per public key). The synced defaults assume the conventional key: git signs with `~/.ssh/id_ed25519` (`signingKey` in `gitconfig`) and jj with `~/.ssh/id_ed25519.pub`. jj signs on push (`git.sign-on-push` in `jj/config.toml`) rather than on every rewrite, so unpushed changes show no signature.
 
-Setting up a new machine (or one that hasn't done this yet):
+A machine that signs with a different key overrides that in its local files, which are gitignored and win over the synced config:
 
-1. `ssh-keygen -t ed25519 -C "jj signing key" -f ~/.ssh/forgejo`
-2. Append the public key to `allowed_signers`: `printf 'sami@samhuri.net %s\n' "$(cut -d' ' -f1,2 ~/.ssh/forgejo.pub)" >> ~/config/allowed_signers`, then commit it.
-3. Optionally upload `~/.ssh/forgejo.pub` to Forgejo/GitHub as an SSH *signing* key so commits show as verified there.
-4. Sanity check in a throwaway repo: `jj log -r @ --no-graph -T 'signature.status()'` should print `good`.
+- git: `~/config/gitconfig-local`, included last by `gitconfig`. Template: `gitconfig-local.example`.
+- jj: `~/.config/jj/conf.d/local.toml`. Template: `jj/local.toml.example`.
 
-Until step 1 is done on a machine, every jj commit there fails because the key path in the synced config doesn't exist. Do not "fix" that by removing or changing `signing.key`; generate the key instead.
+`init.sh` copies each template into place when the local file is missing and never overwrites it. The templates carry commented examples for a key held in 1Password (the public key literal plus `op-ssh-sign` as the ssh signing program) and for a dedicated key file such as `~/.ssh/forgejo`.
+
+Whichever key a machine signs with, its public half must be in `allowed_signers`, committed and pulled everywhere, or its signatures verify as `unknown`. Check with `git log -1 --show-signature` or, after a push, `jj log -r main --no-graph -T 'signature.status()'`.
 
 ## iOS Development Tools
 

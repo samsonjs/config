@@ -1,0 +1,18 @@
+# Machine-local git settings. init.sh copies this to ~/config/gitconfig-local
+# when that file is missing; it is gitignored and included last by gitconfig,
+# so anything set here wins. Uncomment what this machine needs.
+
+# A different identity on this machine, e.g. a work account.
+#[user]
+#    email = someone@example.net
+
+# Sign with a key held in 1Password instead of ~/.ssh/id_ed25519. Paste the
+# public key literal and add it to allowed_signers.
+#[user]
+#    signingKey = ssh-ed25519 AAAA...
+#[gpg "ssh"]
+#    program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+
+# Sign with a dedicated key file instead of ~/.ssh/id_ed25519.
+#[user]
+#    signingKey = ~/.ssh/forgejo
