@@ -1,0 +1,12 @@
+<!-- Entry point for the global Claude Code instructions. The shared content is
+tracked in this repo; anything specific to this machine goes in
+~/.claude/CLAUDE.local.md, which is untracked and imported last so it wins.
+Deliberately a real file rather than a symlink: Claude Code's file-editing tools
+refuse to write through a symlink, so a symlinked ~/.claude/CLAUDE.md could not
+be updated in place. init.sh copies this here once and never overwrites it,
+rewriting the path below to match wherever the repo is checked out. If you place
+this by hand, check that path: Claude Code ignores a missing import silently, so
+a wrong one leaves you with no shared instructions and no error. -->
+
+@~/config/claude/CLAUDE.md
+@~/.claude/CLAUDE.local.md

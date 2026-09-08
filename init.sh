@@ -114,7 +114,29 @@ scaffold_local() {
     echo "→ Created ${dest} from $(basename "$src")"
 }
 
+# Like scaffold_local, but the stub imports the tracked file by absolute path,
+# so point it at this checkout instead of assuming ~/config. A wrong path here
+# would fail silently: Claude Code ignores a missing import without error.
+#
+# Only ever creates a missing file. A machine still holding its own full
+# ~/.claude/CLAUDE.md keeps it, and moving that aside is a deliberate one-time
+# step per machine, since what belongs in CLAUDE.local.md is a human call.
+scaffold_claude_stub() {
+    local src="${CONFIG_PATH}/claude/CLAUDE.md.example"
+    local dest="${HOME}/.claude/CLAUDE.md"
+
+    if [ -e "$dest" ]; then
+        echo "✓ ${dest} already exists"
+        return 0
+    fi
+
+    mkdir -p "$(dirname "$dest")"
+    sed "s|@~/config/claude/CLAUDE.md|@${CONFIG_PATH}/claude/CLAUDE.md|" "$src" > "$dest"
+    echo "→ Created ${dest} from $(basename "$src")"
+}
+
 scaffold_local "${CONFIG_PATH}/gitconfig-local.example" "${CONFIG_PATH}/gitconfig-local"
 scaffold_local "${CONFIG_PATH}/jj/local.toml.example" "${HOME}/.config/jj/conf.d/local.toml"
+scaffold_claude_stub
 
 echo "Done!"

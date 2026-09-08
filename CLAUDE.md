@@ -93,6 +93,23 @@ A machine that signs with a different key overrides that in its local files, whi
 
 Whichever key a machine signs with, its public half must be in `allowed_signers`, committed and pulled everywhere, or its signatures verify as `unknown`. Check with `git log -1 --show-signature` or, after a push, `jj log -r main --no-graph -T 'signature.status()'`.
 
+## Global Claude Code instructions
+
+The global `~/.claude/CLAUDE.md` is shared across machines through `claude/CLAUDE.md` in this repo. It can't live at the repo root, because the `CLAUDE.md` there is this repo's own instructions.
+
+`~/.claude/CLAUDE.md` itself is a small real file that imports both halves:
+
+```
+@~/config/claude/CLAUDE.md
+@~/.claude/CLAUDE.local.md
+```
+
+`init.sh` creates it from `claude/CLAUDE.md.example` when missing, rewriting the import to point at this checkout, and never overwrites an existing one. `~/.claude/CLAUDE.local.md` is untracked and imported last, so machine-specific guidance wins over the shared file — that's where the work Mac keeps its work-only content. A missing import is ignored without error, so no placeholder is needed — which also means a wrong path leaves you with no shared instructions and no complaint, so check it if you place the stub by hand.
+
+Migrating a machine that still has its own full `~/.claude/CLAUDE.md` is a deliberate manual step, not something `init.sh` does: move the old file aside, run `init.sh` to drop in the stub, then diff the backup against `claude/CLAUDE.md` and put anything genuinely machine-specific into `~/.claude/CLAUDE.local.md` before deleting it. What belongs in the local file is a judgement call, so it isn't automated.
+
+It is deliberately **not** a symlink. Claude Code's file-editing tools refuse to write through a symlink ("Refusing to write ...: it is a symbolic link"), so a symlinked `~/.claude/CLAUDE.md` could never be updated in place. The import stub keeps all three files writable while leaving the shared content tracked here. Note also that an atomic-save editor (write to temp, rename over) silently replaces a symlink with a regular file, which is how the previous iCloud arrangement came apart.
+
 ## iOS Development Tools
 
 The `zsh/devicectl.sh` provides functions for iOS device management:
@@ -112,6 +129,7 @@ Key configuration mappings:
 - `irbrc` → `~/.irbrc`
 - `gemrc` → `~/.gemrc`
 - `ackrc` → `~/.ackrc`
+- `claude/CLAUDE.md` → imported by `~/.claude/CLAUDE.md` (not symlinked, see above)
 
 ## Development Workflow
 
