@@ -9,7 +9,9 @@ name = "Sami Samhuri"
 email = "sami@samhuri.net"
 
 [git]
-push = "forgejo"
+# No default push remote: with a single remote jj pushes there, so descriptive
+# remote names (forgejo, github) work without config. Repos with several remotes
+# need `git.push` set in a conf.d scope or with `jj config set --repo`.
 fetch = "glob:*"
 
 [revsets]
