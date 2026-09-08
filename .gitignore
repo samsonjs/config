@@ -12,4 +12,4 @@ emacs.d/recentf
 irb_history
 netrc
 bundle
-gitconfig-ssh
+gitconfig-local

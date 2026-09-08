@@ -9,6 +9,9 @@ name = "Sami Samhuri"
 email = "sami@samhuri.net"
 
 [git]
+# Sign when pushing rather than on every rewrite, so keys behind an agent
+# (1Password) prompt once per push instead of once per snapshot.
+sign-on-push = true
 # No default push remote: with a single remote jj pushes there, so descriptive
 # remote names (forgejo, github) work without config. Repos with several remotes
 # need `git.push` set in a conf.d scope or with `jj config set --repo`.
@@ -59,13 +62,14 @@ bks = ["log", "--no-graph", "-r", "(bookmarks() | remote_bookmarks()) & mine()",
 stale = ["log", "--no-graph", "-r", "behind_trunk() & mine()",
          "-T", "separate(\" \", committer.timestamp().local().format(\"%Y-%m-%d %H:%M\"), bookmarks) ++ \"\\n\""]
 
-# Signing key at the same path on every machine (fresh or renamed). Generate one
-# with `ssh-keygen -t ed25519 -f ~/.ssh/forgejo` and append the .pub to
-# allowed_signers so signatures verify as "good".
+# Conventional default key. A machine that signs with something else (a dedicated
+# key, or one held in 1Password) overrides `key` and `backends.ssh.program` in
+# ~/.config/jj/conf.d/local.toml; see jj/local.toml.example. Every signing
+# public key must be listed in allowed_signers for signatures to verify as good.
 [signing]
-behavior = "own"
+behavior = "drop"
 backend = "ssh"
-key = "~/.ssh/forgejo.pub"
+key = "~/.ssh/id_ed25519.pub"
 
 [signing.backends.ssh]
 allowed-signers = "~/config/allowed_signers"
