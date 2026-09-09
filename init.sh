@@ -97,6 +97,40 @@ setup_jj_config() {
 
 setup_jj_config
 
+# Symlink the jujutsu skill into ~/.claude/skills/. The skill lives in its own
+# repo (a fork with an upstream remote), so link the checkout when it's present
+# rather than vendoring a copy that would drift. Override the location with
+# JUJUTSU_SKILL_PATH.
+setup_jujutsu_skill() {
+    local checkout="${JUJUTSU_SKILL_PATH:-${HOME}/Developer/jujutsu-skill}"
+    local src="${checkout}/jujutsu"
+    local dest="${HOME}/.claude/skills/jujutsu"
+
+    if [ ! -d "$src" ]; then
+        echo "Note: ${src} not found, skipping jujutsu skill link"
+        echo "      clone git@github.com:samsonjs/jujutsu-skill.git into ${checkout} and re-run"
+        return 0
+    fi
+
+    mkdir -p "${HOME}/.claude/skills"
+
+    if [ -L "$dest" ] && [ "$(readlink "$dest")" = "$src" ]; then
+        echo "✓ ${dest} already linked correctly"
+        return 0
+    fi
+
+    if [ -e "$dest" ] || [ -L "$dest" ]; then
+        echo "Backing up existing ${dest} to ~/original-dot-files/"
+        mkdir -p "${HOME}/original-dot-files"
+        mv "$dest" "${HOME}/original-dot-files/jujutsu-skill.$(date +%Y%m%d_%H%M%S)"
+    fi
+
+    ln -s "$src" "$dest"
+    echo "→ Linked ${dest} to ${src}"
+}
+
+setup_jujutsu_skill
+
 # Machine-local overrides: copy the tracked template into place once, then leave
 # it alone. The copies are gitignored (or live outside the repo), so each machine
 # edits its own.
