@@ -4,7 +4,7 @@ This file helps Claude remember important information about your projects and pr
 
 ## Canadian Spelling
 
-Use Canadian spelling in all prose that you author — Notion docs, Linear issues, PR/commit text, code comments. Canadian English: `-our` (behaviour, colour), `-re` (centre), doubled consonants (travelled, modelling), but `-ize` like American (organize, initialize).
+Use Canadian spelling in all prose that you author — issues, docs, PR/commit text, code comments. Canadian English: `-our` (behaviour, colour), `-re` (centre), doubled consonants (travelled, modelling), but `-ize` like American (organize, initialize).
 
 **How to apply:** Default to Canadian spelling when writing. When editing a doc the user has already touched, never revert their spellings back to American — preserve their edits and only fix remaining American spellings to Canadian. This excludes code in which we do adopt American spelling because most APIs are written that way and I don't want it to be confusing.
 
@@ -36,7 +36,7 @@ My config sets `revsets.bookmark-advance-to = "(@ ~ empty()) | (@ & empty())-"` 
   - Do include evidence I asked for (before/after tables, screenshots) and context the code can't convey: a measurement that motivated the change, a constraint, an interaction with other work.
   - Worst case is after a long investigation — resist compressing it into the body. That belongs in the linked issue.
 - **Commit messages and jj change descriptions** can run longer than a PR body, it's a different audience, but the same rule applies about not walking through the diff: what changed and why, plus the one non-obvious gotcha if there is one.
-- **Never invent rationale.** In code comments, commit messages, PR bodies, Linear issues and design docs, state only reasons I gave or that are verifiable from the code. A plausible guess reads as settled fact once written down, and speculative "why" framing inflates scope — casting a deliberate decision as an oversight invites a redesign nobody asked for. If the why matters and isn't known, ask or leave it out: "deliberately excluded" beats a wrong reason, and "cause unknown" beats naming a suspect.
+- **Never invent rationale.** In code comments, commit messages, PR bodies, issues and design docs, state only reasons I gave or that are verifiable from the code. A plausible guess reads as settled fact once written down, and speculative "why" framing inflates scope — casting a deliberate decision as an oversight invites a redesign nobody asked for. If the why matters and isn't known, ask or leave it out: "deliberately excluded" beats a wrong reason, and "cause unknown" beats naming a suspect.
 - My remotes are named `origin` everywhere, on both GitHub and Forgejo, with `upstream` for the project a fork came from. So `git push origin` and remote-tracking bookmarks/branches like `dev@origin` are right by default.
 - When you can use git to reset/revert/checkout to undo changes then prefer that to a bunch of edits. But make sure it's safe before you just blow away changes.
 - Never prefix branch or jj bookmark names with my username (e.g. `samhuri/...`). Use just the topic — `fix-foo`, `add-bar`, etc. This applies even if you see existing branches in the repo following the prefix pattern. You can use other prefixes before a slash, just not my name. So `fix/foo` or `chore/blah` or `feature/add-bar` are all perfectly acceptable too.
