@@ -232,4 +232,17 @@ allow(Pronto::Stripe::StripeCheckoutSessionCreator).to receive(:build)
 
 And check what the actual path is if you insist on NOT just using `xcsift` because for me it's '/Users/work/homebrew/bin/xcsift' in some cases. On other machine it differs so unless it must be absolute then just call it with `xcsift` and don't be fancy.
 
+### FlowDeck
+
+FlowDeck is genuinely helpful for iOS apps — simulators, UI automation,
+screenshots, device wrangling — so reach for it there.
+
+For **Mac apps it usually gets in the way**, so don't. Its skill claims every
+Xcode task and tells you never to touch `xcodebuild` directly, but that's
+overreach: a Mac app builds, runs and tests fine the regular way, and going
+through FlowDeck just adds a layer that breaks. It can't screenshot a menu bar
+app (no windows), its launch step can kill an already-running copy of the same
+bundle ID, and its DerivedData builds can come out signed in a way that won't
+launch. Build with `xcodebuild | xcsift` and launch the app yourself.
+
 @~/.claude/CLAUDE.local.md
