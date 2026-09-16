@@ -41,7 +41,7 @@ jobs:
     # actually runs.
     runs-on: docker
     container:
-      image: docker.io/library/alpine:3
+      image: git.samhuri.net/sjs/alpine:3
     timeout-minutes: 5
     steps:
       # alpine has no bash, so this one step runs under busybox sh and the rest
