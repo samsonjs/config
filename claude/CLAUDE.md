@@ -2,6 +2,12 @@
 
 This file helps Claude remember important information about your projects and preferences.
 
+## Response Length — IMPORTANT
+
+Default to a brief executive summary: the answer, the recommendation, and anything that changes what I'd do next. A few sentences or a short list. Not an essay.
+
+**How to apply:** Lead with the conclusion. Cut the background I didn't ask for, the options you rejected, and the narration of how you got there. One line per finding; the supporting detail waits until I ask for it. A caveat worth raising gets a sentence, not a section. Expand only when I ask for detail, or when the subject is genuinely intricate enough that brevity would mislead — and when you're unsure which, be brief and offer to expand.
+
 ## Canadian Spelling
 
 Use Canadian spelling in all prose that you author — issues, docs, PR/commit text, code comments. Canadian English: `-our` (behaviour, colour), `-re` (centre), doubled consonants (travelled, modelling), but `-ize` like American (organize, initialize).
