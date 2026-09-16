@@ -242,7 +242,14 @@ Xcode task and tells you never to touch `xcodebuild` directly, but that's
 overreach: a Mac app builds, runs and tests fine the regular way, and going
 through FlowDeck just adds a layer that breaks. It can't screenshot a menu bar
 app (no windows), its launch step can kill an already-running copy of the same
-bundle ID, and its DerivedData builds can come out signed in a way that won't
-launch. Build with `xcodebuild | xcsift` and launch the app yourself.
+bundle ID, its DerivedData builds can come out signed in a way that won't
+launch, and `flowdeck run` reports "App Launched Successfully" while merely
+re-activating the instance that's already running, so you end up testing a
+stale build without knowing it (this cost a whole evening on JobsRunner).
+Build with `xcodebuild | xcsift` and launch the app yourself. Use FlowDeck for a
+Mac app only when it demonstrably helps with a specific task, and check
+`ps -o etime` on the process afterwards to be sure you're looking at the build
+you think you are. This applies even when a project's CLAUDE.md says to use
+FlowDeck: that's a default to override, not a mandate.
 
 @~/.claude/CLAUDE.local.md
