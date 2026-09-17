@@ -28,9 +28,9 @@ brew bundle install
 ```
 
 The `Brewfile` contains essential development tools like:
-- CLI tools: gh, jq, ripgrep, terraform, awscli
+- CLI tools: gh, jq, ripgrep, difftastic, terraform, awscli
 - Development environments: rbenv/rv, direnv
-- Utilities: diff-so-fancy, parallel, llm
+- Utilities: parallel, llm
 
 ## Shell Configuration
 
@@ -75,7 +75,8 @@ Notable aliases:
 
 The `gitconfig` contains:
 - Signed commits with SSH keys
-- Enhanced diff output with `diff-so-fancy`
+- Enhanced diff output with `difftastic` (`GIT_EXTERNAL_DIFF` is set in `zshrc`)
+- `git pd` alias (`diff --no-ext-diff`) for a plain unified patch, since difftastic's output can't be parsed or piped
 - Automatic rebase and fast-forward-only pulls
 - Advanced merge and diff algorithms
 - Pre-commit hook that runs `git diff --check`

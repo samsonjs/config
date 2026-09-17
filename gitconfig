@@ -9,7 +9,7 @@
     quotepath = false
     whitespace = trailing-space,space-before-tab
     excludesfile = ~/.gitignore
-    pager = diff-so-fancy | less --tabs=4 -RFX
+    pager = less --tabs=4 -RFX
     attributesfile = ~/.gitattributes
 [transfer]
     fsckobjects = true
@@ -37,6 +37,11 @@
     compactionHeuristic = true
     renameLimit = 5000
     colorMoved = zebra
+[alias]
+    # Escape hatch for scripts and agents: GIT_EXTERNAL_DIFF is exported by zshrc
+    # and inherited by anything launched from a shell, so this bypasses difftastic
+    # to get a patch that can actually be parsed or piped.
+    pd = diff --no-ext-diff
 [advice]
     statusHints = false
     pushNonFastForward = false
@@ -48,8 +53,6 @@
     autosquash = true
     autostash = true
     updateRefs = true
-[interactive]
-    diffFilter = diff-so-fancy --patch
 [credential]
     helper = osxkeychain
 [grep]
