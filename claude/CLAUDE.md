@@ -36,6 +36,17 @@ removes nothing and you carry on with a list you believe is already filtered, so
 changed rather than assuming the loop ran. If you genuinely want bash semantics, write a script
 with `#!/usr/bin/env bash` and run it with `bash`, don't paste bashisms into the shell.
 
+## Check repo state before editing
+
+Before making fresh edits in a repo, check its VCS state. When the working copy isn't empty — there
+are uncommitted changes, or `@` is a described change holding unrelated work — stop and ask how to
+proceed rather than piling new edits on top of someone else's half-finished change.
+
+**How to apply:** run `jj status` (or `git status`) before the first edit. Clean, carry on. Not
+clean, say what's already sitting there and ask whether to start a fresh change off trunk, squash
+into what's there, or work elsewhere. The failure mode is silent: the new work only turns out to be
+tangled up with unrelated changes later, when it's time to split it out and push.
+
 ## jj (jujutsu VCS)
 
 I use jj. Always check before running write commands with git — when `.jj/` exists, git commands will corrupt the repo state. Existence of a `.git/` directory does not imply that it's NOT a jj repo, it's always colocated in my case and never a plain jj repo. The jujutsu skill (my fork, `~/Developer/jujutsu-skill`) carries the full workflow guidance and auto-activates on VCS operations; trust it.
