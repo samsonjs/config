@@ -18,6 +18,24 @@ Use Canadian spelling in all prose that you author — issues, docs, PR/commit t
 
 - Store all one-off scripts, temporary files, and other generated content that shouldn't be committed in a directory called ~/.claude-scratchpad/ so that it stays completely separate from my code repos and doesn't get committed accidentaly or linted. You can create subdirs in there for each project as you see fit.
 
+## Shell is zsh, not bash
+
+My shell is zsh, and **zsh does not word-split unquoted parameter expansions**. A loop that looks
+like it iterates a list runs exactly once with the whole string as one word:
+
+```zsh
+KEEP='alpha beta gamma'
+for k in $KEEP; do ...; done   # ONE iteration, k='alpha beta gamma'
+for f in $(ls); do ...; done   # same trap with command substitution
+```
+
+**How to apply:** don't lean on word splitting. Use a real array (`keep=(alpha beta gamma)`), ask
+for splitting explicitly (`${=KEEP}`), or — best when the list is something you're filtering
+against — write it to a file and use `grep -f file`. The failure is silent: a filter loop quietly
+removes nothing and you carry on with a list you believe is already filtered, so verify the count
+changed rather than assuming the loop ran. If you genuinely want bash semantics, write a script
+with `#!/usr/bin/env bash` and run it with `bash`, don't paste bashisms into the shell.
+
 ## jj (jujutsu VCS)
 
 I use jj. Always check before running write commands with git — when `.jj/` exists, git commands will corrupt the repo state. Existence of a `.git/` directory does not imply that it's NOT a jj repo, it's always colocated in my case and never a plain jj repo. The jujutsu skill (my fork, `~/Developer/jujutsu-skill`) carries the full workflow guidance and auto-activates on VCS operations; trust it.
