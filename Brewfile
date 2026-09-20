@@ -45,3 +45,4 @@ brew 'yt-dlp'
 brew 'zoxide'
 
 cask 'font-fira-code-nerd-font'
+cask 'syncthing-app'
