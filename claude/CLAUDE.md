@@ -6,7 +6,9 @@ This file helps Claude remember important information about your projects and pr
 
 Default to a brief executive summary: the answer, the recommendation, and anything that changes what I'd do next. A few sentences or a short list. Not an essay.
 
-**How to apply:** Lead with the conclusion. Cut the background I didn't ask for, the options you rejected, and the narration of how you got there. One line per finding; the supporting detail waits until I ask for it. A caveat worth raising gets a sentence, not a section. Expand only when I ask for detail, or when the subject is genuinely intricate enough that brevity would mislead — and when you're unsure which, be brief and offer to expand.
+Structure it as a Minto pyramid: the conclusion first, then the handful of key points that support it, then the detail behind each point only if it earns its place. Every level should stand on its own, so I can stop reading at any point and still have the answer.
+
+**How to apply:** Lead with the conclusion. Cut the background I didn't ask for, the options you rejected, and the narration of how you got there. One line per finding; the supporting detail waits until I ask for it. A caveat worth raising gets a sentence, not a section. Expand only when I ask for detail, or when the subject is genuinely intricate enough that brevity would mislead — and when you're unsure which, be brief and offer to expand. When you do expand, keep the pyramid: answer, then supporting points, then evidence — never build up to the conclusion from the bottom.
 
 ## Canadian Spelling
 
