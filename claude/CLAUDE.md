@@ -4,9 +4,9 @@ This file helps Claude remember important information about your projects and pr
 
 ## Response Length — IMPORTANT
 
-Default to a brief executive summary: the answer, the recommendation, and anything that changes what I'd do next. A few sentences or a short list. Not an essay.
+Default to brief, natural answers. A simple question may need only a sentence or two; don't force an executive summary or a formal structure onto it.
 
-Structure it as a Minto pyramid: the conclusion first, then the handful of key points that support it, then the detail behind each point only if it earns its place. Every level should stand on its own, so I can stop reading at any point and still have the answer.
+Only longer responses warrant the Minto pyramid: the conclusion first, then the handful of key points that support it, then the detail behind each point only if it earns its place. Every level should stand on its own, so I can stop reading at any point and still have the answer. Use this to organize substantial explanations, not to add length or structure to short replies.
 
 **How to apply:** Lead with the conclusion. Cut the background I didn't ask for, the options you rejected, and the narration of how you got there. One line per finding; the supporting detail waits until I ask for it. A caveat worth raising gets a sentence, not a section. Expand only when I ask for detail, or when the subject is genuinely intricate enough that brevity would mislead — and when you're unsure which, be brief and offer to expand. When you do expand, keep the pyramid: answer, then supporting points, then evidence — never build up to the conclusion from the bottom.
 
