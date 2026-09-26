@@ -16,12 +16,15 @@ class AppcastTest < Minitest::Test
         </item>
         <item>
           <title>20260924.034700</title>
-          <enclosure url="http://mudge:8787/sereno/Sereno-20260924.034700.zip" sparkle:version="20260924.034700" length="1" type="application/octet-stream"/>
+          <sparkle:version>20260924.034700</sparkle:version>
+          <enclosure url="http://mudge:8787/sereno/Sereno-20260924.034700.zip" length="1" type="application/octet-stream"/>
         </item>
       </channel>
     </rss>
   XML
 
+  # The first item carries its version on the enclosure, the second on the
+  # item, which is how generate_appcast writes it.
   def test_the_newest_full_build_wins_regardless_of_item_order
     release = Bootstrap::Appcast.latest(XML)
     assert_equal "20260924.034700", release.version
