@@ -16,6 +16,8 @@ module Bootstrap
       say("$ #{command.join(" ")}") unless quiet
       options = chdir ? {chdir:} : {}
       raise Error, "failed: #{command.join(" ")}" unless system(*command, **options)
+    rescue Errno::ENOENT
+      raise Error, "#{command.first} is not installed"
     end
 
     # Non-fatal: the caller decides what a failure means.
@@ -30,6 +32,8 @@ module Bootstrap
       raise Error, "failed: #{command.join(" ")}" unless status.success?
 
       out.chomp
+    rescue Errno::ENOENT
+      raise Error, "#{command.first} is not installed"
     end
 
     def exists?(command) = system("command", "-v", command, out: File::NULL, err: File::NULL)

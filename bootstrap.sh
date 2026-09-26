@@ -11,7 +11,7 @@
 #   bash -c "$(curl -fsSL …/bootstrap.sh)" -- --from thetis     # migrate ~/Developer and my apps
 #
 # This stage is the least that gets a stock macOS to a Ruby: the Command Line
-# Tools, Homebrew, git, jj and rv, clones of ~/config and ~/bin over HTTPS
+# Tools, Homebrew, git, jj, rv and tea, clones of ~/config and ~/bin over HTTPS
 # (both public, so no key yet), and the Ruby that bootstrap/ pins. Then it
 # hands over to bootstrap/bootstrap.rb, which does the rest and can be re-run
 # from the checkout any time. macOS only; Linux is a wish, not a plan.
@@ -59,8 +59,10 @@ if ! grep -qsF "$line" "$zprofile"; then
     echo "→ Added brew shellenv to $zprofile"
 fi
 
-echo "== git, jj, rv"
-brew install --quiet git jj rv
+# tea as well: stage two logs in to Forgejo with it before anything else
+# needs a credential, and that comes before the Brewfile is applied.
+echo "== git, jj, rv, tea"
+brew install --quiet git jj rv tea
 
 echo "== ~/config and ~/bin"
 clone() {

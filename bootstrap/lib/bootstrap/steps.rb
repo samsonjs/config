@@ -101,7 +101,7 @@ module Bootstrap
         # One key per Mac, for auth on Forgejo and GitHub and for signing
         # commits; allowed_signers lists every Mac's. Interactive on purpose so
         # it gets a passphrase, which the keychain then remembers.
-        @shell.run("ssh-keygen", "-t", "ed25519", "-C", "#{git_email}@#{hostname}", "-f", key)
+        @shell.run("ssh-keygen", "-t", "ed25519", "-C", "#{ENV.fetch("USER")}@#{hostname}", "-f", key)
       end
       @shell.try("ssh-add", "--apple-use-keychain", key)
 
