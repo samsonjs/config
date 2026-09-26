@@ -47,7 +47,7 @@ NAME="bootstrap-test-$(date +%Y%m%d-%H%M%S)"
 WORK="$(mktemp -d)"
 SSH_KEY="$WORK/id_ed25519"
 ssh-keygen -q -t ed25519 -N "" -f "$SSH_KEY"
-SSH_OPTS=(-i "$SSH_KEY" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR)
+SSH_OPTS=(-i "$SSH_KEY" -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR)
 ip=""
 
 cleanup() {
@@ -74,12 +74,13 @@ done
 [ -n "$ip" ] || { echo "vm.sh: the VM never got an IP" >&2; exit 1; }
 # Tart images come with a known password and no key; seed ours once. The key
 # goes on the command line rather than stdin, which ssh under expect never
-# closes.
+# closes, and the connection is password-only: with enough keys in the
+# agent, ssh burns through sshd's attempt limit before it asks for one.
 seeded=0
 for _ in $(seq 1 12); do
-    if expect >/dev/null <<EXPECT
+    if expect >"$WORK/seed.log" 2>&1 <<EXPECT
 set timeout 30
-spawn ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR admin@$ip "mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo '$(cat "$SSH_KEY.pub")' >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
+spawn ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -o PubkeyAuthentication=no admin@$ip "mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo '$(cat "$SSH_KEY.pub")' >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
 expect {
   "assword:" { send "admin\r"; exp_continue }
   eof { }
@@ -94,7 +95,7 @@ EXPECT
     fi
     sleep 5
 done
-[ "$seeded" -eq 1 ] || { echo "vm.sh: could not seed an ssh key into the VM" >&2; exit 1; }
+[ "$seeded" -eq 1 ] || { echo "vm.sh: could not seed an ssh key into the VM; last attempt:" >&2; cat "$WORK/seed.log" >&2; exit 1; }
 until vm true 2>/dev/null; do sleep 2; done
 echo "✓ $ip"
 
