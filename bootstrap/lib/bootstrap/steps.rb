@@ -7,15 +7,61 @@ require "tmpdir"
 require "uri"
 
 module Bootstrap
-  Options = Data.define(:roles, :from, :developer) do
+  Options = Data.define(:roles, :from, :developer, :skip) do
+    def initialize(roles:, from: nil, developer: File.join(Dir.home, "Developer"), skip: [])
+      super
+    end
+
     def migrating? = !from.nil?
   end
+
+  # One step of a run: its name on the command line, the method that does it,
+  # and the role that wants it (nil for every Mac).
+  Step = Data.define(:name, :method, :role)
 
   # The steps themselves, in the order they run. Each is idempotent: it checks
   # before it acts, and adds to the checklist what only a person can do.
   class Steps
     FEED_BASE = "http://mudge:8787"
     TAILSCALE = "/Applications/Tailscale.app/Contents/MacOS/Tailscale"
+
+    STEPS = [
+      Step.new(name: "roles", method: :record_roles, role: nil),
+      Step.new(name: "dotfiles", method: :init_sh, role: nil),
+      Step.new(name: "zlocal", method: :zlocal, role: nil),
+      Step.new(name: "ssh", method: :ssh, role: nil),
+      Step.new(name: "forgejo", method: :forgejo_login, role: nil),
+      Step.new(name: "brew", method: :brew_bundle, role: nil),
+      Step.new(name: "defaults", method: :macos_defaults, role: nil),
+      Step.new(name: "apps", method: :own_apps, role: nil),
+      Step.new(name: "developer", method: :developer_dir, role: "dev"),
+      Step.new(name: "skills", method: :skills, role: "dev"),
+      Step.new(name: "macapp", method: :macapp_tools, role: "dev"),
+      Step.new(name: "claude", method: :claude_code, role: "dev"),
+      Step.new(name: "xcode", method: :xcode, role: "dev"),
+      Step.new(name: "mudge", method: :mudge, role: "mudge"),
+      Step.new(name: "archivist", method: :archivist, role: "archivist"),
+      Step.new(name: "deriva", method: :launch_deriva, role: nil)
+    ].freeze
+    NAMES = STEPS.map(&:name).freeze
+
+    # The steps a run with these options performs, in order. `--skip` names
+    # steps to leave out, for a run that can't do one of them yet (no Forgejo
+    # token to hand, say) or a test that shouldn't.
+    def self.plan(options)
+      unknown = options.skip - NAMES
+      raise Error, "unknown step#{"s" if unknown.size > 1}: #{unknown.join(", ")} (one of #{NAMES.join(", ")})" unless unknown.empty?
+
+      STEPS.select { wanted?(it, options.roles) && !options.skip.include?(it.name) }
+    end
+
+    def self.wanted?(step, roles)
+      case step.role
+      when nil then true
+      when "mudge" then !Roles.mudge_components(roles).empty?
+      else roles.include?(step.role)
+      end
+    end
 
     attr_reader :checklist
 
@@ -28,26 +74,7 @@ module Bootstrap
     end
 
     def run
-      roles = @options.roles
-      record_roles
-      init_sh
-      zlocal
-      ssh
-      forgejo_login
-      brew_bundle
-      macos_defaults
-      own_apps
-      if roles.include?("dev")
-        developer_dir
-        skills
-        init_sh
-        macapp_tools
-        claude_code
-        xcode
-      end
-      mudge unless Roles.mudge_components(roles).empty?
-      archivist if roles.include?("archivist")
-      launch_deriva
+      Steps.plan(@options).each { send(it.method) }
       @shell.say("\n#{@checklist.render}")
     end
 
@@ -148,7 +175,7 @@ module Bootstrap
       if files.any? { Manifest.mas?(File.read(it)) }
         @shell.pause("Sign in to the App Store (open it and sign in) so mas can install apps.")
       end
-      files.each { @shell.run("brew", "bundle", "install", "--file", it) }
+      files.each { @shell.run("brew", "bundle", "install", "--file", it, stdin: false) }
     end
 
     def macos_defaults
@@ -227,6 +254,8 @@ module Bootstrap
     def skills
       @shell.heading("Skills")
       Manifest.skills(File.read(config("skills"))).each { clone(it.url, it.checkout(developer: @options.developer)) }
+      # init.sh is what links them, and ran before they were cloned.
+      init_sh
     end
 
     def clone(url, checkout)

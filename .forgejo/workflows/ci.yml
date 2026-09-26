@@ -112,7 +112,7 @@ jobs:
           for f in zshrc zsh/functions/* zsh/completions/* zsh/devicectl.sh; do
             check zsh "$f"
           done
-          for f in init.sh bootstrap.sh macos/*.sh; do
+          for f in init.sh bootstrap.sh bootstrap/test/vm.sh macos/*.sh; do
             if head -n 1 "$f" | grep -q zsh; then
               check zsh "$f"
             else

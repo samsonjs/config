@@ -35,6 +35,17 @@ Every step checks before it acts, so re-running is the way to pick up where a pa
 
 `brew bundle` refuses to install a cask over an app that was dragged in by hand; on a Mac like that, adopt the ones already present first: `brew install --cask --adopt acorn bbedit …`.
 
+`--skip forgejo,apps` leaves steps out of a run, for when one can't be done yet; `--help` lists them.
+
+### testing it in a VM
+
+`bootstrap/test/vm.sh` runs the whole thing in a throwaway macOS VM with [tart](https://tart.run) and checks the result: Homebrew, the dotfile links, the SSH key, the roles file, `brew bundle`, the macOS settings, and my apps from mudge's feed when the VM can reach the tailnet. It copies this working copy in, so it tests what's on disk rather than main, with the Brewfiles swapped for tiny ones. It's optional and takes a few minutes (the first run pulls a 33 GB image), which is why CI only syntax-checks and runs the unit tests.
+
+```zsh
+bootstrap/test/vm.sh          # base role, VM deleted afterwards
+bootstrap/test/vm.sh --keep   # leave it running to look around
+```
+
 ## setup by hand
 
 All files in this repo are symlinked to `~/.filename`. Any existing files are backed up to `~/original-dot-files/` before linking so you won't lose anything, though it is up to you to merge the changes if you care.

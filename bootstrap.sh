@@ -61,8 +61,9 @@ fi
 
 # tea as well: stage two logs in to Forgejo with it before anything else
 # needs a credential, and that comes before the Brewfile is applied.
+# No stdin: Homebrew asks whether to proceed whenever it has a terminal.
 echo "== git, jj, rv, tea"
-brew install --quiet git jj rv tea
+brew install --quiet git jj rv tea </dev/null
 
 echo "== ~/config and ~/bin"
 clone() {

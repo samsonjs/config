@@ -12,9 +12,12 @@ module Bootstrap
 
     def heading(title) = puts("\n== #{title}")
 
-    def run(*command, chdir: nil, quiet: false)
+    # `stdin: false` runs the command with no input: Homebrew asks whether
+    # to proceed whenever it has a terminal, and there is nobody to answer.
+    def run(*command, chdir: nil, quiet: false, stdin: true)
       say("$ #{command.join(" ")}") unless quiet
       options = chdir ? {chdir:} : {}
+      options[:in] = File::NULL unless stdin
       raise Error, "failed: #{command.join(" ")}" unless system(*command, **options)
     rescue Errno::ENOENT
       raise Error, "#{command.first} is not installed"
