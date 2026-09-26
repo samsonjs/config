@@ -51,7 +51,7 @@ tangled up with unrelated changes later, when it's time to split it out and push
 
 ## jj (jujutsu VCS)
 
-I use jj. Always check before running write commands with git — when `.jj/` exists, git commands will corrupt the repo state. Existence of a `.git/` directory does not imply that it's NOT a jj repo, it's always colocated in my case and never a plain jj repo. The jujutsu skill (my fork, `~/Developer/jujutsu-skill`) carries the full workflow guidance and auto-activates on VCS operations; trust it.
+I use jj. Always check before running write commands with git — when `.jj/` exists, git commands will corrupt the repo state. Existence of a `.git/` directory does not imply that it's NOT a jj repo, it's always colocated in my case and never a plain jj repo. The jujutsu skill (`~/Developer/jujutsu-skill`, canonical at https://git.samhuri.net/sjs/jujutsu-skill with GitHub as a push mirror) carries the full workflow guidance and auto-activates on VCS operations; trust it.
 
 My config sets `revsets.bookmark-advance-to = "(@ ~ empty()) | (@ & empty())-"` for `jj bookmark advance`, so it lands on `@` normally but `@-` when `@` is an empty change.
 
