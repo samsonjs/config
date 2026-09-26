@@ -153,8 +153,8 @@ module Bootstrap
 
     def macos_defaults
       @shell.heading("macOS settings")
-      @shell.run("zsh", config("macos", "defaults.sh"))
-      @shell.run("zsh", config("macos", "import-defaults.sh"))
+      @shell.run(config("macos", "defaults.sh"))
+      @shell.run(config("macos", "import-defaults.sh"))
       @checklist.add("Log out and back in for the macOS settings to take effect.")
     end
 

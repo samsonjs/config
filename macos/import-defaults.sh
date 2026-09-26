@@ -2,7 +2,7 @@
 # Apply everything exported by export-defaults.sh. Replaces each key wholesale.
 set -euo pipefail
 
-HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+HERE="${0:A:h}"
 
 for file in "$HERE"/shortcuts/*.plist; do
     domain=$(basename "$file" .plist)

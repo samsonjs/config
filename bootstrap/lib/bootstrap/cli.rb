@@ -30,6 +30,9 @@ module Bootstrap
     rescue Error => e
       warn "bootstrap: #{e.message}"
       1
+    rescue Interrupt
+      warn "\nbootstrap: interrupted; run it again to pick up where this left off"
+      130
     end
 
     def self.ask_roles
