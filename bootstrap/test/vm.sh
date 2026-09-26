@@ -18,8 +18,8 @@
 # installs it, and stage two runs with --skip forgejo, since a Forgejo token
 # is the one thing it can't be handed. The Brewfiles are swapped for tiny ones
 # so the run doesn't download every app; what the real ones say is checked by
-# Deriva and by `brew bundle check`, not here. My own apps do install, from
-# mudge's feed, when the VM can reach the tailnet through this Mac.
+# Deriva and by `brew bundle check`, not here. My own apps install from the
+# public feed like on any Mac.
 
 set -euo pipefail
 
@@ -150,11 +150,7 @@ check "ssh key made and in allowed_signers" 'test -s ~/.ssh/id_ed25519.pub && gr
 check "roles recorded"                "test \"\$(paste -sd, - < ~/.config/deriva/roles)\" = \"$ROLES\""
 check "brew bundle applied"           'brew list cowsay && brew list --cask keepingyouawake'
 check "macOS defaults applied"        'test "$(defaults read -g AppleShowAllExtensions)" = 1'
-if vm 'curl -fs --max-time 5 -o /dev/null http://mudge:8787/deriva/appcast.xml' 2>/dev/null; then
-    check "Deriva installed from the feed" 'test -d /Applications/Deriva.app'
-else
-    echo "skip Deriva installed from the feed (mudge not reachable from the VM)"
-fi
+check "Deriva installed from the feed"  'test -d /Applications/Deriva.app'
 case ",$ROLES," in
     *,dev,*)
         check "dev Brewfile applied"      'brew list sl'

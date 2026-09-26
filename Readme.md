@@ -21,7 +21,7 @@ One line in Terminal on the new machine does everything this repo knows how to d
 bash -c "$(curl -fsSL https://git.samhuri.net/sjs/config/raw/branch/main/bootstrap.sh)"
 ```
 
-`bootstrap.sh` installs the Command Line Tools, Homebrew, git, jj and rv, clones this repo and [~/bin](https://git.samhuri.net/sjs/bin) over HTTPS, and hands over to `bootstrap/bootstrap.rb`, which asks which roles the Mac carries and then works through them: `init.sh`, an SSH key (it pauses while you register it), `tea login`, `brew bundle` from the `Brewfile` plus each role's, the macOS settings, my own apps from mudge's feed, and for the dev role Xcodes, the repos in `roles/dev/repos`, the skills in `skills`, macapp-tools and Claude Code. The mudge roles hand off to `mudge.samhuri.net/clients/mac/install.sh`. It ends with a numbered list of what only a person can do (sign-ins, Full Disk Access, keys to paste elsewhere).
+`bootstrap.sh` installs the Command Line Tools, Homebrew, git, jj and rv, clones this repo and [~/bin](https://git.samhuri.net/sjs/bin) over HTTPS, and hands over to `bootstrap/bootstrap.rb`, which asks which roles the Mac carries and then works through them: `init.sh`, an SSH key (it pauses while you register it), `tea login`, `brew bundle` from the `Brewfile` plus each role's, the macOS settings, my own apps from apps.samhuri.net, and for the dev role Xcodes, the repos in `roles/dev/repos`, the skills in `skills`, macapp-tools and Claude Code. The mudge roles hand off to `mudge.samhuri.net/clients/mac/install.sh`. It ends with a numbered list of what only a person can do (sign-ins, Full Disk Access, keys to paste elsewhere).
 
 The roles are `base` (always), `dev`, `ci-runner`, `backup` and `archivist`; `bootstrap.sh -- --list-roles` describes them. The choice is recorded in `~/.config/deriva/roles`, on the machine rather than in this repo, and Deriva reads the same file.
 
@@ -39,7 +39,7 @@ Every step checks before it acts, so re-running is the way to pick up where a pa
 
 ### testing it in a VM
 
-`bootstrap/test/vm.sh` runs the whole thing in a throwaway macOS VM with [tart](https://tart.run) and checks the result: Homebrew, the dotfile links, the SSH key, the roles file, `brew bundle`, the macOS settings, and my apps from mudge's feed when the VM can reach the tailnet. It copies this working copy in, so it tests what's on disk rather than main, with the Brewfiles swapped for tiny ones. It's optional and takes a few minutes (the first run pulls a 33 GB image), which is why CI only syntax-checks and runs the unit tests.
+`bootstrap/test/vm.sh` runs the whole thing in a throwaway macOS VM with [tart](https://tart.run) and checks the result: Homebrew, the dotfile links, the SSH key, the roles file, `brew bundle`, the macOS settings, and my apps from the public feed. It copies this working copy in, so it tests what's on disk rather than main, with the Brewfiles swapped for tiny ones. It's optional and takes a few minutes (the first run pulls a 33 GB image), which is why CI only syntax-checks and runs the unit tests.
 
 ```zsh
 bootstrap/test/vm.sh          # base role, VM deleted afterwards

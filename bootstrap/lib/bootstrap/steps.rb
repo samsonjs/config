@@ -22,7 +22,7 @@ module Bootstrap
   # The steps themselves, in the order they run. Each is idempotent: it checks
   # before it acts, and adds to the checklist what only a person can do.
   class Steps
-    FEED_BASE = "http://mudge:8787"
+    FEED_BASE = "https://apps.samhuri.net"
     TAILSCALE = "/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 
     STEPS = [
@@ -203,8 +203,8 @@ module Bootstrap
     def install_from_feed(app, target)
       xml = fetch(app.appcast_url(feed_base: FEED_BASE))
       unless xml
-        @shell.say("… #{app.name}: mudge's feed is not reachable (Tailscale?)")
-        @checklist.add("Join the tailnet and re-run bootstrap.sh to install #{app.name}.")
+        @shell.say("… #{app.name}: #{FEED_BASE} is not reachable")
+        @checklist.add("Re-run bootstrap.sh once online to install #{app.name}.")
         return
       end
       release = Appcast.latest(xml)
