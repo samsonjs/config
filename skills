@@ -1,0 +1,9 @@
+# Claude Code skills kept in their own repos: the name ~/.claude/skills links
+# it under, the repo, and the path of the skill inside the checkout ("." for
+# the root). init.sh links whichever checkouts are present in ~/Developer;
+# bootstrap.sh clones them for the dev role. Skills that install themselves
+# (FlowDeck, Claude's own synced skills) are not listed here.
+jujutsu                https://git.samhuri.net/sjs/jujutsu-skill.git               jujutsu
+device-hub             https://git.samhuri.net/sjs/device-hub-skill.git            device-hub
+github-attachment-api  https://git.samhuri.net/sjs/github-attachment-api-skill.git github-attachment-api
+claude-code-messaging  https://git.samhuri.net/sjs/claude-code-messaging.git       .

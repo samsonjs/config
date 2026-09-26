@@ -8,6 +8,8 @@ This is a personal dotfiles configuration repository containing shell configurat
 
 ## Setup and Installation
 
+A fresh Mac starts with `bootstrap.sh` (see "setting up a new Mac" in Readme.md): stage one is shell and gets as far as Homebrew, jj, rv and a clone of this repo; stage two is Ruby in `bootstrap/`, run with the Ruby pinned in `bootstrap/.ruby-version`, and is organized around roles (`bootstrap/lib/bootstrap/roles.rb`). Its tests are plain minitest: `ruby -w bootstrap/test/<name>_test.rb`. The manifests it reads are `Brewfile`, `roles/<role>/Brewfile`, `roles/dev/repos`, `skills` and `apps`.
+
 The main setup script is `init.sh`. Run it to symlink configuration files to their proper locations:
 
 ```bash

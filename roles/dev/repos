@@ -1,0 +1,8 @@
+# Repos the dev role clones into ~/Developer, one URL per line. The skills in
+# ../../skills are cloned separately. Edit freely; a migration that rsyncs
+# ~/Developer from another Mac skips this list.
+https://git.samhuri.net/sjs/AutoUpdate.git
+https://git.samhuri.net/sjs/deriva.git
+https://git.samhuri.net/sjs/macapp-tools.git
+https://git.samhuri.net/sjs/mudge.samhuri.net.git
+https://git.samhuri.net/sjs/vortex.git

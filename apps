@@ -1,0 +1,9 @@
+# My own Mac apps, published to mudge's Sparkle feed by macapp-tools. One app
+# name per line; the feed is the name lowercased. bootstrap.sh installs the
+# latest release of each from http://mudge:8787/<feed>/appcast.xml, or copies
+# the bundle from the old Mac when migrating.
+Deriva
+Faro
+ImpRAMta
+Revelado
+Sereno

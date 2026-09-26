@@ -1,0 +1,28 @@
+# The dev role, on top of the shared Brewfile.
+brew 'appium'
+brew 'asc'
+brew 'cloc'
+brew 'gh'
+brew 'go'
+brew 'hyperfine'
+brew 'just'
+brew 'libpq'
+brew 'llm'
+brew 'node'
+brew 'pipx'
+brew 'shellcheck'
+brew 'shfmt'
+brew 'swiftformat'
+brew 'swiftlint'
+brew 'unxip'
+brew 'vips'
+brew 'xcodegen'
+brew 'xcsift'
+
+cask 'sf-symbols'
+cask 'xcodes-app'
+
+mas 'Apple Configurator', id: 1037126344
+mas 'DevCleaner', id: 1388020431
+mas 'Developer', id: 640199958
+mas 'TestFlight', id: 899247664

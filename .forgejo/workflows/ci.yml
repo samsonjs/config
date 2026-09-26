@@ -20,6 +20,8 @@ on:
       - zshrc
       - "zsh/**"
       - init.sh
+      - bootstrap.sh
+      - "bootstrap/**"
       - "macos/**"
       - .forgejo/workflows/ci.yml
   pull_request:
@@ -27,6 +29,8 @@ on:
       - zshrc
       - "zsh/**"
       - init.sh
+      - bootstrap.sh
+      - "bootstrap/**"
       - "macos/**"
       - .forgejo/workflows/ci.yml
 
@@ -46,9 +50,11 @@ jobs:
     steps:
       # alpine has no bash, so this one step runs under busybox sh and the rest
       # get to use bash.
-      - name: Install shells and git
+      # Ruby for bootstrap/: alpine's is recent enough for the syntax, and
+      # its tests only need minitest and rexml.
+      - name: Install shells, git and ruby
         shell: sh
-        run: apk add --no-cache --quiet bash git zsh
+        run: apk add --no-cache --quiet bash git zsh ruby ruby-minitest ruby-rexml
 
       # Forgejo serves uploadpack.allowAnySHA1InWant, so the run's own commit
       # and the base can be fetched directly. Not shallow: the whole repo is a
@@ -106,7 +112,7 @@ jobs:
           for f in zshrc zsh/functions/* zsh/completions/* zsh/devicectl.sh; do
             check zsh "$f"
           done
-          for f in init.sh macos/*.sh; do
+          for f in init.sh bootstrap.sh macos/*.sh; do
             if head -n 1 "$f" | grep -q zsh; then
               check zsh "$f"
             else
@@ -114,6 +120,13 @@ jobs:
             fi
           done
           exit "$failed"
+
+      - name: Test bootstrap/
+        shell: bash
+        run: |
+          for f in bootstrap/test/*_test.rb; do
+            ruby -w "$f"
+          done
 
       # The same rule the pre-commit hook enforces locally: no trailing
       # whitespace or space-before-tab on lines this change adds. Three dots so

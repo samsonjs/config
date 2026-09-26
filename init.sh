@@ -40,7 +40,7 @@ link_config() {
 }
 
 # Files to exclude from symlinking
-EXCLUDE_FILES=("init.sh" "zsh" "Brewfile" "CLAUDE.md")
+EXCLUDE_FILES=("init.sh" "zsh" "Brewfile" "CLAUDE.md" "bootstrap.sh" "skills" "apps")
 
 echo "Creating symlinks from ${CONFIG_PATH}..."
 
@@ -97,39 +97,48 @@ setup_jj_config() {
 
 setup_jj_config
 
-# Symlink the jujutsu skill into ~/.claude/skills/. The skill lives in its own
-# repo (a fork with an upstream remote), so link the checkout when it's present
-# rather than vendoring a copy that would drift. Override the location with
-# JUJUTSU_SKILL_PATH.
-setup_jujutsu_skill() {
-    local checkout="${JUJUTSU_SKILL_PATH:-${HOME}/Developer/jujutsu-skill}"
-    local src="${checkout}/jujutsu"
-    local dest="${HOME}/.claude/skills/jujutsu"
+# Symlink the Claude Code skills listed in ./skills into ~/.claude/skills/.
+# Each lives in its own repo (a fork, or one with GitHub as a mirror), so link
+# the checkout when it's present rather than vendoring a copy that would
+# drift. Missing checkouts are noted, not fatal: bootstrap.sh clones them for
+# the dev role, and other machines don't need them.
+setup_skills() {
+    local list="${CONFIG_PATH}/skills"
+    [ -f "$list" ] || return 0
 
-    if [ ! -d "$src" ]; then
-        echo "Note: ${src} not found, skipping jujutsu skill link"
-        echo "      clone git@github.com:samsonjs/jujutsu-skill.git into ${checkout} and re-run"
-        return 0
-    fi
+    local name url path checkout src dest
+    while read -r name url path; do
+        case "$name" in ""|\#*) continue ;; esac
+        checkout="${HOME}/Developer/$(basename "$url" .git)"
+        src="${checkout}/${path}"
+        [ "$path" = "." ] && src="$checkout"
+        dest="${HOME}/.claude/skills/${name}"
 
-    mkdir -p "${HOME}/.claude/skills"
+        if [ ! -d "$src" ]; then
+            echo "Note: ${src} not found, skipping skill ${name}"
+            echo "      jj git clone --colocate ${url} ${checkout} and re-run"
+            continue
+        fi
 
-    if [ -L "$dest" ] && [ "$(readlink "$dest")" = "$src" ]; then
-        echo "✓ ${dest} already linked correctly"
-        return 0
-    fi
+        mkdir -p "${HOME}/.claude/skills"
 
-    if [ -e "$dest" ] || [ -L "$dest" ]; then
-        echo "Backing up existing ${dest} to ~/original-dot-files/"
-        mkdir -p "${HOME}/original-dot-files"
-        mv "$dest" "${HOME}/original-dot-files/jujutsu-skill.$(date +%Y%m%d_%H%M%S)"
-    fi
+        if [ -L "$dest" ] && [ "$(readlink "$dest")" = "$src" ]; then
+            echo "✓ ${dest} already linked correctly"
+            continue
+        fi
 
-    ln -s "$src" "$dest"
-    echo "→ Linked ${dest} to ${src}"
+        if [ -e "$dest" ] || [ -L "$dest" ]; then
+            echo "Backing up existing ${dest} to ~/original-dot-files/"
+            mkdir -p "${HOME}/original-dot-files"
+            mv "$dest" "${HOME}/original-dot-files/skill-${name}.$(date +%Y%m%d_%H%M%S)"
+        fi
+
+        ln -s "$src" "$dest"
+        echo "→ Linked ${dest} to ${src}"
+    done < "$list"
 }
 
-setup_jujutsu_skill
+setup_skills
 
 # Machine-local overrides: copy the tracked template into place once, then leave
 # it alone. The copies are gitignored (or live outside the repo), so each machine
