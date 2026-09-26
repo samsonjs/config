@@ -1,4 +1,5 @@
 brew 'asc'
+brew 'appium'
 brew 'bat'
 brew 'btop'
 brew 'cloc'
