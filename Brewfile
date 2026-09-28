@@ -89,4 +89,4 @@ mas 'Pages', id: 361309726
 mas 'Paprika Recipe Manager 3', id: 1303222628
 mas 'Parcel', id: 375589283
 mas 'StopTheMadness Pro', id: 6471380298
-mas 'Tailscale', id: 1475387142
+# don't add tailscale, I don't want the app store version
