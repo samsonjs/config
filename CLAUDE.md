@@ -38,6 +38,24 @@ The `Brewfile` contains essential development tools like:
 
 This config is shared across many machines and operating systems. Tool blocks in `zshrc` are guarded with `command_exists` so one file works everywhere; never remove one because a tool isn't installed on the current machine. Machine-local settings belong in `zsh/zlocal`, which is gitignored.
 
+### zsh is NOT bash: unquoted `$var` does not word-split (READ THIS BEFORE WRITING ANY SHELL)
+
+This is the mistake that keeps getting made. In bash, an unquoted `$var` is split on whitespace (and glob-expanded). **In zsh it is not**: `$var` always expands to exactly one word, quoted or not.
+
+```zsh
+files="a.txt b.txt"
+for f in $files; do echo $f; done   # bash: two iterations. zsh: ONE, "a.txt b.txt"
+rm $files                           # bash: removes both. zsh: tries to remove a file named "a.txt b.txt"
+```
+
+Never write bash-style `cmd $flags` or `for x in $list` where the variable holds several space-separated words. It silently passes one argument. Instead:
+
+- Use an array: `files=(a.txt b.txt)`, then `"${files[@]}"` (or just `$files`, which expands the elements in zsh).
+- Or split explicitly: `${=var}` (split on whitespace) or `${(z)var}` (split like the shell parser, respecting quotes).
+- Don't turn on `setopt SH_WORD_SPLIT` to paper over it; it changes behaviour for the whole shell.
+
+Related traps when moving code between bash and zsh: arrays are 1-indexed in zsh, and an unmatched glob is an error (`no matches found`) rather than being passed through literally. Scripts with a `#!/bin/bash` shebang follow bash rules, so check the shebang before applying any of this.
+
 The zsh configuration is modular and located in:
 - Main config: `zshrc`
 - Functions: `zsh/functions/`

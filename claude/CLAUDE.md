@@ -29,11 +29,14 @@ like it iterates a list runs exactly once with the whole string as one word:
 KEEP='alpha beta gamma'
 for k in $KEEP; do ...; done   # ONE iteration, k='alpha beta gamma'
 for f in $(ls); do ...; done   # same trap with command substitution
+J="jj --config x=y"; $J log    # "command not found: jj --config x=y"
 ```
 
 **How to apply:** don't lean on word splitting. Use a real array (`keep=(alpha beta gamma)`), ask
 for splitting explicitly (`${=KEEP}`), or — best when the list is something you're filtering
-against — write it to a file and use `grep -f file`. The failure is silent: a filter loop quietly
+against — write it to a file and use `grep -f file`. To reuse a command with fixed flags, define a
+function (`j() { jj --config x=y "$@"; }`) or an array (`j=(jj --config x=y); $j log`), never a
+string variable. The failure is silent: a filter loop quietly
 removes nothing and you carry on with a list you believe is already filtered, so verify the count
 changed rather than assuming the loop ran. If you genuinely want bash semantics, write a script
 with `#!/usr/bin/env bash` and run it with `bash`, don't paste bashisms into the shell.
