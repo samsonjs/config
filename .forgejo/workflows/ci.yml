@@ -5,8 +5,11 @@
 # Nothing sources the config, so no tools need to exist on the runner and a
 # stock alpine with zsh and bash added is enough.
 #
-# No `uses:` on purpose. Actions get fetched from data.forgejo.org at job start
-# and that has already broken once; shell steps have no such dependency.
+# No `uses:` in the check job on purpose. Actions get fetched from
+# data.forgejo.org at job start and that has already broken once; shell steps
+# have no such dependency. The workflow lint takes its actions by full URL from
+# git.samhuri.net instead, and runs in the ruby image because the actionlint
+# action needs bash, git, curl, tar and xz.
 #
 # Path-filtered and cancel-in-progress because the runner is ours: an editor
 # config change shouldn't occupy it, and neither should a superseded push.
@@ -23,7 +26,7 @@ on:
       - bootstrap.sh
       - "bootstrap/**"
       - "macos/**"
-      - .forgejo/workflows/ci.yml
+      - ".forgejo/**"
   pull_request:
     paths:
       - zshrc
@@ -32,7 +35,7 @@ on:
       - bootstrap.sh
       - "bootstrap/**"
       - "macos/**"
-      - .forgejo/workflows/ci.yml
+      - ".forgejo/**"
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -134,3 +137,15 @@ jobs:
       - name: Check whitespace
         shell: bash
         run: git diff --check "$BASE_SHA...HEAD"
+
+  workflows:
+    name: Lint workflows
+    runs-on: docker
+    container:
+      image: docker.io/library/ruby:4.0
+    timeout-minutes: 5
+    steps:
+      - name: Check out
+        uses: https://git.samhuri.net/sjs/actions/checkout@v1
+      - name: actionlint
+        uses: https://git.samhuri.net/sjs/actions/actionlint@v1
