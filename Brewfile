@@ -1,5 +1,6 @@
 # Every Mac. Role-specific additions live in roles/<role>/Brewfile.
 brew 'bat'
+brew 'actionlint'
 brew 'asc'
 brew 'btop'
 brew 'cloc'
