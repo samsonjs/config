@@ -82,7 +82,6 @@ mas 'Hush', id: 1544743900
 mas 'Hyperduck', id: 6444667067
 mas 'Ice Cubes', id: 6444915884
 mas 'Instapaper', id: 288545208
-mas 'Ivory', id: 6444602274
 mas 'Kagi for Safari', id: 1622835804
 mas 'Marked 2', id: 890031187
 mas 'Noir', id: 1592917505
