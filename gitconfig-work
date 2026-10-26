@@ -1,0 +1,11 @@
+# Work identity, applied to repos under ~/Developer/work by an includeIf in
+# gitconfig-local on Macs that carry both identities. The signing key and SSH
+# keys are held in 1Password, so point ssh at its agent for these repos only;
+# everything else keeps the default agent and ~/.ssh/id_ed25519.
+[user]
+    email = sami@1se.co
+    signingKey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINJvx8yqS3I9n3XD4MrvhnNNZprXRwlZImC4RFNgHb3K
+[gpg "ssh"]
+    program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+[core]
+    sshCommand = ssh -o IdentityAgent=\"$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock\"

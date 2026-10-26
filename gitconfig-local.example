@@ -16,3 +16,10 @@
 # Sign with a dedicated key file instead of ~/.ssh/id_ed25519.
 #[user]
 #    signingKey = ~/.ssh/forgejo
+
+# Both identities on one Mac. Whichever is the default here, the other lives in
+# its own directory; the trailing slash makes the match recursive.
+#[includeIf "gitdir:~/Developer/work/"]
+#    path = ~/config/gitconfig-work
+#[includeIf "gitdir:~/Developer/personal/"]
+#    path = ~/config/gitconfig-personal

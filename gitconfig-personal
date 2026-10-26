@@ -1,0 +1,10 @@
+# Personal identity, applied to repos under ~/Developer/personal by an includeIf
+# in gitconfig-local on a work Mac that also carries personal repos. It undoes the
+# 1Password signer and agent that gitconfig-local sets as that Mac's default.
+[user]
+    email = sami@samhuri.net
+    signingKey = ~/.ssh/id_ed25519
+[gpg "ssh"]
+    program = ssh-keygen
+[core]
+    sshCommand = ssh

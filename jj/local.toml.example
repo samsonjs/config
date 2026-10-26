@@ -17,3 +17,23 @@
 # Sign with a dedicated key file instead of ~/.ssh/id_ed25519.pub.
 #[signing]
 #key = "~/.ssh/forgejo.pub"
+
+# Both identities on one Mac: whichever isn't the default lives in its own
+# directory. Mirrors the includeIf in gitconfig-local. Put the scope in a conf.d
+# file sorted after signing.toml (e.g. work.toml) or that file's key wins.
+#[[--scope]]
+#--when.repositories = ["~/Developer/work"]
+#[--scope.user]
+#email = "someone@example.net"
+#[--scope.signing]
+#key = "ssh-ed25519 AAAA..."
+#backends.ssh.program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+#
+# Or the other way round on a work Mac whose default is the 1Password key:
+#[[--scope]]
+#--when.repositories = ["~/Developer/personal"]
+#[--scope.user]
+#email = "sami@samhuri.net"
+#[--scope.signing]
+#key = "~/.ssh/id_ed25519.pub"
+#backends.ssh.program = "ssh-keygen"
