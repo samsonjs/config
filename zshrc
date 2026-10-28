@@ -92,6 +92,10 @@ if is_interactive && command_exists difft; then
     export GIT_EXTERNAL_DIFF="difft"
 fi
 
+if command_exists brew; then
+    export HOMEBREW_NO_UPGRADE_AUTO_UPDATES_CASKS=1
+fi
+
 if mac; then
     # Don't pollute tar archives with ._ files (Apple double files)
     export COPYFILE_DISABLE=true
