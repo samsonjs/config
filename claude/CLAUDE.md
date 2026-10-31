@@ -74,7 +74,7 @@ My config sets `revsets.bookmark-advance-to = "(@ ~ empty()) | (@ & empty())-"` 
   - No Testing section, no caveats section, no design-tradeoff section, no hedging. Concerns worth raising — a tradeoff, a related bug, a call someone else should make — go in chat or a review comment, not the body. Don't mention passing tests/specs/linters; that's table stakes and the checks show it.
   - Don't open with an inventory of the old state. One plain sentence covers it.
   - A secondary fix riding along gets one sentence, never a paragraph.
-  - Do include evidence I asked for (before/after tables, screenshots) and context the code can't convey: a measurement that motivated the change, a constraint, an interaction with other work.
+  - Do include proof that the change works (see "Proof in pull requests" below) and context the code can't convey: a measurement that motivated the change, a constraint, an interaction with other work.
   - Worst case is after a long investigation — resist compressing it into the body. That belongs in the linked issue.
 - **Commit messages and jj change descriptions** can run longer than a PR body, it's a different audience, but the same rule applies about not walking through the diff: what changed and why, plus the one non-obvious gotcha if there is one.
 - **Never invent rationale.** In code comments, commit messages, PR bodies, issues and design docs, state only reasons I gave or that are verifiable from the code. A plausible guess reads as settled fact once written down, and speculative "why" framing inflates scope — casting a deliberate decision as an oversight invites a redesign nobody asked for. If the why matters and isn't known, ask or leave it out: "deliberately excluded" beats a wrong reason, and "cause unknown" beats naming a suspect.
@@ -82,6 +82,20 @@ My config sets `revsets.bookmark-advance-to = "(@ ~ empty()) | (@ & empty())-"` 
 - When you can use git to reset/revert/checkout to undo changes then prefer that to a bunch of edits. But make sure it's safe before you just blow away changes.
 - Never prefix branch or jj bookmark names with my username (e.g. `samhuri/...`). Use just the topic — `fix-foo`, `add-bar`, etc. This applies even if you see existing branches in the repo following the prefix pattern. You can use other prefixes before a slash, just not my name. So `fix/foo` or `chore/blah` or `feature/add-bar` are all perfectly acceptable too.
 - Merging PRs: rebase the bookmark onto main locally, push it, then merge with fast-forward only (`tea pr merge --style fast-forward-only <n>`). Never use the server-side rebase merge or "update branch by rebase": both rewrite the commits and strip my SSH signatures. Forgejo repos default to fast-forward-only for this reason; squash is fine when a branch needs flattening, since Forgejo signs squash commits itself. GitHub has no fast-forward merge, so there merge a PR by pushing the rebased branch to main. Merged branches should not linger, but the order matters: merge first, then confirm it landed on the server (the PR reports merged, not just closed, and a fetch shows main at the branch head), and only then delete the branch: `jj bookmark delete <name>` followed by `jj git push --deleted` removes it locally and on the remote in one go, no need for tea or the API. Deleting the branch before the merge is confirmed closes the PR unmerged. Never take "merged" on faith, mine included: check.
+
+## Proof in pull requests
+
+A pull request that's ready for review should usually carry proof that the code does what the description claims. It's a judgement call, not a checklist: include what actually helps a reviewer believe the change, and nothing more.
+
+- **Tests are the baseline.** The diff includes a test that fails without the change and passes with it, which TDD gives you for free. That's proof living in the diff, not a Testing section: "all tests pass" still doesn't go in the body.
+- **Anything you can see gets screenshots or a screen recording.** UI, layout, copy, empty and error states. Show before and after side by side when something changed rather than appeared. Use a recording when the behaviour is a flow, a transition or an animation that a still can't capture. Crop to what matters, and capture from the simulator, device or browser the change targets.
+- **Behaviour you can't see gets its output** when that output isn't already in front of the reviewer: a script's trimmed output, a curl response, a before/after table of the numbers. Don't repeat what CI already shows in the checks, like a Terraform plan.
+- **Link an artifact when the proof doesn't fit inline**: an interactive comparison, a chart of benchmark runs, a long log annotated down to the lines that matter. Make sure reviewers can actually open the link.
+- **Where it goes**: in the body, after the two paragraphs, under a short heading like "Before / after" or "Proof". Embed images and videos inline rather than linking out; on GitHub, use the github-attachment-api skill when drag-and-drop isn't available.
+- **Add it when marking the PR ready for review**, not in the initial draft, where it would go stale as the branch changes. A PR that skips the draft stage goes up with its proof already attached, so be very confident in it before doing that.
+- **Capture it from the final code.** Re-shoot after the last change rather than reusing a capture from an earlier iteration.
+- **Use test accounts and example data.** Nothing personal or real in a screenshot, recording or log.
+- **Never contrive proof.** When there's nothing meaningful to show (a pure refactor covered by existing tests, a dependency bump, a docs or config tweak) or no way to capture it, leave it out rather than staging something to fill the slot.
 
 ## Code Comments
 
