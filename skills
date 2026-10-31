@@ -7,3 +7,4 @@ jujutsu                https://git.samhuri.net/sjs/jujutsu-skill.git            
 device-hub             https://git.samhuri.net/sjs/device-hub-skill.git            device-hub
 github-attachment-api  https://git.samhuri.net/sjs/github-attachment-api-skill.git github-attachment-api
 claude-code-messaging  https://git.samhuri.net/sjs/claude-code-messaging.git       .
+forgejo-pr             https://git.samhuri.net/sjs/forgejo-pr-skill.git             forgejo-pr
