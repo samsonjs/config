@@ -14,7 +14,7 @@ module Bootstrap
       parser = OptionParser.new do |o|
         o.banner = "usage: bootstrap.sh [--roles dev,backup] [--from HOST] [--skip forgejo,apps]"
         o.on("--roles LIST", "comma-separated roles (base is implied); asked for if omitted") { roles = it }
-        o.on("--from HOST", "migrate: rsync ~/Developer and my apps from HOST instead of cloning and downloading") { from = it }
+        o.on("--from HOST", "migrate: rsync ~/Developer (with jj's per-repo config) and my apps from HOST instead of cloning and downloading") { from = it }
         o.on("--developer DIR", "where repos go (default #{developer})") { developer = it }
         o.on("--skip LIST", "steps to leave out this run, of: #{Steps::NAMES.join(", ")}") { skip = it.split(",") }
         o.on("--list-roles", "show the roles and exit") do

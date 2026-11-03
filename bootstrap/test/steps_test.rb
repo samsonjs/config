@@ -18,6 +18,26 @@ class StepsTest < Minitest::Test
     assert_includes plan(roles: %w[base archivist]), "archivist"
   end
 
+  class RecordingShell
+    attr_reader :commands
+
+    def initialize = @commands = []
+    def heading(_title) = nil
+    def run(*command, **) = @commands << command
+  end
+
+  def test_migrating_brings_jj_per_repo_config_along_with_the_repos
+    Dir.mktmpdir do |home|
+      shell = RecordingShell.new
+      options = Bootstrap::Options.new(roles: %w[base dev], from: "thetis", developer: File.join(home, "Developer"))
+      Bootstrap::Steps.new(config_root: home, options:, home:, shell:).send(:developer_dir)
+
+      repos = File.join(home, ".config", "jj", "repos")
+      assert_includes shell.commands, ["rsync", "-a", "thetis:.config/jj/repos/", "#{repos}/"]
+      assert File.directory?(repos)
+    end
+  end
+
   def test_skip_leaves_steps_out_and_refuses_unknown_ones
     refute_includes plan(roles: %w[base], skip: %w[forgejo apps]), "forgejo"
     error = assert_raises(Bootstrap::Error) { plan(roles: %w[base], skip: %w[kegerator]) }

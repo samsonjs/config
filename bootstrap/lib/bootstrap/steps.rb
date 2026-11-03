@@ -246,6 +246,11 @@ module Bootstrap
       if @options.migrating?
         # As-is, working copies and all: a clone would lose what isn't pushed.
         @shell.run("rsync", "-a", "--info=progress2", "--exclude", ".DS_Store", "#{@options.from}:Developer/", "#{@options.developer}/")
+        # jj keeps per-repo config here rather than in .jj, keyed by the
+        # config-id that came across with each repo.
+        jj_repos = home(".config", "jj", "repos")
+        FileUtils.mkdir_p(jj_repos)
+        @shell.run("rsync", "-a", "#{@options.from}:.config/jj/repos/", "#{jj_repos}/")
         return
       end
       Manifest.repos(File.read(config("roles", "dev", "repos"))).each { clone(it.url, it.checkout(developer: @options.developer)) }

@@ -30,7 +30,7 @@ Every step checks before it acts, so re-running is the way to pick up where a pa
 ```zsh
 ~/config/bootstrap.sh                    # again, with the recorded roles
 ~/config/bootstrap.sh --roles dev,backup # or a different set
-~/config/bootstrap.sh --from thetis      # migrating: rsync ~/Developer and my apps from the old Mac
+~/config/bootstrap.sh --from thetis      # migrating: rsync ~/Developer, its jj config and my apps from the old Mac
 ```
 
 `brew bundle` refuses to install a cask over an app that was dragged in by hand; on a Mac like that, adopt the ones already present first: `brew install --cask --adopt acorn bbedit …`.
