@@ -347,13 +347,14 @@ module Bootstrap
 
       @shell.run(File.join(checkout, "clients", "mac", "install.sh"), "--components", components.join(","))
 
+      # Every Mac sends the host report, runner or not.
+      token_dir = home("Library", "Application Support", "mudge-report")
+      FileUtils.mkdir_p(token_dir)
+      token = File.join(token_dir, "token")
+      unless File.exist?(token) || @shell.try("bash", "-c", "ssh mudge sudo cat /var/lib/mudge-dashboard/report-token > #{token.shellescape}")
+        @checklist.add("Copy mudge's report token: ssh mudge sudo cat /var/lib/mudge-dashboard/report-token > \"#{token}\"")
+      end
       if components.include?("runner")
-        token_dir = home("Library", "Application Support", "mudge-report")
-        FileUtils.mkdir_p(token_dir)
-        token = File.join(token_dir, "token")
-        unless File.exist?(token) || @shell.try("bash", "-c", "ssh mudge sudo cat /var/lib/mudge-dashboard/report-token > #{token.shellescape}")
-          @checklist.add("Copy mudge's report token: ssh mudge sudo cat /var/lib/mudge-dashboard/report-token > \"#{token}\"")
-        end
         @checklist.add("Register the Actions runner: ~/mudge.samhuri.net/clients/mac/install-runner.sh --token \"$(tea api /user/actions/runners/registration-token | jq -r .token)\"")
       end
       if components.include?("backup")

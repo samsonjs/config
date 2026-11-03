@@ -64,6 +64,42 @@ class StepsTest < Minitest::Test
     end
   end
 
+  # Answers as galiano would, and records what it was asked to try.
+  class MudgeShell < RecordingShell
+    attr_reader :tries
+
+    def initialize
+      super
+      @tries = []
+    end
+
+    def capture(*) = "galiano"
+    def pause(_message) = nil
+
+    def try(*command, **)
+      @tries << command
+      true
+    end
+  end
+
+  # The host report is every Mac's, so a Mac that only backs up needs the
+  # token too: galiano was bootstrapped as backup-only and never sent one.
+  def test_a_mac_that_only_backs_up_still_gets_the_report_token
+    Dir.mktmpdir do |home|
+      shell = MudgeShell.new
+      developer = File.join(home, "Developer")
+      FileUtils.mkdir_p([File.join(home, ".ssh"), File.join(developer, "mudge.samhuri.net", "clients", "mac", "folders.d")])
+      %w[mudge-agent mudge-backup].each do |key|
+        FileUtils.touch(File.join(home, ".ssh", key))
+        File.write(File.join(home, ".ssh", "#{key}.pub"), "ssh-ed25519 AAAA #{key}@galiano\n")
+      end
+      options = Bootstrap::Options.new(roles: %w[base backup], developer:)
+      Bootstrap::Steps.new(config_root: home, options:, home:, shell:).send(:mudge)
+
+      assert shell.tries.any? { it.last.include?("report-token") }
+    end
+  end
+
   def test_skip_leaves_steps_out_and_refuses_unknown_ones
     refute_includes plan(roles: %w[base], skip: %w[forgejo apps]), "forgejo"
     error = assert_raises(Bootstrap::Error) { plan(roles: %w[base], skip: %w[kegerator]) }
