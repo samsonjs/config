@@ -157,8 +157,17 @@ module Bootstrap
       if @shell.capture("tea", "logins", "list").include?("git.samhuri.net")
         @shell.say("✓ tea is logged in to git.samhuri.net")
       else
-        @shell.say("tea will ask for a token: create one at https://git.samhuri.net/user/settings/applications")
-        @shell.run("tea", "login", "add", "--name", "mudge", "--url", "https://git.samhuri.net", "--git-credentials")
+        @shell.say(<<~MSG)
+          Create a token for tea at https://git.samhuri.net/user/settings/applications
+          with read and write on repository, issue, user and organization.
+        MSG
+        token = ""
+        token = @shell.ask_secret("Paste it here (it won't echo):") while token.empty?
+        # In the environment rather than argv, where ps would show it.
+        @shell.run(
+          "tea", "login", "add", "--name", "mudge", "--url", "https://git.samhuri.net", "--git-credentials",
+          env: {"GITEA_SERVER_TOKEN" => token},
+        )
       end
       return unless role?("dev")
 

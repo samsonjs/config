@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "io/console"
 require "open3"
 
 module Bootstrap
@@ -14,11 +15,11 @@ module Bootstrap
 
     # `stdin: false` runs the command with no input: Homebrew asks whether
     # to proceed whenever it has a terminal, and there is nobody to answer.
-    def run(*command, chdir: nil, quiet: false, stdin: true)
+    def run(*command, chdir: nil, quiet: false, stdin: true, env: {})
       say("$ #{command.join(" ")}") unless quiet
       options = chdir ? {chdir:} : {}
       options[:in] = File::NULL unless stdin
-      raise Error, "failed: #{command.join(" ")}" unless system(*command, **options)
+      raise Error, "failed: #{command.join(" ")}" unless system(env, *command, **options)
     rescue Errno::ENOENT
       raise Error, "#{command.first} is not installed"
     end
@@ -51,6 +52,14 @@ module Bootstrap
       tty.print("#{prompt} ")
       tty.flush if tty.respond_to?(:flush)
       tty.gets.to_s.strip
+    end
+
+    def ask_secret(prompt)
+      tty.print("#{prompt} ")
+      tty.flush if tty.respond_to?(:flush)
+      secret = tty.respond_to?(:noecho) ? tty.noecho(&:gets) : tty.gets
+      tty.puts
+      secret.to_s.strip
     end
 
     def pause(message)

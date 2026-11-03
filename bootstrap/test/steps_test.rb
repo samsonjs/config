@@ -19,11 +19,37 @@ class StepsTest < Minitest::Test
   end
 
   class RecordingShell
-    attr_reader :commands
+    attr_reader :commands, :envs
 
-    def initialize = @commands = []
+    def initialize(secret: nil)
+      @commands = []
+      @envs = []
+      @secret = secret
+    end
+
     def heading(_title) = nil
-    def run(*command, **) = @commands << command
+    def say(_message) = nil
+    def capture(*) = ""
+    def try(*) = true
+    def ask_secret(_prompt) = @secret
+
+    def run(*command, env: {}, **)
+      @commands << command
+      @envs << env
+    end
+  end
+
+  def test_forgejo_login_hands_tea_the_pasted_token_outside_argv
+    Dir.mktmpdir do |home|
+      shell = RecordingShell.new(secret: "fat-mike-token")
+      options = Bootstrap::Options.new(roles: %w[base])
+      Bootstrap::Steps.new(config_root: home, options:, home:, shell:).send(:forgejo_login)
+
+      login = shell.commands.index { it.first(3) == %w[tea login add] }
+      refute_nil login
+      assert_equal({"GITEA_SERVER_TOKEN" => "fat-mike-token"}, shell.envs[login])
+      refute shell.commands[login].any? { it.include?("fat-mike-token") }
+    end
   end
 
   def test_migrating_brings_jj_per_repo_config_along_with_the_repos
