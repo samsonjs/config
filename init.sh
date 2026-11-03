@@ -97,6 +97,30 @@ setup_jj_config() {
 
 setup_jj_config
 
+# Symlink ghostty/config.ghostty to where Ghostty looks for it on macOS.
+setup_ghostty_config() {
+    local src="${CONFIG_PATH}/ghostty/config.ghostty"
+    local dest="${HOME}/Library/Application Support/com.mitchellh.ghostty/config.ghostty"
+
+    if [ -L "$dest" ] && [ "$(readlink "$dest")" = "$src" ]; then
+        echo "✓ ${dest} already linked correctly"
+        return 0
+    fi
+
+    mkdir -p "$(dirname "$dest")"
+
+    if [ -e "$dest" ] || [ -L "$dest" ]; then
+        echo "Backing up existing ${dest} to ~/original-dot-files/"
+        mkdir -p "${HOME}/original-dot-files"
+        mv "$dest" "${HOME}/original-dot-files/config.ghostty.$(date +%Y%m%d_%H%M%S)"
+    fi
+
+    ln -s "$src" "$dest"
+    echo "→ Linked ${dest} to ${src}"
+}
+
+setup_ghostty_config
+
 # Symlink the Claude Code skills listed in ./skills into ~/.claude/skills/.
 # Each lives in its own repo (a fork, or one with GitHub as a mirror), so link
 # the checkout when it's present rather than vendoring a copy that would
