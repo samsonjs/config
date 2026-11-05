@@ -52,6 +52,11 @@ clean, say what's already sitting there and ask whether to start a fresh change 
 into what's there, or work elsewhere. The failure mode is silent: the new work only turns out to be
 tangled up with unrelated changes later, when it's time to split it out and push.
 
+Someone else (me, or another agent) may be mid-edit in that checkout, and every jj command, even a
+read-only one, snapshots the working copy, so two of us running jj at once can race. "My change
+won't conflict" is not permission. If the repo isn't clearly idle, use a separate jj workspace from
+the first command, or stop and ask.
+
 ## jj (jujutsu VCS)
 
 I use jj. Always check before running write commands with git — when `.jj/` exists, git commands will corrupt the repo state. Existence of a `.git/` directory does not imply that it's NOT a jj repo, it's always colocated in my case and never a plain jj repo. The jujutsu skill (`~/Developer/jujutsu-skill`, canonical at https://git.samhuri.net/sjs/jujutsu-skill with GitHub as a push mirror) carries the full workflow guidance and auto-activates on VCS operations; trust it.
