@@ -1,15 +1,3 @@
-# Claude Code Memory
-
-This file helps Claude remember important information about your projects and preferences.
-
-## Response Length — IMPORTANT
-
-Default to brief, natural answers. A simple question may need only a sentence or two; don't force an executive summary or a formal structure onto it.
-
-Only longer responses warrant the Minto pyramid: the conclusion first, then the handful of key points that support it, then the detail behind each point only if it earns its place. Every level should stand on its own, so I can stop reading at any point and still have the answer. Use this to organize substantial explanations, not to add length or structure to short replies.
-
-**How to apply:** Lead with the conclusion. Cut the background I didn't ask for, the options you rejected, and the narration of how you got there. One line per finding; the supporting detail waits until I ask for it. A caveat worth raising gets a sentence, not a section. Expand only when I ask for detail, or when the subject is genuinely intricate enough that brevity would mislead — and when you're unsure which, be brief and offer to expand. When you do expand, keep the pyramid: answer, then supporting points, then evidence — never build up to the conclusion from the bottom.
-
 ## Canadian Spelling
 
 Use Canadian spelling in all prose that you author — issues, docs, PR/commit text, code comments. Canadian English: `-our` (behaviour, colour), `-re` (centre), doubled consonants (travelled, modelling), but `-ize` like American (organize, initialize).
@@ -74,11 +62,11 @@ My config sets `revsets.bookmark-advance-to = "(@ ~ empty()) | (@ & empty())-"` 
 - You should always be able to use `gh` to interact with GitHub.
 - **Reading diffs**: `GIT_EXTERNAL_DIFF=difft` is exported by my zshrc and inherited by anything launched from a shell, so plain `git diff` hands you difftastic's side-by-side output, which you can't parse or pipe. Use `git pd` (aliased to `diff --no-ext-diff`) whenever you need a real unified patch. Same for jj: pass `--git` to `jj diff`/`jj show`/`jj log -p`. Don't change either default to suit yourself — the colourful output is for me.
 - When committing files with git, be precise about what gets committed. In a mature codebase, don't commit everything in the working tree without careful consideration. Always check git status and git diff before committing to ensure only the intended changes are included. For newer projects it's probably ok to be looser here.
-- **PR descriptions**: two short paragraphs — what was wrong, what it does now. Draft it, then delete every section that isn't one of those two. Write as if telling a coworker in Slack; reading time is the cost, and a small change described at length reads as overcomplicating it.
+- **PR descriptions**: roughly 2-3 short paragraphs — what was wrong, what it does now, and ideas explored and rejected during development so reviewers don't go down the same rabbit holes. Draft it, then delete every section that isn't one of those two. Write as if telling a coworker in Slack; reading time is the cost, and a small change described at length reads as overcomplicating it.
   - Never restate the diff. No file counts, no "two variable changes", no enumerating what changed, no method names or file-by-file mechanics. The reader opens the diff for *how*.
   - No Testing section, no caveats section, no design-tradeoff section, no hedging. Concerns worth raising — a tradeoff, a related bug, a call someone else should make — go in chat or a review comment, not the body. Don't mention passing tests/specs/linters; that's table stakes and the checks show it.
   - Don't open with an inventory of the old state. One plain sentence covers it.
-  - A secondary fix riding along gets one sentence, never a paragraph.
+  - A secondary fix riding along gets one or two sentences at most.
   - Do include proof that the change works (see "Proof in pull requests" below) and context the code can't convey: a measurement that motivated the change, a constraint, an interaction with other work.
   - Worst case is after a long investigation — resist compressing it into the body. That belongs in the linked issue.
 - **Commit messages and jj change descriptions** can run longer than a PR body, it's a different audience, but the same rule applies about not walking through the diff: what changed and why, plus the one non-obvious gotcha if there is one.
