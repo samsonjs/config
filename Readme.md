@@ -2,7 +2,7 @@
 
 These are my personal *nix config files, hand-crafted since around 2004 when I started by pilfering everything I could find on mailing lists and blogs. They work great on both Linux and macOS, with more server-ish stuff on the Linux side and desktop-ish stuff on the macOS side.
 
-After zsh (big time zsh hipster) this is the first thing I set up in my shell environment on a new machine, along with [~/bin](https://github.com/samsonjs/bin).
+After zsh (big time zsh hipster) this is the first thing I set up in my shell environment on a new machine, along with [~/bin](https://git.samhuri.net/sjs/bin).
 
 ## what've we got here?
 
@@ -95,9 +95,9 @@ These short aliases make git really easy to use in your shell:
 - `stp` - `git stash pop`
 
 **Custom scripts:**
-See [~/bin](https://github.com/samsonjs/bin) for these ones.
-- `rmb` - [`git remove-merged-branches`](https://github.com/samsonjs/bin/blob/main/git-remove-merged-branches) (custom command)
-- `gup` - [`git update`](https://github.com/samsonjs/bin/blob/main/git-update) (custom command)
+See [~/bin](https://git.samhuri.net/sjs/bin) for these ones.
+- `rmb` - [`git remove-merged-branches`](https://git.samhuri.net/sjs/bin/src/branch/main/git-remove-merged-branches) (custom command)
+- `gup` - [`git update`](https://git.samhuri.net/sjs/bin/src/branch/main/git-update) (custom command)
 
 ## other aliases
 

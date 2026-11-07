@@ -11,7 +11,7 @@
 ;;          Sami Samhuri <sami.samhuri@gmail.com>
 ;; 
 ;; Latest version is available on github:
-;;     http://github.com/samsonjs/mojo.el
+;;     https://git.samhuri.net/sjs/mojo.el
 ;; 
 ;; This file is not part of GNU Emacs.
 ;; 
@@ -42,7 +42,7 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
 ;;  1. Put json.el and mojo.el somewhere in your load-path.
 ;;     (Use M-x show-variable RET load-path to see what your load path is.)
 ;; 
-;;       => http://github.com/samsonjs/mojo.el       -- mojo.el and json.el
+;;       => https://git.samhuri.net/sjs/mojo.el       -- mojo.el and json.el
 ;;       => http://edward.oconnor.cx/2006/03/json.el -- official json.el
 ;;  
 ;;  2. Add this to your Emacs init file: (require 'mojo)
