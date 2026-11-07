@@ -72,10 +72,17 @@ clean, say what's already sitting there and ask whether to start a fresh change 
 into what's there, or work elsewhere. The failure mode is silent: the new work only turns out to be
 tangled up with unrelated changes later, when it's time to split it out and push.
 
-Someone else (me, or another agent) may be mid-edit in that checkout, and every jj command, even a
-read-only one, snapshots the working copy, so two of us running jj at once can race. "My change
-won't conflict" is not permission. If the repo isn't clearly idle, use a separate jj workspace from
-the first command, or stop and ask.
+Someone else may be mid-edit in that checkout: me, another Claude session, or a subagent. Every jj
+command, even a read-only one, snapshots the working copy, so two of us running jj at once can race,
+and one party's `jj restore`, `jj new` or `jj abandon` silently wipes the other's uncommitted edits.
+"My change won't conflict" is not permission. If the repo isn't clearly idle, use a separate jj
+workspace from the first command, or stop and ask.
+
+**Every agent gets its own workspace, never shared.** The main session is an agent too, and so is
+each subagent it spawns: one workspace per agent, no exceptions. The main session doesn't edit inside
+a subagent's workspace, and no subagent uses the main session's or another subagent's. Follow-up work
+on an existing branch goes in a fresh workspace off its bookmark, not in one an agent is still using.
+A subagent's brief should tell it to create its own with `jj workspace add`.
 
 ## jj (jujutsu VCS)
 
