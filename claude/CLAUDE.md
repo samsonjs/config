@@ -23,6 +23,15 @@ what you start are part of completing the task.
   processes and verify they exited. Check identity before signalling a saved PID, since PIDs
   can be reused. Never use blanket `pkill` or `killall` by executable name: another session may
   own a matching process.
+- **Shut down the simulators you boot, and delete the ones you create.** A booted iOS simulator
+  runs a full copy of the OS (~300 processes, several GB) and nothing stops it until someone does.
+  Whenever you boot one, `xcrun simctl shutdown` it when the task is finished or you no longer
+  need it, not at the end of the session. If you created a simulator for the task (`simctl
+  create`, a per-task name like `foo-proof`), `xcrun simctl delete` it too. Note the UDID of each
+  one you boot or create when you do it, because later you can't tell from `simctl list` which
+  were yours. Only touch ones you booted yourself: `xcodebuild` and other sessions boot devices
+  too, and one that was already running when you started belongs to someone else. Say in your
+  final message which simulators you shut down or deleted and which you left running.
 - **Keep captures narrow and watch their cost.** Filter device/system logs at the source to the
   process or subsystem needed; avoid an unbounded whole-device capture for one app's test.
   Cap or rotate output and check memory, CPU and file growth during longer runs. Stop your own
