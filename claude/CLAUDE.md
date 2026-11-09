@@ -291,7 +291,8 @@ allow(Pronto::Stripe::StripeCheckoutSessionCreator).to receive(:build)
 
 ## Development Practices
 
-- Before pushing changes, you should most likely run the full test suite and all linting to be sure nothing broke. And always update changelogs when they exist.
+- Before pushing changes, you should most likely run the full test suite and all linting to be sure nothing broke.
+- Changelogs are for user-facing changes. Update one when a change is user-facing, and leave CI, tooling and other internal work out of it.
 - Exception for my Forgejo repos: when a push will trigger CI that runs the same tests and lint, just push and let CI do it. Running them locally, pushing, and then watching CI run them again is redundant — it's all the same machines. Push first, then check the CI result once. This applies to rebases and routine changes; use your judgment and still run things locally when you have a specific reason to (debugging a failure, a change CI doesn't cover, or when I ask).
 - **Always follow Test-Driven Development (TDD)**: Write tests first, watch them fail, then implement code to make them pass. This ensures 100% confidence in the implementation.
 - When writing changelogs, I don't want to link to keepachangelog.com.
