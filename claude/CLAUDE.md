@@ -1,3 +1,15 @@
+## Skills with my preferences
+
+Load the matching skill before starting the work it covers, every time:
+
+- `ruby-style`: writing or reviewing Ruby, RSpec, Rakefiles.
+- `swift-style`: writing or reviewing Swift.
+- `xcode-builds`: building, running or testing anything with Xcode, including FlowDeck.
+- `pull-requests`: commit messages, PR bodies, proof, changelogs, pushing and merging.
+- `shared-machine`: starting background processes, log captures, simulators or heavy builds.
+
+In Swift, never use `try?` to silence cancellation.
+
 ## Canadian Spelling
 
 Use Canadian spelling in all prose that you author — issues, docs, PR/commit text, code comments. Canadian English: `-our` (behaviour, colour), `-re` (centre), doubled consonants (travelled, modelling), but `-ize` like American (organize, initialize).
@@ -8,46 +20,13 @@ Use Canadian spelling in all prose that you author — issues, docs, PR/commit t
 
 - Store all one-off scripts, temporary files, and other generated content that shouldn't be committed in a directory called ~/.claude-scratchpad/ so that it stays completely separate from my code repos and doesn't get committed accidentaly or linted. You can create subdirs in there for each project as you see fit.
 
-## Background processes and shared-machine resources
+## Shared machine
 
-This is my working computer, shared with other sessions. Keeping it responsive and cleaning up
-what you start are part of completing the task.
+This is my working computer, shared with other sessions. Clean up what you start.
 
-- **Bound temporary diagnostics before starting them.** Log captures, profilers, watchers and
-  load generators need a finite runtime and an output-size limit. Prefer a supervised foreground
-  process. `nohup`, `disown` and `&` are not lifecycle management: a detached diagnostic must have
-  an independent deadline that still stops it if the launching shell or agent disappears.
-- **Own the processes you start.** Record their PID or dedicated process group, start time,
-  command, purpose and output paths immediately. Arrange cleanup on success, failure and
-  cancellation, including child processes. Before declaring the task finished, stop temporary
-  processes and verify they exited. Check identity before signalling a saved PID, since PIDs
-  can be reused. Never use blanket `pkill` or `killall` by executable name: another session may
-  own a matching process.
-- **Shut down the simulators you boot, and delete the ones you create.** A booted iOS simulator
-  runs a full copy of the OS (~300 processes, several GB) and nothing stops it until someone does.
-  Whenever you boot one, `xcrun simctl shutdown` it when the task is finished or you no longer
-  need it, not at the end of the session. If you created a simulator for the task (`simctl
-  create`, a per-task name like `foo-proof`), `xcrun simctl delete` it too. Note the UDID of each
-  one you boot or create when you do it, because later you can't tell from `simctl list` which
-  were yours. Only touch ones you booted yourself: `xcodebuild` and other sessions boot devices
-  too, and one that was already running when you started belongs to someone else. Say in your
-  final message which simulators you shut down or deleted and which you left running.
-- **Keep captures narrow and watch their cost.** Filter device/system logs at the source to the
-  process or subsystem needed; avoid an unbounded whole-device capture for one app's test.
-  Cap or rotate output and check memory, CPU and file growth during longer runs. Stop your own
-  diagnostic when its budget is exceeded or its purpose is complete. Writing logs to disk does
-  not prove the logger's memory use is bounded.
-- **Ask before artificial stress.** Reproducing a flaky test does not authorize CPU burners
-  such as `yes`, memory pressure generators or disk/network saturation. Agree on concurrency,
-  resource limits and a short duration first. One CPU burner per core can still saturate the
-  entire machine. Apply the same owned-process cleanup and independent deadline.
-- **Budget parallel heavy work across sessions.** Do not assume all cores, RAM, simulators or
-  build workers are yours. Coordinate or serialize expensive builds/tests when the machine is
-  under pressure; do not add load to an already saturated machine without agreement.
-- **Persistent work needs an explicit handoff.** Leave a service, monitor or capture running
-  after the task only when I requested that continuing work, or another named session accepts
-  ownership within the authorized task. Record its owner, stop mechanism and agreed lifetime;
-  a finite observation window must stop automatically. Report what remains running and why.
+- Give temporary diagnostics a finite runtime and an output limit. Stop your own processes and verify they exited. Never use blanket `pkill` or `killall` by executable name.
+- Shut down the simulators you boot and delete the ones you create. Only touch your own, and say which in your final message.
+- Ask before artificial stress.
 
 ## Shell is zsh, not bash
 
@@ -99,180 +78,19 @@ I use jj. Always check before running write commands with git — when `.jj/` ex
 
 My config sets `revsets.bookmark-advance-to = "(@ ~ empty()) | (@ & empty())-"` for `jj bookmark advance`, so it lands on `@` normally but `@-` when `@` is an empty change.
 
-## Forgejo & tea
-
-- `tea pr merge --style` accepts every merge style the Forgejo API does, not just the ones its help text lists. In particular `--style fast-forward-only` works for repos that only allow fast-forward merges. Don't fall back to calling the API with curl.
-
 ## Git & GitHub
 
-- I prefer jj and am usually using it, so the git advice below mostly applies through jj's git interop (see the jj section above). Only use git directly when the repo genuinely has no `.jj/`.
 - Many of my repos have moved from GitHub to my personal Forgejo instance at git.samhuri.net. Check the remote URL before assuming GitHub; for Forgejo repos use `tea` instead of `gh`.
-- You should always be able to use `gh` to interact with GitHub.
 - **Reading diffs**: `GIT_EXTERNAL_DIFF=difft` is exported by my zshrc and inherited by anything launched from a shell, so plain `git diff` hands you difftastic's side-by-side output, which you can't parse or pipe. Use `git pd` (aliased to `diff --no-ext-diff`) whenever you need a real unified patch. Same for jj: pass `--git` to `jj diff`/`jj show`/`jj log -p`. Don't change either default to suit yourself — the colourful output is for me.
-- When committing files with git, be precise about what gets committed. In a mature codebase, don't commit everything in the working tree without careful consideration. Always check git status and git diff before committing to ensure only the intended changes are included. For newer projects it's probably ok to be looser here.
-- **PR descriptions**: roughly 2-3 short paragraphs — what was wrong, what it does now, and ideas explored and rejected during development so reviewers don't go down the same rabbit holes. Draft it, then delete every section that isn't one of those two. Write as if telling a coworker in Slack; reading time is the cost, and a small change described at length reads as overcomplicating it.
-  - Never restate the diff. No file counts, no "two variable changes", no enumerating what changed, no method names or file-by-file mechanics. The reader opens the diff for *how*.
-  - No Testing section, no caveats section, no design-tradeoff section, no hedging. Concerns worth raising — a tradeoff, a related bug, a call someone else should make — go in chat or a review comment, not the body. Don't mention passing tests/specs/linters; that's table stakes and the checks show it.
-  - Don't open with an inventory of the old state. One plain sentence covers it.
-  - A secondary fix riding along gets one or two sentences at most.
-  - Include proof that the change works when it's worthwhile (see "Proof in pull requests" below), and context the code can't convey: a measurement that motivated the change, a constraint, an interaction with other work.
-  - Worst case is after a long investigation — resist compressing it into the body. That belongs in the linked issue.
-- **Commit messages and jj change descriptions** can run longer than a PR body, it's a different audience, but the same rule applies about not walking through the diff: what changed and why, plus the one non-obvious gotcha if there is one.
 - **Never invent rationale.** In code comments, commit messages, PR bodies, issues and design docs, state only reasons I gave or that are verifiable from the code. A plausible guess reads as settled fact once written down, and speculative "why" framing inflates scope — casting a deliberate decision as an oversight invites a redesign nobody asked for. If the why matters and isn't known, ask or leave it out: "deliberately excluded" beats a wrong reason, and "cause unknown" beats naming a suspect.
 - My remotes are named `origin` everywhere, on both GitHub and Forgejo, with `upstream` for the project a fork came from. So `git push origin` and remote-tracking bookmarks/branches like `dev@origin` are right by default.
-- When you can use git to reset/revert/checkout to undo changes then prefer that to a bunch of edits. But make sure it's safe before you just blow away changes.
 - Never prefix branch or jj bookmark names with my username (e.g. `samhuri/...`). Use just the topic — `fix-foo`, `add-bar`, etc. This applies even if you see existing branches in the repo following the prefix pattern. You can use other prefixes before a slash, just not my name. So `fix/foo` or `chore/blah` or `feature/add-bar` are all perfectly acceptable too.
-- Merging PRs: rebase the bookmark onto main locally, push it, then merge with fast-forward only (`tea pr merge --style fast-forward-only <n>`). Never use the server-side rebase merge or "update branch by rebase": both rewrite the commits and strip my SSH signatures. Forgejo repos default to fast-forward-only for this reason; squash is fine when a branch needs flattening, since Forgejo signs squash commits itself. GitHub has no fast-forward merge, so there merge a PR by pushing the rebased branch to main. Merged branches should not linger, but the order matters: merge first, then confirm it landed on the server (the PR reports merged, not just closed, and a fetch shows main at the branch head), and only then delete the branch: `jj bookmark delete <name>` followed by `jj git push --deleted` removes it locally and on the remote in one go, no need for tea or the API. Deleting the branch before the merge is confirmed closes the PR unmerged. Never take "merged" on faith, mine included: check.
-
-## Proof in pull requests
-
-Proof is nice to have, not a requirement. When it's cheap to get and a reviewer would actually find it convincing, include it; when it's awkward, thin or beside the point, skip it and say so rather than stretching for something. It's a judgement call, not a checklist: include what helps a reviewer believe the change, and nothing more. A PR without proof is fine, and so is a draft that has none yet.
-
-- **Tests are the baseline.** The diff includes a test that fails without the change and passes with it, which TDD gives you for free. That's proof living in the diff, not a Testing section: "all tests pass" still doesn't go in the body.
-- **Anything you can see gets screenshots or a screen recording.** UI, layout, copy, empty and error states. Show before and after side by side when something changed rather than appeared. Use a recording when the behaviour is a flow, a transition or an animation that a still can't capture. Crop to what matters, and capture from the simulator, device or browser the change targets.
-- **Behaviour you can't see gets its output** when that output isn't already in front of the reviewer: a script's trimmed output, a curl response, a before/after table of the numbers. Don't repeat what CI already shows in the checks, like a Terraform plan.
-- **Link an artifact when the proof doesn't fit inline**: an interactive comparison, a chart of benchmark runs, a long log annotated down to the lines that matter. Make sure reviewers can actually open the link.
-- **Where it goes**: in the body, after the two paragraphs, under a short heading like "Before / after" or "Proof". Embed images and videos inline rather than linking out; on GitHub, use the github-attachment-api skill when drag-and-drop isn't available.
-- **Add it when marking the PR ready for review**, not in the initial draft, where it would go stale as the branch changes. A PR that skips the draft stage goes up with its proof already attached, so be very confident in it before doing that.
-- **Capture it from the final code.** Re-shoot after the last change rather than reusing a capture from an earlier iteration.
-- **Use test accounts and example data.** Nothing personal or real in a screenshot, recording or log.
-- **Never contrive proof.** When there's nothing meaningful to show (a pure refactor covered by existing tests, a dependency bump, a docs or config tweak) or no way to capture it, leave it out rather than staging something to fill the slot.
 
 ## Code Comments
 
 **THIS NOTE ABOUT CODE COMMENTS IS VERY IMPORTANT**
 
 Add code comments sparingly. Focus on why something is done, especially for complex logic, rather than what is done. Only add high-value comments if necessary for clarity or if requested by the user. Do not edit comments that are seperate from the code you are changing. *NEVER* talk to the user or describe your changes through comments. Documentation comments (YARD, Rubydoc, etc.) are excluded from this — those are still expected and good.
-
-## Ruby Style Guide
-
-Don't try to maintain compatibility with older Ruby versions unless absolutely necessary, or supported by the project because it's a library/gem and supports older versions of Ruby. However Ruby 2.x and older are all EOL and unsupported so use all the modern Ruby 3.4+ features unless otherwise instructed.
-
-- Assume Ruby >= 3.4 everywhere — use modern features and syntax freely (`it` block param, `Data.define`, pattern matching, etc.). Don't pin to an exact version; just target 3.4-or-greater all the time.
-- If you hit an old macOS system Ruby (e.g. 2.6), that's the wrong interpreter, not a reason to write older code — try `rbenv` (or the project's version manager) to get onto 3.4+ first.
-- Use `it` as an implicit single block param for simple cases:
-  ```ruby
-  things.select { it.answer == 42 }
-  ```
-- Use Data.define in Ruby instead of hashes in almost all cases, especially with blocks to define methods. And prefer using x? instead of is_x:
-  ```ruby
-  # Good
-  Person = Data.define(:name, :email) do
-    def active?
-      disabled_at.nil?
-    end
-  end
-
-  # Avoid
-  user = { name: "John", email: "john@example.com" }
-  def is_active(user)
-    !user[:disabled_at]
-  end
-  ```
-- Multi-line blocks use do/end instead of {curly braces}:
-  ```ruby
-  # Good
-  accounts.each do |account|
-    NotificationSender.new.send_notification(to: account)
-    account.update_last_seen
-  end
-
-  # Avoid
-  accounts.each { |account|
-    NotificationSender.new.send_notification(to: account)
-    account.update_last_seen
-  }
-  ```
-- Prefer using Ruby's named keyword parameters on methods. Similar to modern JavaScript, when named params match the value, then the value can be ommitted:
-  ```ruby
-  # Good
-  def create_account(name:, email:, role: 'general')
-    Account.new(name:, email:, role:)
-  end
-
-  create_account(name: "John", email: "john@example.com")
-
-  # Avoid passing redundant param values
-  def create_account(name:, email:, role: 'general')
-    Account.new(name: name, email: email, role: role)
-  end
-
-  # Avoid positional params in 99% of cases
-  def create_account(name, email, role = 'general')
-    Account.new(name, email, role)
-  end
-
-  create_account("John", "john@example.com")
-  ```
-- In RSpec tests, use `before` to create resources that are not referenced in any actual specs, instead of `let!`
-- In RSpec, take advantage of defining a subject like `subject { described_class.new(app_data_publisher:) }` at the top and then overriding its dependencies using something like `let(:app_data_publisher)` in specific contexts below that. Dynamic scope is dope.
-- Never explicitly stub methods on created objects in RSpec tests. Instead, pass the stubbed values directly when creating the object:
-  ```ruby
-  # Good - pass stubbed values directly
-  let(:subscription) do
-    create(:subscription, :ios, :paid, :pro, revenue_amount: 9.99, revenue_currency: 'USD', trial?: false)
-  end
-
-  # Avoid - explicit stubbing with allow()
-  let(:subscription) { create(:subscription, :ios, :paid, :pro) }
-  before do
-    allow(subscription).to receive(:revenue_amount).and_return(9.99)
-    allow(subscription).to receive(:revenue_currency).and_return('USD')
-    allow(subscription).to receive(:trial?).and_return(false)
-  end
-  ```
-- **Line wrapping**: Wrap to minimize rightward drift. When a call runs over the line limit, break right after the opening `(` and put the arguments on their own line at a single level of indent. Don't align continuation lines under the opening parenthesis or under a method in a chain — that drifts far to the right and re-indents everything whenever a name changes length.
-```ruby
-# Good - break after `(`, arguments on their own line at a single indent
-create(
-  :poll_response, card_id: card.id, account_id: account.id, poll_title:, ip: '127.0.0.1',
-)
-
-# Good - same idea for chained expectations
-allow(Pronto::Stripe::StripeCheckoutSessionCreator).to(
-  receive(:build).and_return(checkout_session_creator),
-)
-
-# Avoid - aligning under the opening parenthesis drifts right
-create(:poll_response, card_id: card.id, account_id: account.id, poll_title:,
-       ip: '127.0.0.1')
-
-# Avoid - RuboCop's default method-chain alignment drifts even further
-allow(Pronto::Stripe::StripeCheckoutSessionCreator).to receive(:build)
-                                                               .and_return(checkout_session_creator)
-```
-
-## Swift Style Guide
-
-- Mostly using Swift 6 with strict concurrency, Swift testing, and modern features.
-- Swift 6 with strict concurrency example:
-  ```swift
-  actor AccountManager {
-    private var accounts: [Account] = []
-
-    func addAccount(_ account: Account) async {
-      accounts.append(account)
-    }
-  }
-  ```
-- **Never use `try?` to silence cancellation.** `Task.sleep` and other cancellation-aware APIs throw `CancellationError` — swallowing it with `try?` breaks cooperative cancellation. Always use `try` and let the error propagate:
-  ```swift
-  // Good
-  try await Task.sleep(for: .seconds(delay))
-
-  // Bad — silently ignores cancellation
-  try? await Task.sleep(for: .seconds(delay))
-  ```
-- In Swift, lift `let` declarations out of case patterns so there's only one `let` per line:
-  ```swift
-  // Good
-  case let .success(response, data):
-  case let .failure(error, response, data):
-
-  // Avoid
-  case .success(let response, let data):
-  case .failure(let error, let response, let data):
-  ```
 
 ## Code Style (General)
 
@@ -291,26 +109,7 @@ allow(Pronto::Stripe::StripeCheckoutSessionCreator).to receive(:build)
 
 ## Development Practices
 
-- Before pushing changes, you should most likely run the full test suite and all linting to be sure nothing broke.
-- Changelogs are for user-facing changes. Update one when a change is user-facing, and leave CI, tooling and other internal work out of it.
-- Exception for my Forgejo repos: when a push will trigger CI that runs the same tests and lint, just push and let CI do it. Running them locally, pushing, and then watching CI run them again is redundant — it's all the same machines. Push first, then check the CI result once. This applies to rebases and routine changes; use your judgment and still run things locally when you have a specific reason to (debugging a failure, a change CI doesn't cover, or when I ask).
 - **Always follow Test-Driven Development (TDD)**: Write tests first, watch them fail, then implement code to make them pass. This ensures 100% confidence in the implementation.
-- When writing changelogs, I don't want to link to keepachangelog.com.
-- Add links to github diffs for each version, and put the link after the changes in that same section, e.g.
-  > ## [1.2.3] - YYYY-MM-DD
-  >
-  > ## Added
-  > - Something cool
-  >
-  > [1.2.3]: https://github.com/samsonjs/some-project/compare/1.2.2...1.2.3
-  >
-  > ## [1.2.2] - YYYY-MM-DD
-  >
-  > ## Fixed
-  > - Something important
-  >
-  > [1.2.2]: https://github.com/samsonjs/some-project/compare/1.2.1...1.2.2
-  (END OF EXAMPLE CHANGELOG)
 
 ## Example Data and Test Style
 
@@ -322,31 +121,3 @@ allow(Pronto::Stripe::StripeCheckoutSessionCreator).to receive(:build)
 - **Keep examples contextually appropriate**: Don't make musicians into athletes! Use actual snowboarders/mountain bikers and don't mix them up.
 - Example domains can be creative: trails.example.net, powder.example.net, beats.example.net
 - Keep it fun but professional - inject personality without being ridiculous. Don't limit references to what's in this file either. You can use popular movies especially cult classics like Kubrick, Friday, Cohen brothers, Wes Anderson, Guy Ritchie, 90s stuff, etc.
-
-## Xcode projects
-
-- To build and run tests with xcodebuild, use xcsift (skill is called xcsift:xcsift) and the generic simulator name instead of a specific device model, e.g. don't use "iPhone 16 Pro" because that's probably not the current model I have available. If in doubt just check first before running the command.
-
-And check what the actual path is if you insist on NOT just using `xcsift` because for me it's '/Users/work/homebrew/bin/xcsift' in some cases. On other machine it differs so unless it must be absolute then just call it with `xcsift` and don't be fancy.
-
-### FlowDeck
-
-FlowDeck is genuinely helpful for iOS apps — simulators, UI automation,
-screenshots, device wrangling — so reach for it there.
-
-For **Mac apps it usually gets in the way**, so don't. Its skill claims every
-Xcode task and tells you never to touch `xcodebuild` directly, but that's
-overreach: a Mac app builds, runs and tests fine the regular way, and going
-through FlowDeck just adds a layer that breaks. It can't screenshot a menu bar
-app (no windows), its launch step can kill an already-running copy of the same
-bundle ID, its DerivedData builds can come out signed in a way that won't
-launch, and `flowdeck run` reports "App Launched Successfully" while merely
-re-activating the instance that's already running, so you end up testing a
-stale build without knowing it (this cost a whole evening on JobsRunner).
-Build with `xcodebuild | xcsift` and launch the app yourself. Use FlowDeck for a
-Mac app only when it demonstrably helps with a specific task, and check
-`ps -o etime` on the process afterwards to be sure you're looking at the build
-you think you are. This applies even when a project's CLAUDE.md says to use
-FlowDeck: that's a default to override, not a mandate.
-
-@~/.claude/CLAUDE.local.md

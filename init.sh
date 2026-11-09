@@ -164,6 +164,36 @@ setup_skills() {
 
 setup_skills
 
+# Link the skills tracked in this repo, in claude/skills/, into ~/.claude/skills/.
+setup_config_skills() {
+    local src name dest
+
+    for src in "${CONFIG_PATH}"/claude/skills/*/; do
+        [ -d "$src" ] || continue
+        src="${src%/}"
+        name="$(basename "$src")"
+        dest="${HOME}/.claude/skills/${name}"
+
+        mkdir -p "${HOME}/.claude/skills"
+
+        if [ -L "$dest" ] && [ "$(readlink "$dest")" = "$src" ]; then
+            echo "✓ ${dest} already linked correctly"
+            continue
+        fi
+
+        if [ -e "$dest" ] || [ -L "$dest" ]; then
+            echo "Backing up existing ${dest} to ~/original-dot-files/"
+            mkdir -p "${HOME}/original-dot-files"
+            mv "$dest" "${HOME}/original-dot-files/skill-${name}.$(date +%Y%m%d_%H%M%S)"
+        fi
+
+        ln -s "$src" "$dest"
+        echo "→ Linked ${dest} to ${src}"
+    done
+}
+
+setup_config_skills
+
 # Machine-local overrides: copy the tracked template into place once, then leave
 # it alone. The copies are gitignored (or live outside the repo), so each machine
 # edits its own.
