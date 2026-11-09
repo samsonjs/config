@@ -115,7 +115,7 @@ My config sets `revsets.bookmark-advance-to = "(@ ~ empty()) | (@ & empty())-"` 
   - No Testing section, no caveats section, no design-tradeoff section, no hedging. Concerns worth raising — a tradeoff, a related bug, a call someone else should make — go in chat or a review comment, not the body. Don't mention passing tests/specs/linters; that's table stakes and the checks show it.
   - Don't open with an inventory of the old state. One plain sentence covers it.
   - A secondary fix riding along gets one or two sentences at most.
-  - Do include proof that the change works (see "Proof in pull requests" below) and context the code can't convey: a measurement that motivated the change, a constraint, an interaction with other work.
+  - Include proof that the change works when it's worthwhile (see "Proof in pull requests" below), and context the code can't convey: a measurement that motivated the change, a constraint, an interaction with other work.
   - Worst case is after a long investigation — resist compressing it into the body. That belongs in the linked issue.
 - **Commit messages and jj change descriptions** can run longer than a PR body, it's a different audience, but the same rule applies about not walking through the diff: what changed and why, plus the one non-obvious gotcha if there is one.
 - **Never invent rationale.** In code comments, commit messages, PR bodies, issues and design docs, state only reasons I gave or that are verifiable from the code. A plausible guess reads as settled fact once written down, and speculative "why" framing inflates scope — casting a deliberate decision as an oversight invites a redesign nobody asked for. If the why matters and isn't known, ask or leave it out: "deliberately excluded" beats a wrong reason, and "cause unknown" beats naming a suspect.
@@ -126,7 +126,7 @@ My config sets `revsets.bookmark-advance-to = "(@ ~ empty()) | (@ & empty())-"` 
 
 ## Proof in pull requests
 
-A pull request that's ready for review should usually carry proof that the code does what the description claims. It's a judgement call, not a checklist: include what actually helps a reviewer believe the change, and nothing more.
+Proof is nice to have, not a requirement. When it's cheap to get and a reviewer would actually find it convincing, include it; when it's awkward, thin or beside the point, skip it and say so rather than stretching for something. It's a judgement call, not a checklist: include what helps a reviewer believe the change, and nothing more. A PR without proof is fine, and so is a draft that has none yet.
 
 - **Tests are the baseline.** The diff includes a test that fails without the change and passes with it, which TDD gives you for free. That's proof living in the diff, not a Testing section: "all tests pass" still doesn't go in the body.
 - **Anything you can see gets screenshots or a screen recording.** UI, layout, copy, empty and error states. Show before and after side by side when something changed rather than appeared. Use a recording when the behaviour is a flow, a transition or an animation that a still can't capture. Crop to what matters, and capture from the simulator, device or browser the change targets.
