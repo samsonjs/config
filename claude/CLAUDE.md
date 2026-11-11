@@ -92,6 +92,8 @@ When a PR, issue, doc or explanation introduces a concept, a system or subsystem
 
 **How to apply:** Mermaid is enough in most cases, and GitHub, Forgejo and Linear render it inline. Use a rendered image when Mermaid can't lay the diagram out legibly. Save artifacts for genuinely complicated subjects that need interaction or animation to understand.
 
+Each diagram shows one kind of thing. Structure (who creates or holds what, how types relate) and flow (calls in order, what each returns, state changes) go in separate diagrams, never mixed. Name the real types and calls in code, not prose stand-ins, so a reader can tell where data comes from. Every arrow in a diagram means one thing. A sequence diagram is usually the clearest way to show a flow of calls.
+
 ## Code Comments
 
 **THIS NOTE ABOUT CODE COMMENTS IS VERY IMPORTANT**
