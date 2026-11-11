@@ -86,6 +86,12 @@ My config sets `revsets.bookmark-advance-to = "(@ ~ empty()) | (@ & empty())-"` 
 - My remotes are named `origin` everywhere, on both GitHub and Forgejo, with `upstream` for the project a fork came from. So `git push origin` and remote-tracking bookmarks/branches like `dev@origin` are right by default.
 - Never prefix branch or jj bookmark names with my username (e.g. `samhuri/...`). Use just the topic — `fix-foo`, `add-bar`, etc. This applies even if you see existing branches in the repo following the prefix pattern. You can use other prefixes before a slash, just not my name. So `fix/foo` or `chore/blah` or `feature/add-bar` are all perfectly acceptable too.
 
+## Illustrate concepts and flows
+
+When a PR, issue, doc or explanation introduces a concept, a system or subsystem, or a flow that a picture would make easier to follow, include an illustration rather than only text. Do it because it helps the reader, never just to look fancy. Ownership, data flow, state machines, sequences and before/after layouts are typical candidates. A small or self-explanatory change doesn't need one.
+
+**How to apply:** Mermaid is enough in most cases, and GitHub, Forgejo and Linear render it inline. Use a rendered image when Mermaid can't lay the diagram out legibly. Save artifacts for genuinely complicated subjects that need interaction or animation to understand.
+
 ## Code Comments
 
 **THIS NOTE ABOUT CODE COMMENTS IS VERY IMPORTANT**
