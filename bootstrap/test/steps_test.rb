@@ -7,6 +7,16 @@ class StepsTest < Minitest::Test
     Bootstrap::Steps.plan(Bootstrap::Options.new(roles:, skip:)).map(&:name)
   end
 
+  # CI runs in a container that doesn't set USER, so tests that reach it set
+  # their own.
+  def with_env(name, value)
+    original = ENV[name]
+    ENV[name] = value
+    yield
+  ensure
+    ENV[name] = original
+  end
+
   def test_a_base_mac_runs_the_shared_steps_in_order
     assert_equal %w[roles dotfiles zlocal ssh forgejo brew defaults apps deriva], plan(roles: %w[base])
   end
@@ -94,7 +104,9 @@ class StepsTest < Minitest::Test
         File.write(File.join(home, ".ssh", "#{key}.pub"), "ssh-ed25519 AAAA #{key}@galiano\n")
       end
       options = Bootstrap::Options.new(roles: %w[base backup], developer:)
-      Bootstrap::Steps.new(config_root: home, options:, home:, shell:).send(:mudge)
+      with_env("USER", "trent") do
+        Bootstrap::Steps.new(config_root: home, options:, home:, shell:).send(:mudge)
+      end
 
       assert shell.tries.any? { it.last.include?("report-token") }
     end
